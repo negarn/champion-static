@@ -1,3 +1,4 @@
+/* GLOBAL RULES */
 #topbar ul {
   list-style: none;
   margin: 0;
@@ -5,40 +6,34 @@
   width: 100%;
   display: block;
 }
-
 #topbar ul li {
   display: inline-block;
-  margin: 0px;
+  margin: 0;
   padding: 5px 12px;
 }
-
 #topbar ul li a {
   color: #fff;
   padding: 5px 1px;
   font-weight: 400;
   text-decoration: none;
 }
-
-#topbar .last {
-  margin-right: 0px !important;
-  padding-right: 0;
-}
-
 #topbar ul li a:hover {
   text-decoration: underline;
+}
+#topbar .last {
+  margin-right: 0 !important;
+  padding-right: 0;
 }
 
 @media (max-width: 980px) {
   #topbar {
     text-align: center;
   }
-
   #topbar ul li {
     display: inline-block;
     margin: 4px 2px;
-    padding: 10px 0px;
+    padding: 10px 0;
   }
-
   #topbar ul li a {
     color: #fff;
     padding: 10px 15px;
@@ -55,7 +50,6 @@
   text-align: left;
   padding-left: 20px;
 }
-
 .FX__Header__nav ul {
   list-style: none;
   margin-top: 30px;
@@ -63,20 +57,17 @@
   width: 100%;
   display: block;
 }
-
 .FX__Header__nav ul li {
   display: inline-block;
-  margin: 0px;
-  padding: 3px 0px;
+  margin: 0;
+  padding: 3px 0;
 }
-
 .FX__Header__nav ul li a {
   color: #FFF;
-  padding: 0px 15px;
+  padding: 0 15px;
   font-weight: 400;
   text-decoration: none;
 }
-
 .FX__Header__nav ul li a:hover {
   color: #C2C2C2;
   text-decoration: none;
@@ -89,22 +80,20 @@
 
   .FX__Header__nav {
     text-align: center;
-    padding-left: 0px;
+    padding-left: 0;
   }
-
   .FX__Header__nav ul {
     list-style: none;
     margin-top: 10px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     padding: 0;
     width: 100%;
     display: block;
   }
-
   .FX__Header__nav ul li {
     display: block;
-    margin: 0px;
-    padding: 3px 0px;
+    margin: 0;
+    padding: 3px 0;
     text-align: center;
   }
 
@@ -115,8 +104,8 @@
   }
 }
 #verify-email-form {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 .signup-box {
@@ -124,24 +113,20 @@
   margin: 20px 0;
   padding: 10px;
 }
-
 .signup-box div {
   display: inline;
   margin: 0;
   padding: 0;
 }
-
 .signup-box input {
   padding: 5px;
   margin-right: 5px;
 }
-
 .signup-box span {
   display: block;
   margin: 0;
   padding: 0;
 }
-
 .signup-box button {
   margin: 0;
 }
@@ -161,14 +146,13 @@
 #footer-menu {
   padding: 10px 0;
 }
-
 #footer-menu ul {
   margin-bottom: 10px;
   padding: 0;
 }
 
 #footer-regulatory {
-  padding: 10px 0px;
+  padding: 10px 0;
   font-size: 10px;
   text-align: justify;
 }
@@ -183,24 +167,21 @@
   margin-bottom: 20px;
   min-height: 320px;
 }
-
-.fx-panel-title {
-  padding: 0px 20px;
-}
-
-.fx-panel-title img {
-  width: 35px;
-  float: left;
-  margin-top: 0px;
-  margin-right: 15px;
-}
-
 .fx-panel p {
   padding: 0 20px;
 }
-
 .fx-panel ul {
   margin-left: 0;
+}
+
+.fx-panel-title {
+  padding: 0 20px;
+}
+.fx-panel-title img {
+  width: 35px;
+  float: left;
+  margin-top: 0;
+  margin-right: 15px;
 }
 
 .fx-panel-item {
@@ -208,33 +189,27 @@
   display: block;
   height: 70px;
 }
-
 .fx-panel-item div {
   display: table-cell;
   text-align: left;
-  padding: 0px 0px 0px 15px;
+  padding: 0 0 0 15px;
   vertical-align: top;
 }
 
 @media (max-width: 980px) {
-  .fx-panel {
-    height: auto;
-  }
-
-  .fx-panel-item {
+  .fx-panel, .fx-panel-item {
     height: auto;
   }
 }
 .fx-section {
-  padding: 50px 0px;
+  padding: 50px 0;
+}
+.fx-section .fx-features-title {
+  margin-bottom: 50px;
 }
 
 .fx-section-sm {
-  padding: 25px 0px;
-}
-
-.fx-section .fx-features-title {
-  margin-bottom: 50px;
+  padding: 25px 0;
 }
 
 .fx-home-header {
@@ -245,16 +220,14 @@
   padding: 40px 20px 30px;
   text-align: center;
 }
-
 .fx-home-header p {
-  padding: 10px 0px;
+  padding: 10px 0;
 }
 
 .home-header-cta {
-  margin-top: 0px;
+  margin-top: 0;
   padding: 20px;
 }
-
 .home-header-cta .button {
   display: inline-block;
   margin-top: 5px;
@@ -300,7 +273,6 @@
   background-size: cover;
   padding: 20px 20px 50px;
 }
-
 .fx-mission-header img {
   max-height: 300px;
 }
@@ -321,13 +293,11 @@
 .fx-platform-options {
   text-align: center;
 }
-
-.fx-platform-options .row:first-child {
-  margin-bottom: 10px;
-}
-
 .fx-platform-options .row {
   margin-bottom: 30px;
+}
+.fx-platform-options .row:first-child {
+  margin-bottom: 10px;
 }
 
 @media (max-width: 767px) {
@@ -340,7 +310,7 @@
   /* for IE 6 */
   background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url("../images/about-background.png");
   background-size: cover;
-  padding: 0px 20px;
+  padding: 0 20px;
 }
 
 .contact-phone {
@@ -355,7 +325,7 @@
 #phone-result {
   padding-left: 10px;
   text-align: left;
-  margin: 20px 0px;
+  margin: 20px 0;
 }
 
 .phone-note {
@@ -367,23 +337,19 @@
 .champion-features th {
   text-align: left;
 }
-
 .champion-features td:first-child {
   width: 45%;
 }
-
-.champion-features td:nth-child(3) {
-  width: 15%;
-}
-
 .champion-features td:nth-child(2), .champion-features td:last-child {
   width: 20%;
+}
+.champion-features td:nth-child(3) {
+  width: 15%;
 }
 
 .fx-package {
   text-align: center;
 }
-
 .fx-package td {
   padding: 10px;
 }
@@ -451,7 +417,6 @@
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   transition: box-shadow 0.25s;
 }
-
 .fx-material:hover {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.18), 0 4px 12px 0 rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.25s;
@@ -464,7 +429,6 @@
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
   transition: box-shadow 0.25s;
 }
-
 .store-button:hover {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.18), 0 4px 12px 0 rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.25s;
