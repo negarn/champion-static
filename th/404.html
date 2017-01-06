@@ -19,10 +19,10 @@
     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/css/flex.min.css?sqsa5hnw">
-     <link rel="stylesheet" href="/champion-static/css/style.min.css?sqsa5hnw">
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sqsa5hnw">
-      <script src='/champion-static/js/bundle.js?sqsa5hnw' defer async></script>  </head>
+     <link rel="stylesheet" href="/champion-static/css/flex.min.css?u34b5yee">
+     <link rel="stylesheet" href="/champion-static/css/style.min.css?u34b5yee">
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?u34b5yee">
+      <script src='/champion-static/js/bundle.js?u34b5yee' defer async></script>  </head>
 <body>
     <div id="topbar" class="primary-color-dark content-inverse-color">
     <div class="fx-container">
@@ -40,7 +40,7 @@
         <div class="row">
             <div class="col-lg-2">
                 <div class="logo-wrapper">
-                    <a href="/" class="logo-parent">
+                    <a href="/champion-static/th/home.html" class="logo-parent">
                         <div class="logo">
                             <img class="responsive" src="/champion-static/images/logo/CFX_logomark_light.svg" alt="Champion FX">
                         </div>
@@ -75,8 +75,29 @@
 
 
 
-<main class="page-content" aria-label="Content">
-    <div class="wrapper">
+
+<div class="fill-bg-color centered hidden" id="signup">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm flex-sm-middle">
+                <form id="verify-email-form">
+    <div class="signup-box border primary-bg-color fx-material">
+        <div class="">
+            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
+        </div>
+        <div class="">
+            <button class="button-secondary" id="btn-verify-email" type="submit">Create Free Account</button>
+        </div>
+        <span class="error-msg hint color-white center-text" id="signup_error" style="display:none"></span>
+    </div>
+</form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main class="page-content" aria-label="Content" id="champion-container">
+    <div class="wrapper" id="champion-content">
         <div class="container">
     <div class="404_page static_full">
         <div class="gr-row">
@@ -150,10 +171,5 @@
         </div>
     </div>
 </footer>
-    <script language="JavaScript">
-    (function() {
-        localStorage.setItem('lang', "{{ layout.lang }}");
-    })();
-</script>
 </body>
 </html>
