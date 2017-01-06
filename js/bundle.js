@@ -18429,11 +18429,26 @@
 
 	'use strict';
 
-	// eslint-disable-next-line no-unused-vars
-	function dropdownTip(value) {
-	    /* jshint ignore:line */
-	    document.getElementById('phone-result').innerHTML = value;
-	}
+	var ChampionContact = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        $('#cs_telephone_number').on('change', function () {
+	            $('#phone-result').html($(this).val());
+	        });
+	    };
+
+	    var unload = function unload() {
+	        $('#cs_telephone_number').off('change');
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionContact;
 
 /***/ },
 /* 300 */
@@ -18441,50 +18456,80 @@
 
 	'use strict';
 
-	var Cookies = __webpack_require__(301);
-	var ChampionSocket = __webpack_require__(302);
+	var ChampionSocket = __webpack_require__(301);
 	var ChampionRouter = __webpack_require__(303);
-	var ChampionSignup = __webpack_require__(304);
-	var ChampionCreateAccount = __webpack_require__(305);
+	var ChampionSignup = __webpack_require__(305);
+	var ChampionCreateAccount = __webpack_require__(307);
+	var ChampionContact = __webpack_require__(299);
 
 	var Champion = function () {
 	    'use strict';
 
 	    var _authenticated = false;
 
-	    var _container;
-	    var _signup;
+	    var _container = void 0,
+	        _signup = void 0,
+	        _active_script = null;
 
-	    var _active_script = null;
-
-	    function init() {
+	    var init = function init() {
 	        _container = $('#champion-container');
 	        _signup = $('#signup');
 	        _container.on('champion:before', beforeContentChange);
 	        _container.on('champion:after', afterContentChange);
 	        ChampionRouter.init(_container, '#champion-content');
-	    }
+	        ChampionSocket.init();
+	    };
 
-	    function beforeContentChange() {
+	    var beforeContentChange = function beforeContentChange() {
 	        if (_active_script) {
-	            _active_script.hide();
+	            _active_script.unload();
 	            _active_script = null;
 	        }
-	    }
+	    };
 
-	    function afterContentChange(e, content) {
-	        var tag = content.getAttribute('data-tag');
-	        if (tag === 'create') {
-	            _active_script = ChampionCreateAccount;
-	            _active_script.show(_container);
-	        } else if (!_authenticated) {
-	            var form = _container.find('#verify-email-form');
-	            _active_script = ChampionSignup;
-	            _active_script.show(form.length ? form : _signup);
+	    var afterContentChange = function afterContentChange(e, content) {
+	        var page = content.getAttribute('data-page');
+	        var pages_map = {
+	            'create-account': ChampionCreateAccount,
+	            contact: ChampionContact
+	        };
+	        if (page in pages_map) {
+	            _active_script = pages_map[page];
+	            _active_script.load();
 	        }
-	    }
 
-	    function socketMessage(message) {
+	        if (!_authenticated) {
+	            var form = _container.find('#verify-email-form');
+	            if (!_active_script) _active_script = ChampionSignup;
+	            ChampionSignup.load(form.length ? form : _signup);
+	        }
+	    };
+
+	    return {
+	        init: init
+	    };
+	}();
+
+	module.exports = Champion;
+
+/***/ },
+/* 301 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Cookies = __webpack_require__(302);
+
+	var ChampionSocket = function () {
+	    'use strict';
+
+	    var socket = void 0,
+	        message_callback = void 0;
+
+	    var buffered = [],
+	        registered_callbacks = {};
+
+	    var socketMessage = function socketMessage(message) {
 	        if (!message) {
 	            // socket just opened
 	            var token = Cookies.get('token');
@@ -18499,19 +18544,100 @@
 	            }
 	            console.log(message);
 	        }
-	    }
+	    };
 
-	    ChampionSocket.init(socketMessage);
+	    var init = function init() {
+	        var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : socketMessage;
+
+	        if (typeof callback === 'function') {
+	            message_callback = callback;
+	        }
+	        connect();
+	    };
+
+	    var getAppId = function getAppId() {
+	        return localStorage.getItem('config.app_id') ? localStorage.getItem('config.app_id') : '1';
+	    };
+
+	    var getSocketURL = function getSocketURL() {
+	        var server = 'www.binaryqa14.com';
+	        var params = ['brand=champion', 'app_id=' + getAppId()];
+
+	        return 'wss://' + server + '/websockets/v3' + (params.length ? '?' + params.join('&') : '');
+	    };
+
+	    var connect = function connect() {
+	        socket = new WebSocket(getSocketURL());
+	        socket.onopen = onOpen;
+	        socket.onmessage = onMessage;
+	    };
+
+	    var isReady = function isReady() {
+	        return socket && socket.readyState === 1;
+	    };
+
+	    var isClosed = function isClosed() {
+	        return !socket || socket.readyState === 2 || socket.readyState === 3;
+	    };
+
+	    var send = function send(data, callback, subscribe) {
+	        var req_id = void 0;
+
+	        if (typeof callback === 'function') {
+	            req_id = new Date().getTime();
+	            registered_callbacks[req_id] = {
+	                callback: callback,
+	                subscribe: subscribe
+	            };
+	            data.req_id = req_id;
+	        }
+
+	        if (isReady()) {
+	            socket.send(JSON.stringify(data));
+	        } else {
+	            buffered.push(data);
+	            if (isClosed()) {
+	                connect();
+	            }
+	        }
+	    };
+
+	    var onOpen = function onOpen() {
+	        if (typeof message_callback === 'function') {
+	            message_callback();
+	        }
+	        if (isReady()) {
+	            while (buffered.length > 0) {
+	                send(buffered.shift());
+	            }
+	        }
+	    };
+
+	    var onMessage = function onMessage(message) {
+	        var response = JSON.parse(message.data),
+	            req_id = response.req_id,
+	            reg = req_id ? registered_callbacks[req_id] : null;
+
+	        if (reg && typeof reg.callback === 'function') {
+	            reg.callback(response);
+	            if (!reg.subscribe) {
+	                delete registered_callbacks[req_id];
+	            }
+	        } else if (typeof message_callback === 'function') {
+	            message_callback(response);
+	        }
+	    };
 
 	    return {
-	        init: init
+	        init: init,
+	        send: send
 	    };
 	}();
 
-	module.exports = Champion;
+	module.exports = ChampionSocket;
 
 /***/ },
-/* 301 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
@@ -18663,112 +18789,12 @@
 	});
 
 /***/ },
-/* 302 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var ChampionSocket = function () {
-	    'use strict';
-
-	    var socket,
-	        buffered = [],
-	        message_callback,
-	        registered_callbacks = {};
-
-	    function init(callback) {
-	        if (typeof callback === 'function') {
-	            message_callback = callback;
-	        }
-	        connect();
-	    }
-
-	    function getAppId() {
-	        return localStorage.getItem('config.app_id') ? localStorage.getItem('config.app_id') : '1';
-	    }
-
-	    function getSocketURL() {
-	        var server = 'www.binaryqa14.com';
-	        var params = ['brand=champion', 'app_id=' + getAppId()];
-
-	        return 'wss://' + server + '/websockets/v3' + (params.length ? '?' + params.join('&') : '');
-	    }
-
-	    function connect() {
-	        socket = new WebSocket(getSocketURL());
-	        socket.onopen = onOpen;
-	        socket.onmessage = onMessage;
-	    }
-
-	    function isReady() {
-	        return socket && socket.readyState === 1;
-	    }
-
-	    function isClosed() {
-	        return !socket || socket.readyState === 2 || socket.readyState === 3;
-	    }
-
-	    function send(data, callback, subscribe) {
-	        var req_id;
-
-	        if (typeof callback === 'function') {
-	            req_id = new Date().getTime();
-	            registered_callbacks[req_id] = {
-	                callback: callback,
-	                subscribe: subscribe
-	            };
-	            data.req_id = req_id;
-	        }
-
-	        if (isReady()) {
-	            socket.send(JSON.stringify(data));
-	        } else {
-	            buffered.push(data);
-	            if (isClosed()) {
-	                connect();
-	            }
-	        }
-	    }
-
-	    function onOpen() {
-	        if (typeof message_callback === 'function') {
-	            message_callback();
-	        }
-	        if (isReady()) {
-	            while (buffered.length > 0) {
-	                send(buffered.shift());
-	            }
-	        }
-	    }
-
-	    function onMessage(message) {
-	        var response = JSON.parse(message.data),
-	            req_id = response.req_id,
-	            reg = req_id ? registered_callbacks[req_id] : null;
-
-	        if (reg && typeof reg.callback === 'function') {
-	            reg.callback(response);
-	            if (!reg.subscribe) {
-	                delete registered_callbacks[req_id];
-	            }
-	        } else if (typeof message_callback === 'function') {
-	            message_callback(response);
-	        }
-	    }
-
-	    return {
-	        init: init,
-	        send: send
-	    };
-	}();
-
-	module.exports = ChampionSocket;
-
-/***/ },
 /* 303 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var getLanguage = __webpack_require__(304).getLanguage;
 
 	/**
 	 * Router module for ChampionFX
@@ -18778,17 +18804,16 @@
 	var ChampionRouter = function () {
 	    'use strict';
 
+	    var xhr = void 0;
 	    var params = {},
 	        defaults = {
 	        timeout: 650,
 	        type: 'GET',
 	        dataType: 'html'
-	    };
+	    },
+	        cache = {};
 
-	    var xhr;
-	    var cache = {};
-
-	    function init(container, content_selector) {
+	    var init = function init(container, content_selector) {
 	        if (!(window.history && window.history.pushState && window.history.replaceState &&
 	        // pushState isn't reliable on iOS until 5.
 	        !navigator.userAgent.match(/((iPod|iPhone|iPad).+\bOS\s+[1-4]\D|WebApps\/.+CFNetwork)/))) {
@@ -18822,14 +18847,15 @@
 	                content: content
 	            });
 	            window.history.replaceState({ url: url }, title, url);
+	            content.attr('data-page', url.match('.+\/(.+)\.html.*')[1]);
 	            params.container.trigger('champion:after', content);
 	        }
 
 	        $(document).on('click', 'a', handleClick);
 	        $(window).on('popstate', handlePopstate);
-	    }
+	    };
 
-	    function handleClick(event) {
+	    var handleClick = function handleClick(event) {
 	        var link = event.currentTarget,
 	            url = link.href;
 
@@ -18857,38 +18883,30 @@
 	        if (location.href !== url) {
 	            processUrl(url);
 	        }
-	    }
+	    };
 
-	    function processUrl(url, replace) {
+	    var processUrl = function processUrl(url, replace) {
 	        var cached_content = cacheGet(url);
 	        if (cached_content) {
 	            replaceContent(url, cached_content, replace);
 	        } else {
 	            load(url, replace);
 	        }
-	    }
+	    };
 
-	    /*
-	    * Load url from server
-	    * */
-	    function load(url, replace) {
-	        var options = $.extend(true, {}, $.ajaxSettings, defaults, { url: url });
+	    /**
+	     * Load url from server
+	     */
+	    var load = function load(url, replace) {
+	        var lang = getLanguage();
+	        var options = $.extend(true, {}, $.ajaxSettings, defaults, {
+	            url: url.replace(new RegExp('/' + lang + '/', 'i'), '/' + lang.toLowerCase() + '/pjax/') });
 
 	        options.success = function (data) {
-	            var result = {},
-	                matched_head = data.match(/<head[^>]*>([\s\S.]*)<\/head>/i),
-	                matched_body = data.match(/<body[^>]*>([\s\S.]*)<\/body>/i);
+	            var result = {};
 
-	            if (!(matched_head && matched_body)) {
-	                locationReplace(url);
-	                return;
-	            }
-	            // Attempt to parse response html into elements
-	            var head = $(matched_head[0]);
-	            var body = $(matched_body[0]);
-
-	            result.title = head.filter('title').last().text().trim();
-	            result.content = body.find(params.content_selector);
+	            result.title = $(data).find('title').text().trim();
+	            result.content = $('<div/>', { html: data }).find(params.content_selector);
 
 	            // If failed to find title or content, load the page in traditional way
 	            if (result.title.length === 0 || result.content.length === 0) {
@@ -18904,17 +18922,17 @@
 	        abortXHR(xhr);
 
 	        xhr = $.ajax(options);
-	    }
+	    };
 
-	    function handlePopstate(e) {
+	    var handlePopstate = function handlePopstate(e) {
 	        var url = e.originalEvent.state ? e.originalEvent.state.url : window.location.href;
 	        if (url) {
 	            processUrl(url, true);
 	        }
 	        return false;
-	    }
+	    };
 
-	    function replaceContent(url, content, replace) {
+	    var replaceContent = function replaceContent(url, content, replace) {
 	        window.history[replace ? 'replaceState' : 'pushState']({ url: url }, content.title, url);
 
 	        params.container.trigger('champion:before');
@@ -18924,26 +18942,26 @@
 	        params.container.append(content.content);
 
 	        params.container.trigger('champion:after', content.content);
-	    }
+	    };
 
-	    function abortXHR(xhrObj) {
+	    var abortXHR = function abortXHR(xhrObj) {
 	        if (xhrObj && xhrObj.readyState < 4) {
 	            xhrObj.abort();
 	        }
-	    }
+	    };
 
-	    function cachePut(url, content) {
+	    var cachePut = function cachePut(url, content) {
 	        cache[url] = content;
-	    }
+	    };
 
-	    function cacheGet(url) {
+	    var cacheGet = function cacheGet(url) {
 	        return cache[url];
-	    }
+	    };
 
-	    function locationReplace(url) {
+	    var locationReplace = function locationReplace(url) {
 	        window.history.replaceState(null, '', url);
 	        window.location.replace(url);
-	    }
+	    };
 
 	    return {
 	        init: init,
@@ -18959,23 +18977,91 @@
 
 	'use strict';
 
-	var ChampionSocket = __webpack_require__(302);
+	var Cookies = __webpack_require__(302);
+
+	var Language = function () {
+	    var all_languages = function all_languages() {
+	        return {
+	            EN: 'English',
+	            DE: 'Deutsch',
+	            ES: 'Español',
+	            FR: 'Français',
+	            ID: 'Indonesia',
+	            IT: 'Italiano',
+	            JA: '日本語',
+	            PL: 'Polish',
+	            PT: 'Português',
+	            RU: 'Русский',
+	            TH: 'Thai',
+	            VI: 'Tiếng Việt',
+	            ZH_CN: '简体中文',
+	            ZH_TW: '繁體中文'
+	        };
+	    };
+
+	    var language_from_url = function language_from_url() {
+	        var regex = new RegExp('^(' + Object.keys(all_languages()).join('|') + ')$', 'i');
+	        var langs = window.location.href.split('/').slice(3);
+	        var lang = '';
+	        langs.forEach(function (l) {
+	            lang = regex.test(l) ? l : lang;
+	        });
+	        return lang;
+	    };
+
+	    var current_lang = null;
+	    var language = function language() {
+	        var lang = current_lang;
+	        if (!lang) {
+	            lang = (language_from_url() || Cookies.get('language') || 'EN').toUpperCase();
+	            current_lang = lang;
+	        }
+	        return lang;
+	    };
+
+	    var url_for_language = function url_for_language(lang) {
+	        return window.location.href.replace(new RegExp('/' + language() + '/', 'i'), '/' + lang.trim().toLowerCase() + '/');
+	    };
+
+	    return {
+	        all_languages: all_languages,
+	        language: language,
+	        url_for_language: url_for_language
+	    };
+	}();
+
+	module.exports = {
+	    getAllLanguages: Language.all_languages,
+	    getLanguage: Language.language,
+	    URLForLanguage: Language.url_for_language
+	};
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(301);
 	var ChampionRouter = __webpack_require__(303);
+	var url_for = __webpack_require__(306).url_for;
 
 	var ChampionSignup = function () {
 	    'use strict';
 
-	    var _active = false;
-
-	    var _element, _input, _error_empty, _error_email, _button;
+	    var _active = false,
+	        _element = void 0,
+	        _input = void 0,
+	        _error_empty = void 0,
+	        _error_email = void 0,
+	        _button = void 0,
+	        _timeout = void 0;
 
 	    var _email_regex = /[^@]+@[^@\.]+\.[^@]+/;
-	    // var _email_regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
+	    // const _email_regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
+	    var _validate_delay = 500;
 
-	    var _validate_delay = 500,
-	        _timeout;
-
-	    function show(element) {
+	    var load = function load(element) {
 	        _element = element;
 	        _input = _element.find('input');
 	        _error_empty = _element.find('#signup_error_empty');
@@ -18987,9 +19073,9 @@
 	        _button.on('click', submitClicked);
 
 	        _active = true;
-	    }
+	    };
 
-	    function hide() {
+	    var unload = function unload() {
 	        if (_active) {
 	            _element.addClass('hidden');
 	            _input.off('input', inputChanged);
@@ -19002,17 +19088,17 @@
 	            }
 	        }
 	        _active = false;
-	    }
+	    };
 
-	    function inputChanged() {
+	    var inputChanged = function inputChanged() {
 	        if (_timeout) {
 	            clearTimeout(_timeout);
 	        }
 	        _timeout = setTimeout(validate, _validate_delay);
-	    }
+	    };
 
-	    function validate() {
-	        var value,
+	    var validate = function validate() {
+	        var value = void 0,
 	            error = true;
 	        if (_active) {
 	            value = _input.val();
@@ -19027,9 +19113,9 @@
 	            }
 	        }
 	        return !error;
-	    }
+	    };
 
-	    function submitClicked(e) {
+	    var submitClicked = function submitClicked(e) {
 	        e.preventDefault();
 	        if (_active && validate()) {
 	            ChampionSocket.send({
@@ -19037,46 +19123,107 @@
 	                type: 'account_opening'
 	            }, function (response) {
 	                if (response.verify_email) {
-	                    var lang = localStorage.getItem('lang'),
-	                        a = document.createElement('a');
-	                    a.setAttribute('href', '/' + lang + '/createaccount');
-	                    ChampionRouter.forward(a.href);
+	                    ChampionRouter.forward(url_for('create-account'));
 	                }
 	            });
 	        }
-	    }
+	    };
 
 	    return {
-	        show: show,
-	        hide: hide
+	        load: load,
+	        unload: unload
 	    };
 	}();
 
 	module.exports = ChampionSignup;
 
 /***/ },
-/* 305 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var ChampionSocket = __webpack_require__(302);
+	var getLanguage = __webpack_require__(304).getLanguage;
+
+	function url_for(path, params) {
+	    if (!path) {
+	        path = '';
+	    } else if (path.length > 0 && path[0] === '/') {
+	        path = path.substr(1);
+	    }
+	    var lang = getLanguage().toLowerCase();
+	    var url = '';
+	    if (typeof window !== 'undefined') {
+	        url = window.location.href;
+	    }
+	    return '' + url.substring(0, url.indexOf('/' + lang + '/') + lang.length + 2) + (path || 'home') + '.html' + (params ? '?' + params : '');
+	}
+
+	function url_for_static(path) {
+	    if (!path) {
+	        path = '';
+	    } else if (path.length > 0 && path[0] === '/') {
+	        path = path.substr(1);
+	    }
+
+	    var staticHost = void 0;
+	    if (typeof window !== 'undefined') {
+	        staticHost = window.staticHost;
+	    }
+	    if (!staticHost || staticHost.length === 0) {
+	        staticHost = $('script[src*="binary.min.js"],script[src*="binary.js"]').attr('src');
+
+	        if (staticHost && staticHost.length > 0) {
+	            staticHost = staticHost.substr(0, staticHost.indexOf('/js/') + 1);
+	        } else {
+	            staticHost = 'https://www.binary.com/';
+	        }
+
+	        if (typeof window !== 'undefined') {
+	            window.staticHost = staticHost;
+	        }
+	    }
+
+	    return staticHost + path;
+	}
+
+	module.exports = {
+	    url_for: url_for(),
+	    url_for_static: url_for_static
+	};
+
+/***/ },
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(301);
 
 	var ChampionCreateAccount = function () {
 	    'use strict';
 
 	    var _passwd_regex = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
-	    // var _code_regex = /.{48}/;
+	    // const _code_regex = /.{48}/;
 
-	    var _residences = null;
+	    var _residences = null,
+	        _active = false;
 
-	    var _active = false;
+	    var _input_code = void 0,
+	        _input_pass = void 0,
+	        _input_rpass = void 0,
+	        _input_country = void 0,
+	        _submit_btn = void 0,
+	        _input_residence = void 0;
 
-	    var _input_code, _input_pass, _input_rpass, _input_country, _submit_btn, _input_residence;
+	    var _code_error = void 0,
+	        _pass_error_short = void 0,
+	        _pass_error_char = void 0,
+	        _pass_error_nomatch = void 0,
+	        _create_acc_error = void 0;
 
-	    var _code_error, _pass_error_short, _pass_error_char, _pass_error_nomatch, _create_acc_error;
-
-	    function show(container) {
+	    var load = function load() {
+	        var container = $('#champion-container');
 	        _input_code = container.find('#verification-code');
 	        _input_pass = container.find('#password');
 	        _input_rpass = container.find('#r-password');
@@ -19104,9 +19251,9 @@
 	            renderResidences();
 	        }
 	        _active = true;
-	    }
+	    };
 
-	    function renderResidences() {
+	    var renderResidences = function renderResidences() {
 	        _input_residence.empty();
 	        _residences.forEach(function (res) {
 	            var option = $('<option></option>');
@@ -19117,9 +19264,9 @@
 	            }
 	            _input_residence.append(option);
 	        });
-	    }
+	    };
 
-	    function hide() {
+	    var unload = function unload() {
 	        _input_code.off('input', validateCode);
 	        _input_pass.off('input', validatePass);
 	        _input_rpass.off('input', validateRpass);
@@ -19137,9 +19284,9 @@
 	        _input_country.val('');
 	        _input_residence.empty();
 	        _active = false;
-	    }
+	    };
 
-	    function validateCode() {
+	    var validateCode = function validateCode() {
 	        var value = _input_code.val();
 
 	        _create_acc_error.addClass('hidden');
@@ -19149,9 +19296,9 @@
 	            return false;
 	        }
 	        return true;
-	    }
+	    };
 
-	    function validatePass() {
+	    var validatePass = function validatePass() {
 	        var value = _input_pass.val();
 
 	        _create_acc_error.addClass('hidden');
@@ -19169,18 +19316,18 @@
 	        validateRpass();
 
 	        return true;
-	    }
+	    };
 
-	    function validateRpass() {
+	    var validateRpass = function validateRpass() {
 	        _pass_error_nomatch.addClass('hidden');
 	        if (_input_pass.val() !== _input_rpass.val()) {
 	            _pass_error_nomatch.removeClass('hidden');
 	            return false;
 	        }
 	        return true;
-	    }
+	    };
 
-	    function submit() {
+	    var submit = function submit() {
 	        if (_active && validateCode() && validatePass()) {
 	            var data = {
 	                new_account_virtual: 1,
@@ -19195,11 +19342,11 @@
 	                }
 	            });
 	        }
-	    }
+	    };
 
 	    return {
-	        show: show,
-	        hide: hide
+	        load: load,
+	        unload: unload
 	    };
 	}();
 

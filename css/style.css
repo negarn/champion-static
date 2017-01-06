@@ -1,108 +1,35 @@
 /* GLOBAL RULES */
-#topbar ul {
+.topbar-container div {
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
+.topbar-contacts {
+  display: inline-block;
+}
+.topbar-contacts ul {
   list-style: none;
   margin: 0;
   padding: 0;
   width: 100%;
-  display: block;
+  display: inline-block;
 }
-#topbar ul li {
+.topbar-contacts ul li {
   display: inline-block;
   margin: 0;
   padding: 5px 12px;
 }
-#topbar ul li a {
-  color: #fff;
-  padding: 5px 1px;
+.topbar-contacts ul li a {
   font-weight: 400;
-  text-decoration: none;
-}
-#topbar ul li a:hover {
-  text-decoration: underline;
-}
-#topbar .last {
-  margin-right: 0 !important;
-  padding-right: 0;
+  padding: 5px 1px;
 }
 
-@media (max-width: 980px) {
-  #topbar {
-    text-align: center;
-  }
-  #topbar ul li {
-    display: inline-block;
-    margin: 4px 2px;
-    padding: 10px 0;
-  }
-  #topbar ul li a {
-    color: #fff;
-    padding: 10px 15px;
-    font-weight: 400;
-    text-decoration: none;
-  }
-}
 .FX__Header__cta {
   text-align: right;
-  margin-top: 25px;
+  margin-top: 20px;
 }
 
-.FX__Header__nav {
-  text-align: left;
-  padding-left: 20px;
-}
-.FX__Header__nav ul {
-  list-style: none;
-  margin-top: 30px;
-  padding: 0;
-  width: 100%;
-  display: block;
-}
-.FX__Header__nav ul li {
-  display: inline-block;
-  margin: 0;
-  padding: 3px 0;
-}
-.FX__Header__nav ul li a {
-  color: #FFF;
-  padding: 0 15px;
-  font-weight: 400;
-  text-decoration: none;
-}
-.FX__Header__nav ul li a:hover {
-  color: #C2C2C2;
-  text-decoration: none;
-}
-
-@media (max-width: 980px) {
-  #header {
-    text-align: center;
-  }
-
-  .FX__Header__nav {
-    text-align: center;
-    padding-left: 0;
-  }
-  .FX__Header__nav ul {
-    list-style: none;
-    margin-top: 10px;
-    margin-bottom: 0;
-    padding: 0;
-    width: 100%;
-    display: block;
-  }
-  .FX__Header__nav ul li {
-    display: block;
-    margin: 0;
-    padding: 3px 0;
-    text-align: center;
-  }
-
-  .FX__Header__cta {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-}
 #verify-email-form {
   margin: 0;
   padding: 0;
@@ -464,6 +391,99 @@ fieldset .form-input {
 
 .hidden {
   display: none !important;
+}
+
+.champion-accounts th {
+  text-align: center;
+}
+.champion-accounts td:first-child {
+  width: 25%;
+}
+.champion-accounts td:nth-child(2), .champion-accounts td:nth-child(3), .champion-accounts td:last-child {
+  width: 25%;
+  text-align: center;
+}
+
+.binary-accounts th {
+  text-align: center;
+}
+.binary-accounts td {
+  width: 50%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.forex-accounts td {
+  width: 50%;
+  vertical-align: middle;
+}
+
+.bottom {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  top: 100%;
+}
+
+.fx-divider {
+  height: 5px;
+  margin: 20px 0;
+}
+
+.fx-divider-xl {
+  height: 5px;
+  margin: 40px 0;
+}
+
+.lg-padding {
+  padding: 20px;
+}
+
+.txt-right {
+  text-align: right;
+}
+
+.notes {
+  text-align: left;
+}
+.notes thead, .notes th {
+  background: none !important;
+}
+
+.topbar {
+  padding: 3px 0 !important;
+}
+
+.languages {
+  padding: 0;
+  margin: 0;
+  z-index: 9;
+}
+
+.language {
+  padding: 0 5px;
+}
+
+.top-nav-menu a, a:visited {
+  color: #FFF !important;
+}
+
+.logo-parent {
+  padding: 11px 0;
+  margin: 0;
+}
+
+.binary-logo-text {
+  padding: 0;
+}
+.binary-logo-text div {
+  width: 150px !important;
+  margin-top: 8px;
+}
+
+.test {
+  background-color: #013365;
 }
 
 .fx-advisors {
