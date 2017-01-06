@@ -162,12 +162,12 @@
   margin-right: 15px;
 }
 
-.fx-home-intro p:first-child {
+.fx-home-intro p {
   padding-left: 90px;
 }
 
 @media (max-width: 767px) {
-  .fx-home-intro p:first-child {
+  .fx-home-intro p {
     padding-left: 10px;
     padding-bottom: 20px;
     text-align: center;
