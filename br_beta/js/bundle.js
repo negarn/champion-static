@@ -18521,8 +18521,13 @@
 	        }
 	    };
 
+	    var scrollToSignUp = function scrollToSignUp() {
+	        $.scrollTo($('#verify-email-form'), 500);
+	    };
+
 	    return {
-	        init: init
+	        init: init,
+	        scrollToSignUp: scrollToSignUp
 	    };
 	}();
 
