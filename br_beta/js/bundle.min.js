@@ -18530,13 +18530,8 @@
 	        }
 	    };
 
-	    var scrollToSignUp = function scrollToSignUp() {
-	        $.scrollTo($('#verify-email-form'), 500);
-	    };
-
 	    return {
-	        init: init,
-	        scrollToSignUp: scrollToSignUp
+	        init: init
 	    };
 	}();
 
