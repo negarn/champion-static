@@ -46,6 +46,12 @@
 
 	'use strict';
 
+	var exportAllFunctions = function exportAllFunctions(obj) {
+	    Object.keys(obj).forEach(function (key) {
+	        window[key] = obj[key];
+	    });
+	};
+
 	__webpack_require__(1);
 	__webpack_require__(2);
 
@@ -54,6 +60,9 @@
 	__webpack_require__(299);
 
 	var Champion = __webpack_require__(300);
+
+	// created for handling global onclick
+	exportAllFunctions(__webpack_require__(316));
 
 	$(window).on('load', Champion.init);
 
@@ -20151,6 +20160,27 @@
 	}();
 
 	module.exports = Login;
+
+/***/ },
+/* 316 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var HandleClick = function HandleClick(param) {
+	    switch (param) {
+	        case 'ScrollTo':
+	            return $.scrollTo('#verify-email-form', 500);
+	        // no default
+	    }
+	    return function () {
+	        return null;
+	    };
+	};
+
+	module.exports = {
+	    HandleClick: HandleClick
+	};
 
 /***/ }
 /******/ ]);
