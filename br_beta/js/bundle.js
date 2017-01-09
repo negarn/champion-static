@@ -18513,7 +18513,7 @@
 	        }
 
 	        var form = _container.find('#verify-email-form');
-	        if (Client.is_logged_in() || /create-account/.test(window.location.pathname)) {
+	        if (Client.is_logged_in() || /new-account/.test(window.location.pathname)) {
 	            form.hide();
 	        } else {
 	            if (!_active_script) _active_script = ChampionSignup;
@@ -19769,7 +19769,7 @@
 	                type: 'account_opening'
 	            }, function (response) {
 	                if (response.verify_email) {
-	                    ChampionRouter.forward(url_for('create-account'));
+	                    ChampionRouter.forward(url_for('new-account/virtual'));
 	                }
 	            });
 	        }
