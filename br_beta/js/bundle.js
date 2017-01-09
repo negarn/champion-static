@@ -20169,7 +20169,7 @@
 
 	var HandleClick = function HandleClick(param, value) {
 	    switch (param) {
-	        case 'ScrollTo':
+	        case 'scrollTo':
 	            return $.scrollTo(value, 500);
 	        // no default
 	    }
