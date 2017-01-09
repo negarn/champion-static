@@ -20167,10 +20167,10 @@
 
 	'use strict';
 
-	var HandleClick = function HandleClick(param) {
+	var HandleClick = function HandleClick(param, value) {
 	    switch (param) {
 	        case 'ScrollTo':
-	            return $.scrollTo('#verify-email-form', 500);
+	            return $.scrollTo(value, 500);
 	        // no default
 	    }
 	    return function () {
