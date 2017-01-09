@@ -465,7 +465,7 @@ fieldset .form-input {
   padding: 0 5px;
 }
 
-.menu-top a {
+.top-nav-menu a {
   color: #FFF !important;
 }
 
@@ -679,7 +679,7 @@ fieldset .form-input {
   background-position: top center;
 }
 
-body .menu-top li a {
+body .top-nav-menu li a {
   padding: 30px;
 }
 

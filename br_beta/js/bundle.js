@@ -18512,8 +18512,10 @@
 	            _active_script.load();
 	        }
 
-	        if (!Client.is_logged_in()) {
-	            var form = _container.find('#verify-email-form');
+	        var form = _container.find('#verify-email-form');
+	        if (Client.is_logged_in() || /create-account/.test(window.location.pathname)) {
+	            form.hide();
+	        } else {
 	            if (!_active_script) _active_script = ChampionSignup;
 	            ChampionSignup.load(form.length ? form : _signup);
 	        }
