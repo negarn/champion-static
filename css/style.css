@@ -162,12 +162,12 @@
   margin-right: 15px;
 }
 
-.fx-home-intro p {
+.fx-home-intro p:first-child {
   padding-left: 90px;
 }
 
 @media (max-width: 767px) {
-  .fx-home-intro p {
+  .fx-home-intro p:first-child {
     padding-left: 10px;
     padding-bottom: 20px;
     text-align: center;
@@ -681,4 +681,8 @@ fieldset .form-input {
 
 body .top-nav-menu li a {
   padding: 30px;
+}
+
+.main-nav > li > ul {
+  box-sizing: content-box;
 }

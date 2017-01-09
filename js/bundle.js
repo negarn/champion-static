@@ -18457,15 +18457,18 @@
 	'use strict';
 
 	var ChampionSocket = __webpack_require__(301);
-	var ChampionRouter = __webpack_require__(303);
-	var ChampionSignup = __webpack_require__(305);
-	var ChampionCreateAccount = __webpack_require__(307);
+	var ChampionRouter = __webpack_require__(310);
+	var ChampionSignup = __webpack_require__(311);
+	var ChampionNewVirtual = __webpack_require__(312);
+	// const ChampionNewReal    = require('./../pages/new_account/real');
 	var ChampionContact = __webpack_require__(299);
+	var ChampionEndpoint = __webpack_require__(313);
+	var Client = __webpack_require__(304);
+	var LoggedIn = __webpack_require__(314);
+	var Login = __webpack_require__(315);
 
 	var Champion = function () {
 	    'use strict';
-
-	    var _authenticated = false;
 
 	    var _container = void 0,
 	        _signup = void 0,
@@ -18478,11 +18481,19 @@
 	        _container.on('champion:after', afterContentChange);
 	        ChampionRouter.init(_container, '#champion-content');
 	        ChampionSocket.init();
+	        Client.init();
+	        if (!Client.is_logged_in()) {
+	            $('#main-login a').on('click', function () {
+	                Login.redirect_to_login();
+	            });
+	        }
 	    };
 
 	    var beforeContentChange = function beforeContentChange() {
 	        if (_active_script) {
-	            _active_script.unload();
+	            if (typeof _active_script.unload === 'function') {
+	                _active_script.unload();
+	            }
 	            _active_script = null;
 	        }
 	    };
@@ -18490,15 +18501,18 @@
 	    var afterContentChange = function afterContentChange(e, content) {
 	        var page = content.getAttribute('data-page');
 	        var pages_map = {
-	            'create-account': ChampionCreateAccount,
-	            contact: ChampionContact
+	            virtual: ChampionNewVirtual,
+	            // real       : ChampionNewReal,
+	            contact: ChampionContact,
+	            endpoint: ChampionEndpoint,
+	            logged_inws: LoggedIn
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
 	            _active_script.load();
 	        }
 
-	        if (!_authenticated) {
+	        if (!Client.is_logged_in()) {
 	            var form = _container.find('#verify-email-form');
 	            if (!_active_script) _active_script = ChampionSignup;
 	            ChampionSignup.load(form.length ? form : _signup);
@@ -18519,6 +18533,10 @@
 	'use strict';
 
 	var Cookies = __webpack_require__(302);
+	var getLanguage = __webpack_require__(303).getLanguage;
+	var Client = __webpack_require__(304);
+	var Header = __webpack_require__(307);
+	var State = __webpack_require__(305).State;
 
 	var ChampionSocket = function () {
 	    'use strict';
@@ -18535,14 +18553,44 @@
 	            var token = Cookies.get('token');
 	            if (token) {
 	                ChampionSocket.send({ authorize: token });
+	            } else {
+	                Header.userMenu();
 	            }
+	            ChampionSocket.send({ website_status: 1 });
 	        } else {
+	            var country_code = void 0;
+	            State.set(['response', message.msg_type], message);
 	            switch (message.msg_type) {
-	                case 'authenticate':
+	                case 'authorize':
+	                    if (message.error || message.authorize.loginid !== Client.get_value('loginid')) {
+	                        ChampionSocket.send({ logout: '1' });
+	                    } else {
+	                        Client.response_authorize(message);
+	                        ChampionSocket.send({ balance: 1, subscribe: 1 });
+	                        ChampionSocket.send({ get_settings: 1 });
+	                        Header.userMenu();
+	                        $('#btn_logout').click(function () {
+	                            // TODO: to be moved from here
+	                            ChampionSocket.send({ logout: 1 });
+	                        });
+	                    }
+	                    break;
+	                case 'logout':
+	                    Client.do_logout(message);
+	                    break;
+	                case 'balance':
+	                    Header.updateBalance(message);
+	                    break;
+	                case 'get_settings':
+	                    if (message.error) return;
+	                    country_code = message.get_settings.country_code;
+	                    if (country_code) {
+	                        Client.set_value('residence', country_code);
+	                        ChampionSocket.send({ landing_company: country_code });
+	                    }
 	                    break;
 	                // no default
 	            }
-	            console.log(message);
 	        }
 	    };
 
@@ -18559,9 +18607,13 @@
 	        return localStorage.getItem('config.app_id') ? localStorage.getItem('config.app_id') : '1';
 	    };
 
+	    var getServer = function getServer() {
+	        return localStorage.getItem('config.server_url') || 'ws.binaryws.com';
+	    };
+
 	    var getSocketURL = function getSocketURL() {
-	        var server = 'www.binaryqa14.com';
-	        var params = ['brand=champion', 'app_id=' + getAppId()];
+	        var server = getServer();
+	        var params = ['brand=champion', 'app_id=' + getAppId(), 'l=' + getLanguage()];
 
 	        return 'wss://' + server + '/websockets/v3' + (params.length ? '?' + params.join('&') : '');
 	    };
@@ -18630,7 +18682,9 @@
 
 	    return {
 	        init: init,
-	        send: send
+	        send: send,
+	        getAppId: getAppId,
+	        getServer: getServer
 	    };
 	}();
 
@@ -18794,7 +18848,662 @@
 
 	'use strict';
 
-	var getLanguage = __webpack_require__(304).getLanguage;
+	var Cookies = __webpack_require__(302);
+
+	var Language = function () {
+	    var all_languages = function all_languages() {
+	        return {
+	            EN: 'English',
+	            DE: 'Deutsch',
+	            ES: 'Español',
+	            FR: 'Français',
+	            ID: 'Indonesia',
+	            IT: 'Italiano',
+	            JA: '日本語',
+	            PL: 'Polish',
+	            PT: 'Português',
+	            RU: 'Русский',
+	            TH: 'Thai',
+	            VI: 'Tiếng Việt',
+	            ZH_CN: '简体中文',
+	            ZH_TW: '繁體中文'
+	        };
+	    };
+
+	    var language_from_url = function language_from_url() {
+	        var regex = new RegExp('^(' + Object.keys(all_languages()).join('|') + ')$', 'i');
+	        var langs = window.location.href.split('/').slice(3);
+	        var lang = '';
+	        langs.forEach(function (l) {
+	            lang = regex.test(l) ? l : lang;
+	        });
+	        return lang;
+	    };
+
+	    var current_lang = null;
+	    var language = function language() {
+	        var lang = current_lang;
+	        if (!lang) {
+	            lang = (language_from_url() || Cookies.get('language') || 'EN').toUpperCase();
+	            current_lang = lang;
+	        }
+	        return lang;
+	    };
+
+	    var url_for_language = function url_for_language(lang) {
+	        return window.location.href.replace(new RegExp('/' + language() + '/', 'i'), '/' + lang.trim().toLowerCase() + '/');
+	    };
+
+	    return {
+	        all_languages: all_languages,
+	        language: language,
+	        url_for_language: url_for_language
+	    };
+	}();
+
+	module.exports = {
+	    getAllLanguages: Language.all_languages,
+	    getLanguage: Language.language,
+	    URLForLanguage: Language.url_for_language
+	};
+
+/***/ },
+/* 304 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var CookieStorage = __webpack_require__(305).CookieStorage;
+	var LocalStore = __webpack_require__(305).LocalStore;
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var Cookies = __webpack_require__(302);
+
+	var Client = function () {
+	    var client_object = {};
+
+	    var parseLoginIDList = function parseLoginIDList(string) {
+	        if (!string) return [];
+	        return string.split('+').sort().map(function (str) {
+	            var items = str.split(':');
+	            var id = items[0];
+	            return {
+	                id: id,
+	                real: items[1] === 'R',
+	                disabled: items[2] === 'D'
+	            };
+	        });
+	    };
+
+	    var init = function init() {
+	        var loginid = Cookies.get('loginid');
+	        client_object.loginid_array = parseLoginIDList(Cookies.get('loginid_list') || '');
+	        var is_logged_in = !!(loginid && client_object.loginid_array.length > 0 && get_storage_value('tokens'));
+
+	        set_storage_value('email', Cookies.get('email'));
+	        set_storage_value('loginid', loginid);
+	        set_storage_value('is_logged_in', is_logged_in);
+	        set_storage_value('residence', Cookies.get('residence'));
+	    };
+
+	    var redirect_if_login = function redirect_if_login() {
+	        if (is_logged_in()) {
+	            window.location.href = default_redirect_url();
+	        }
+	        return is_logged_in();
+	    };
+
+	    var set_storage_value = function set_storage_value(key, value) {
+	        if (value === undefined) value = '';
+	        client_object[key] = value;
+	        return LocalStore.set('client.' + key, value);
+	    };
+
+	    // use this function to get variables that have values
+	    var get_storage_value = function get_storage_value(key) {
+	        return client_object[key] || LocalStore.get('client.' + key) || '';
+	    };
+
+	    // use this function to get variables that are a boolean
+	    var get_boolean = function get_boolean(value) {
+	        return JSON.parse(get_storage_value(value) || false);
+	    };
+
+	    var response_authorize = function response_authorize(response) {
+	        var authorize = response.authorize;
+	        if (!Cookies.get('email')) {
+	            set_cookie('email', authorize.email);
+	            set_storage_value('email', authorize.email);
+	        }
+	        set_storage_value('is_virtual', authorize.is_virtual);
+	        set_storage_value('landing_company_name', authorize.landing_company_name);
+	        set_storage_value('landing_company_fullname', authorize.landing_company_fullname);
+	        set_storage_value('currency', authorize.currency);
+	        client_object.values_set = true;
+	    };
+
+	    var clear_storage_values = function clear_storage_values() {
+	        // clear all client values from local storage
+	        Object.keys(localStorage).forEach(function (c) {
+	            if (/^client\.(?!(tokens$))/.test(c)) {
+	                LocalStore.set(c, '');
+	            }
+	        });
+	        sessionStorage.setItem('currencies', '');
+	    };
+
+	    var get_token = function get_token(client_loginid) {
+	        var token = void 0;
+	        var tokens = get_storage_value('tokens');
+	        if (client_loginid && tokens) {
+	            var tokensObj = JSON.parse(tokens);
+	            if (client_loginid in tokensObj && tokensObj[client_loginid]) {
+	                token = tokensObj[client_loginid];
+	            }
+	        }
+	        return token;
+	    };
+
+	    var add_token = function add_token(client_loginid, token) {
+	        if (!client_loginid || !token || get_token(client_loginid)) {
+	            return false;
+	        }
+	        var tokens = get_storage_value('tokens');
+	        var tokensObj = tokens && tokens.length > 0 ? JSON.parse(tokens) : {};
+	        tokensObj[client_loginid] = token;
+	        set_storage_value('tokens', JSON.stringify(tokensObj));
+	        return true;
+	    };
+
+	    var set_cookie = function set_cookie(cookieName, value, domain) {
+	        var cookie_expire = new Date();
+	        cookie_expire.setDate(cookie_expire.getDate() + 60);
+	        var cookie = new CookieStorage(cookieName, domain);
+	        if (value === undefined) value = '';
+	        cookie.write(value, cookie_expire, true);
+	    };
+
+	    var process_new_account = function process_new_account(client_email, client_loginid, token, virtual_client) {
+	        if (!client_email || !client_loginid || !token) {
+	            return;
+	        }
+	        // save token
+	        add_token(client_loginid, token);
+	        // set cookies
+	        set_cookie('email', client_email);
+	        set_cookie('token', token);
+	        set_cookie('loginid', client_loginid);
+	        set_cookie('loginid_list', virtual_client ? client_loginid + ':V:E' : client_loginid + ':R:E+' + Cookies.get('loginid_list'));
+	        // set local storage
+	        localStorage.setItem('GTM_newaccount', '1');
+	        localStorage.setItem('active_loginid', client_loginid);
+	        window.location.href = default_redirect_url();
+	    };
+
+	    var is_logged_in = function is_logged_in() {
+	        return get_boolean('is_logged_in');
+	    };
+
+	    var is_virtual = function is_virtual() {
+	        return get_boolean('is_virtual');
+	    };
+
+	    var do_logout = function do_logout(response) {
+	        if (response.logout !== 1) return;
+	        Client.clear_storage_values();
+	        LocalStore.remove('client.tokens');
+	        sessionStorage.removeItem('client_status');
+	        var cookies = ['token', 'loginid', 'loginid_list', 'email'];
+	        var domains = ['.' + document.domain.split('.').slice(-2).join('.'), '.' + document.domain];
+
+	        var parent_path = window.location.pathname.split('/', 2)[1];
+	        if (parent_path !== '') {
+	            parent_path = '/' + parent_path;
+	        }
+
+	        cookies.forEach(function (c) {
+	            var regex = new RegExp(c);
+	            Cookies.remove(c, { path: '/', domain: domains[0] });
+	            Cookies.remove(c, { path: '/', domain: domains[1] });
+	            Cookies.remove(c);
+	            if (regex.test(document.cookie) && parent_path) {
+	                Cookies.remove(c, { path: parent_path, domain: domains[0] });
+	                Cookies.remove(c, { path: parent_path, domain: domains[1] });
+	                Cookies.remove(c, { path: parent_path });
+	            }
+	        });
+	        window.location.reload();
+	    };
+
+	    return {
+	        init: init,
+	        redirect_if_login: redirect_if_login,
+	        set_value: set_storage_value,
+	        get_value: get_storage_value,
+	        response_authorize: response_authorize,
+	        clear_storage_values: clear_storage_values,
+	        get_token: get_token,
+	        add_token: add_token,
+	        set_cookie: set_cookie,
+	        process_new_account: process_new_account,
+	        is_logged_in: is_logged_in,
+	        is_virtual: is_virtual,
+	        do_logout: do_logout
+	    };
+	}();
+
+	module.exports = Client;
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Cookies = __webpack_require__(302);
+
+	var isStorageSupported = function isStorageSupported(storage) {
+	    if (typeof storage === 'undefined') {
+	        return false;
+	    }
+
+	    var testKey = 'test';
+	    try {
+	        storage.setItem(testKey, '1');
+	        storage.removeItem(testKey);
+	        return true;
+	    } catch (e) {
+	        return false;
+	    }
+	};
+
+	var Store = function Store(storage) {
+	    this.storage = storage;
+	};
+
+	Store.prototype = {
+	    get: function get(key) {
+	        return this.storage.getItem(key) || undefined;
+	    },
+	    set: function set(key, value) {
+	        if (typeof value !== 'undefined') {
+	            this.storage.setItem(key, value);
+	        }
+	    },
+	    remove: function remove(key) {
+	        this.storage.removeItem(key);
+	    },
+	    clear: function clear() {
+	        this.storage.clear();
+	    }
+	};
+
+	var InScriptStore = function InScriptStore(object) {
+	    this.store = typeof object !== 'undefined' ? object : {};
+	};
+
+	InScriptStore.prototype = {
+	    get: function get(key) {
+	        return this.store[key];
+	    },
+	    set: function set(key, value) {
+	        var obj = this.store;
+	        if (Array.isArray(key)) {
+	            key.forEach(function (k) {
+	                if (k in obj) obj = obj[k];else key = k;
+	            });
+	        }
+	        obj[key] = value;
+	    },
+	    remove: function remove(key) {
+	        delete this.store[key];
+	    },
+	    clear: function clear() {
+	        this.store = {};
+	    },
+	    has: function has(key) {
+	        return this.get(key) !== undefined;
+	    },
+	    keys: function keys() {
+	        return Object.keys(this.store);
+	    }
+	};
+
+	var State = new InScriptStore();
+	State.set('response', {});
+
+	var CookieStorage = function CookieStorage(cookie_name, cookie_domain) {
+	    this.initialized = false;
+	    this.cookie_name = cookie_name;
+	    var hostname = window.location.hostname;
+	    this.domain = cookie_domain || (/\.binary\.com/i.test(hostname) ? '.' + hostname.split('.').slice(-2).join('.') : hostname);
+	    this.path = '/';
+	    this.expires = new Date('Thu, 1 Jan 2037 12:00:00 GMT');
+	    this.value = {};
+	};
+
+	CookieStorage.prototype = {
+	    read: function read() {
+	        var cookie_value = Cookies.get(this.cookie_name);
+	        try {
+	            this.value = cookie_value ? JSON.parse(cookie_value) : {};
+	        } catch (e) {
+	            this.value = {};
+	        }
+	        this.initialized = true;
+	    },
+	    write: function write(value, expireDate, isSecure) {
+	        if (!this.initialized) this.read();
+	        this.value = value;
+	        if (expireDate) this.expires = expireDate;
+	        Cookies.set(this.cookie_name, this.value, {
+	            expires: this.expires,
+	            path: this.path,
+	            domain: this.domain,
+	            secure: !!isSecure
+	        });
+	    },
+	    get: function get(key) {
+	        if (!this.initialized) this.read();
+	        return this.value[key];
+	    },
+	    set: function set(key, value) {
+	        if (!this.initialized) this.read();
+	        this.value[key] = value;
+	        Cookies.set(this.cookie_name, this.value, {
+	            expires: new Date(this.expires),
+	            path: this.path,
+	            domain: this.domain
+	        });
+	    },
+	    remove: function remove() {
+	        Cookies.remove(this.cookie_name, {
+	            path: this.path,
+	            domain: this.domain
+	        });
+	    }
+	};
+
+	var SessionStore = void 0,
+	    LocalStore = void 0;
+	if (typeof window !== 'undefined' && isStorageSupported(window.localStorage)) {
+	    LocalStore = new Store(window.localStorage);
+	}
+
+	if (typeof window !== 'undefined' && isStorageSupported(window.sessionStorage)) {
+	    if (!LocalStore) {
+	        LocalStore = new Store(window.sessionStorage);
+	    }
+	    SessionStore = new Store(window.sessionStorage);
+	}
+
+	if (!SessionStore || !LocalStore) {
+	    if (!LocalStore) {
+	        LocalStore = new InScriptStore();
+	    }
+	    if (!SessionStore) {
+	        SessionStore = new InScriptStore();
+	    }
+	}
+
+	module.exports = {
+	    CookieStorage: CookieStorage,
+	    State: State,
+	    SessionStore: SessionStore,
+	    LocalStore: LocalStore
+	};
+
+/***/ },
+/* 306 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getLanguage = __webpack_require__(303).getLanguage;
+
+	function url_for(path, params) {
+	    if (!path) {
+	        path = '';
+	    } else if (path.length > 0 && path[0] === '/') {
+	        path = path.substr(1);
+	    }
+	    var lang = getLanguage().toLowerCase();
+	    var url = '';
+	    if (typeof window !== 'undefined') {
+	        url = window.location.href;
+	    }
+	    return '' + url.substring(0, url.indexOf('/' + lang + '/') + lang.length + 2) + (path || 'home') + '.html' + (params ? '?' + params : '');
+	}
+
+	function url_for_static(path) {
+	    if (!path) {
+	        path = '';
+	    } else if (path.length > 0 && path[0] === '/') {
+	        path = path.substr(1);
+	    }
+
+	    var staticHost = void 0;
+	    if (typeof window !== 'undefined') {
+	        staticHost = window.staticHost;
+	    }
+	    if (!staticHost || staticHost.length === 0) {
+	        staticHost = $('script[src*="binary.min.js"],script[src*="binary.js"]').attr('src');
+
+	        if (staticHost && staticHost.length > 0) {
+	            staticHost = staticHost.substr(0, staticHost.indexOf('/js/') + 1);
+	        } else {
+	            staticHost = 'https://www.binary.com/';
+	        }
+
+	        if (typeof window !== 'undefined') {
+	            window.staticHost = staticHost;
+	        }
+	    }
+
+	    return staticHost + path;
+	}
+
+	function default_redirect_url() {
+	    return url_for('home');
+	}
+
+	module.exports = {
+	    url_for: url_for,
+	    url_for_static: url_for_static,
+	    default_redirect_url: default_redirect_url
+	};
+
+/***/ },
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(304);
+	var Utility = __webpack_require__(308);
+	var formatMoney = __webpack_require__(309).formatMoney;
+
+	var Header = function () {
+	    'use strict';
+
+	    var userMenu = function userMenu() {
+	        if (!Client.is_logged_in()) {
+	            $('#main-login').removeClass('hidden');
+	            return;
+	        }
+	        $('#main-logout').removeClass('hidden');
+	        var all_accounts = $('#all-accounts');
+	        var language = $('#select_language');
+	        $('.nav-menu').unbind('click').on('click', function (e) {
+	            e.stopPropagation();
+	            Utility.animateDisappear(language);
+	            if (+all_accounts.css('opacity') === 1) {
+	                Utility.animateDisappear(all_accounts);
+	            } else {
+	                Utility.animateAppear(all_accounts);
+	            }
+	        });
+	        var loginid_select = '';
+	        var loginid_array = Client.get_value('loginid_array');
+	        for (var i = 0; i < loginid_array.length; i++) {
+	            var login = loginid_array[i];
+	            if (!login.disabled) {
+	                var curr_id = login.id;
+	                var type = (login.real ? 'Real' : 'Virtual') + ' Account';
+
+	                // default account
+	                if (curr_id === Client.get_value('loginid')) {
+	                    $('.account-type').html(type);
+	                    $('.account-id').html(curr_id);
+	                } else {
+	                    loginid_select += '<a href="#" value="' + curr_id + '"><li>' + type + '<div>' + curr_id + '</div>\n                        </li></a><div class="separator-line-thin-gray"></div>';
+	                }
+	            }
+	        }
+	        $('.login-id-list').html(loginid_select);
+	        $('.login-id-list a').off('click').on('click', function (e) {
+	            e.preventDefault();
+	            $(this).attr('disabled', 'disabled');
+	            switchLoginId($(this).attr('value'));
+	        });
+	    };
+
+	    var switchLoginId = function switchLoginId(loginid) {
+	        if (!loginid || loginid.length === 0) {
+	            return;
+	        }
+	        var token = Client.get_token(loginid);
+	        if (!token || token.length === 0) {
+	            Client.send_logout_request(true);
+	            return;
+	        }
+
+	        // cleaning the previous values
+	        Client.clear_storage_values();
+	        sessionStorage.removeItem('client_status');
+	        // set cookies: loginid, login
+	        Client.set_cookie('loginid', loginid);
+	        Client.set_cookie('token', token);
+	        $('.login-id-list a').removeAttr('disabled');
+	        window.location.reload();
+	    };
+
+	    var updateBalance = function updateBalance(response) {
+	        if (response.error) {
+	            console.log(response.error.message);
+	            return;
+	        }
+	        var balance = response.balance.balance;
+	        Client.set_value('balance', balance);
+	        var currency = response.balance.currency;
+	        if (!currency) {
+	            return;
+	        }
+	        var view = formatMoney(currency, balance);
+	        $('.topMenuBalance').text(view).css('visibility', 'visible');
+	    };
+
+	    return {
+	        userMenu: userMenu,
+	        updateBalance: updateBalance
+	    };
+	}();
+
+	module.exports = Header;
+
+/***/ },
+/* 308 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	function isEmptyObject(obj) {
+	    var isEmpty = true;
+	    if (obj && obj instanceof Object) {
+	        Object.keys(obj).forEach(function (key) {
+	            if (key in obj) isEmpty = false;
+	        });
+	    }
+	    return isEmpty;
+	}
+
+	function animateDisappear(element) {
+	    element.animate({ opacity: 0 }, 100, function () {
+	        element.css({ visibility: 'hidden', display: 'none' });
+	    });
+	}
+
+	function animateAppear(element) {
+	    element.css({ visibility: 'visible', display: 'block' }).animate({ opacity: 1 }, 100);
+	}
+
+	var addComma = function addComma(num, decimal_points) {
+	    num = String(num || 0).replace(/,/g, '') * 1;
+	    return num.toFixed(decimal_points || 2).toString().replace(/(^|[^\w.])(\d{4,})/g, function ($0, $1, $2) {
+	        return $1 + $2.replace(/\d(?=(?:\d\d\d)+(?!\d))/g, '$&,');
+	    });
+	};
+
+	module.exports = {
+	    isEmptyObject: isEmptyObject,
+	    animateAppear: animateAppear,
+	    animateDisappear: animateDisappear,
+	    addComma: addComma
+	};
+
+/***/ },
+/* 309 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var addComma = __webpack_require__(308).addComma;
+	var getLanguage = __webpack_require__(303).getLanguage;
+
+	function formatMoney(currencyValue, amount) {
+	    var money = void 0;
+	    if (amount) amount = String(amount).replace(/,/g, '');
+	    if (typeof Intl !== 'undefined' && currencyValue && currencyValue !== '' && amount && amount !== '') {
+	        var options = { style: 'currency', currency: currencyValue },
+	            language = typeof window !== 'undefined' ? getLanguage().toLowerCase() : 'en';
+	        money = new Intl.NumberFormat(language.replace('_', '-'), options).format(amount);
+	    } else {
+	        var updatedAmount = addComma(parseFloat(amount).toFixed(2));
+	        var symbol = formatCurrency(currencyValue);
+	        if (symbol === undefined) {
+	            money = currencyValue + ' ' + updatedAmount;
+	        } else {
+	            money = symbol + updatedAmount;
+	        }
+	    }
+	    return money;
+	}
+
+	function formatCurrency(currency) {
+	    // Taken with modifications from:
+	    //    https://github.com/bengourley/currency-symbol-map/blob/master/map.js
+	    // When we need to handle more currencies please look there.
+	    var currency_map = {
+	        USD: '$',
+	        GBP: '£',
+	        AUD: 'A$',
+	        EUR: '€',
+	        JPY: '¥'
+	    };
+
+	    return currency_map[currency];
+	}
+
+	module.exports = {
+	    formatMoney: formatMoney
+	};
+
+/***/ },
+/* 310 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getLanguage = __webpack_require__(303).getLanguage;
 
 	/**
 	 * Router module for ChampionFX
@@ -18972,78 +19681,13 @@
 	module.exports = ChampionRouter;
 
 /***/ },
-/* 304 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Cookies = __webpack_require__(302);
-
-	var Language = function () {
-	    var all_languages = function all_languages() {
-	        return {
-	            EN: 'English',
-	            DE: 'Deutsch',
-	            ES: 'Español',
-	            FR: 'Français',
-	            ID: 'Indonesia',
-	            IT: 'Italiano',
-	            JA: '日本語',
-	            PL: 'Polish',
-	            PT: 'Português',
-	            RU: 'Русский',
-	            TH: 'Thai',
-	            VI: 'Tiếng Việt',
-	            ZH_CN: '简体中文',
-	            ZH_TW: '繁體中文'
-	        };
-	    };
-
-	    var language_from_url = function language_from_url() {
-	        var regex = new RegExp('^(' + Object.keys(all_languages()).join('|') + ')$', 'i');
-	        var langs = window.location.href.split('/').slice(3);
-	        var lang = '';
-	        langs.forEach(function (l) {
-	            lang = regex.test(l) ? l : lang;
-	        });
-	        return lang;
-	    };
-
-	    var current_lang = null;
-	    var language = function language() {
-	        var lang = current_lang;
-	        if (!lang) {
-	            lang = (language_from_url() || Cookies.get('language') || 'EN').toUpperCase();
-	            current_lang = lang;
-	        }
-	        return lang;
-	    };
-
-	    var url_for_language = function url_for_language(lang) {
-	        return window.location.href.replace(new RegExp('/' + language() + '/', 'i'), '/' + lang.trim().toLowerCase() + '/');
-	    };
-
-	    return {
-	        all_languages: all_languages,
-	        language: language,
-	        url_for_language: url_for_language
-	    };
-	}();
-
-	module.exports = {
-	    getAllLanguages: Language.all_languages,
-	    getLanguage: Language.language,
-	    URLForLanguage: Language.url_for_language
-	};
-
-/***/ },
-/* 305 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var ChampionSocket = __webpack_require__(301);
-	var ChampionRouter = __webpack_require__(303);
+	var ChampionRouter = __webpack_require__(310);
 	var url_for = __webpack_require__(306).url_for;
 
 	var ChampionSignup = function () {
@@ -19138,69 +19782,16 @@
 	module.exports = ChampionSignup;
 
 /***/ },
-/* 306 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getLanguage = __webpack_require__(304).getLanguage;
-
-	function url_for(path, params) {
-	    if (!path) {
-	        path = '';
-	    } else if (path.length > 0 && path[0] === '/') {
-	        path = path.substr(1);
-	    }
-	    var lang = getLanguage().toLowerCase();
-	    var url = '';
-	    if (typeof window !== 'undefined') {
-	        url = window.location.href;
-	    }
-	    return '' + url.substring(0, url.indexOf('/' + lang + '/') + lang.length + 2) + (path || 'home') + '.html' + (params ? '?' + params : '');
-	}
-
-	function url_for_static(path) {
-	    if (!path) {
-	        path = '';
-	    } else if (path.length > 0 && path[0] === '/') {
-	        path = path.substr(1);
-	    }
-
-	    var staticHost = void 0;
-	    if (typeof window !== 'undefined') {
-	        staticHost = window.staticHost;
-	    }
-	    if (!staticHost || staticHost.length === 0) {
-	        staticHost = $('script[src*="binary.min.js"],script[src*="binary.js"]').attr('src');
-
-	        if (staticHost && staticHost.length > 0) {
-	            staticHost = staticHost.substr(0, staticHost.indexOf('/js/') + 1);
-	        } else {
-	            staticHost = 'https://www.binary.com/';
-	        }
-
-	        if (typeof window !== 'undefined') {
-	            window.staticHost = staticHost;
-	        }
-	    }
-
-	    return staticHost + path;
-	}
-
-	module.exports = {
-	    url_for: url_for(),
-	    url_for_static: url_for_static
-	};
-
-/***/ },
-/* 307 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var ChampionSocket = __webpack_require__(301);
+	var Client = __webpack_require__(304);
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
 
-	var ChampionCreateAccount = function () {
+	var ChampionNewVirtualAccount = function () {
 	    'use strict';
 
 	    var _passwd_regex = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
@@ -19223,6 +19814,7 @@
 	        _create_acc_error = void 0;
 
 	    var load = function load() {
+	        if (Client.redirect_if_login()) return;
 	        var container = $('#champion-container');
 	        _input_code = container.find('#verification-code');
 	        _input_pass = container.find('#password');
@@ -19327,7 +19919,8 @@
 	        return true;
 	    };
 
-	    var submit = function submit() {
+	    var submit = function submit(e) {
+	        e.preventDefault();
 	        if (_active && validateCode() && validatePass()) {
 	            var data = {
 	                new_account_virtual: 1,
@@ -19336,9 +19929,12 @@
 	                residence: _input_residence.val()
 	            };
 	            ChampionSocket.send(data, function (response) {
-	                console.log(response);
 	                if (response.error) {
 	                    _create_acc_error.removeClass('hidden').text(response.error.message);
+	                } else {
+	                    var acc_info = response.new_account_virtual;
+	                    Client.process_new_account(acc_info.email, acc_info.client_id, acc_info.oauth_token, true);
+	                    window.location.href = default_redirect_url();
 	                }
 	            });
 	        }
@@ -19350,7 +19946,204 @@
 	    };
 	}();
 
-	module.exports = ChampionCreateAccount;
+	module.exports = ChampionNewVirtualAccount;
+
+/***/ },
+/* 313 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getAppId = __webpack_require__(301).getAppId;
+	var getServer = __webpack_require__(301).getServer;
+
+	var ChampionEndpoint = function () {
+	    'use strict';
+
+	    var $container = void 0,
+	        $txt_server_url = void 0,
+	        $txt_app_id = void 0,
+	        $btn_set_endpoint = void 0,
+	        $btn_reset_endpoint = void 0;
+
+	    var load = function load() {
+	        $container = $('#champion-container');
+	        $txt_server_url = $container.find('#txt_server_url');
+	        $txt_app_id = $container.find('#txt_app_id');
+	        $btn_set_endpoint = $container.find('#btn_set_endpoint');
+	        $btn_reset_endpoint = $container.find('#btn_reset_endpoint');
+
+	        $txt_server_url.val(getServer());
+	        $txt_app_id.val(getAppId());
+
+	        $btn_set_endpoint.on('click', function (e) {
+	            e.preventDefault();
+
+	            var server_url = ($txt_server_url.val() || '').trim().toLowerCase().replace(/[><()\"\']/g, '');
+	            if (server_url) {
+	                localStorage.setItem('config.server_url', server_url);
+	            }
+
+	            var app_id = ($txt_app_id.val() || '').trim();
+	            if (app_id && !isNaN(app_id)) {
+	                localStorage.setItem('config.app_id', parseInt(app_id));
+	            }
+
+	            window.location.reload();
+	        });
+
+	        $btn_reset_endpoint.on('click', function (e) {
+	            e.preventDefault();
+	            localStorage.removeItem('config.server_url');
+	            localStorage.removeItem('config.app_id');
+	            window.location.reload();
+	        });
+	    };
+
+	    var unload = function unload() {
+	        $btn_set_endpoint.off('click');
+	        $btn_reset_endpoint.off('click');
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionEndpoint;
+
+/***/ },
+/* 314 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var isEmptyObject = __webpack_require__(308).isEmptyObject;
+	var getLanguage = __webpack_require__(303).getLanguage;
+	var Client = __webpack_require__(304);
+	var url_for = __webpack_require__(306).url_for;
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var Cookies = __webpack_require__(302);
+
+	var LoggedIn = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        var tokens = storeTokens();
+	        var loginid = Cookies.get('loginid'),
+	            redirect_url = void 0;
+
+	        if (!loginid) {
+	            (function () {
+	                // redirected to another domain (e.g. github.io) so those cookie are not accessible here
+	                var loginids = Object.keys(tokens);
+	                var loginid_list = '';
+	                loginids.map(function (id) {
+	                    loginid_list += '' + (loginid_list ? '+' : '') + id + ':' + (/^V/i.test(id) ? 'V' : 'R') + ':E'; // since there is not any data source to check, so assume all are enabled, disabled accounts will be handled on authorize
+	                });
+	                loginid = loginids[0];
+	                // set cookies
+	                Client.set_cookie('loginid', loginid);
+	                Client.set_cookie('loginid_list', loginid_list);
+	            })();
+	        }
+	        Client.set_cookie('token', tokens[loginid]);
+
+	        // redirect url
+	        redirect_url = sessionStorage.getItem('redirect_url');
+	        sessionStorage.removeItem('redirect_url');
+
+	        // redirect back
+	        var set_default = true;
+	        if (redirect_url) {
+	            var do_not_redirect = ['reset_passwordws', 'lost_passwordws', 'change_passwordws', 'home'];
+	            var reg = new RegExp(do_not_redirect.join('|'), 'i');
+	            if (!reg.test(redirect_url) && url_for('') !== redirect_url) {
+	                set_default = false;
+	            }
+	        }
+	        if (set_default) {
+	            redirect_url = default_redirect_url();
+	            var lang_cookie = Cookies.get('language');
+	            var language = getLanguage();
+	            if (lang_cookie && lang_cookie !== language) {
+	                redirect_url = redirect_url.replace(new RegExp('/' + language + '/', 'i'), '/' + lang_cookie.toLowerCase() + '/');
+	            }
+	        }
+	        document.getElementById('loading_link').setAttribute('href', redirect_url);
+	        window.location.href = redirect_url;
+	    };
+
+	    var storeTokens = function storeTokens() {
+	        // Parse hash for loginids and tokens returned by OAuth
+	        var hash = (/acct1/i.test(window.location.hash) ? window.location.hash : window.location.search).substr(1).split('&');
+	        var tokens = {};
+	        for (var i = 0; i < hash.length; i += 2) {
+	            var loginid = getHashValue(hash[i], 'acct');
+	            var token = getHashValue(hash[i + 1], 'token');
+	            if (loginid && token) {
+	                tokens[loginid] = token;
+	            }
+	        }
+	        if (!isEmptyObject(tokens)) {
+	            Client.set_value('tokens', JSON.stringify(tokens));
+	        }
+	        return tokens;
+	    };
+
+	    var getHashValue = function getHashValue(source, key) {
+	        var match = new RegExp('^' + key);
+	        return source && source.length > 0 ? match.test(source.split('=')[0]) ? source.split('=')[1] : '' : '';
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = LoggedIn;
+
+/***/ },
+/* 315 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getAppId = __webpack_require__(301).getAppId;
+	var getLanguage = __webpack_require__(303).getLanguage;
+	var Client = __webpack_require__(304);
+
+	var Login = function () {
+	    'use strict';
+
+	    var redirect_to_login = function redirect_to_login() {
+	        if (!Client.is_logged_in() && !is_login_pages()) {
+	            try {
+	                sessionStorage.setItem('redirect_url', window.location.href);
+	            } catch (e) {
+	                console.error('The website needs features which are not enabled on private mode browsing. Please use normal mode.');
+	            }
+	            window.location.href = login_url();
+	        }
+	    };
+
+	    var login_url = function login_url() {
+	        var server_url = localStorage.getItem('config.server_url');
+	        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage() : 'https://oauth.champion-fx.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage();
+	    };
+
+	    var is_login_pages = function is_login_pages() {
+	        return (/logged_inws|oauth2/.test(document.URL)
+	        );
+	    };
+
+	    return {
+	        redirect_to_login: redirect_to_login
+	    };
+	}();
+
+	module.exports = Login;
 
 /***/ }
 /******/ ]);
