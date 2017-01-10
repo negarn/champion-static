@@ -19459,18 +19459,16 @@
 	var handleActive = function handleActive() {
 	    var hash = window.location.hash,
 	        menu = '.tab-menu-wrap',
-	        content = '.tab-content-wrapper';
+	        content = '.tab-content-wrapper',
+	        hash_section = 'div' + hash + '-content';
 	    if (menu && content && hash) {
-	        // scroll to top of the page if client is too far down on the page
-	        if ($(document).scrollTop() > 350) {
-	            $.scrollTo(100, 500);
-	        }
+	        $.scrollTo(hash_section, 500);
 	        var parent_active = 'first active',
 	            child_active = 'first a-active',
 	            hidden_class = 'invisible';
 	        /* eslint-disable newline-per-chained-call */
 	        $(menu).find('li').removeClass(parent_active).find('a').removeClass(child_active).end().end().find(hash).addClass(parent_active).find('a').addClass(child_active);
-	        $(content).find('> div').addClass(hidden_class).end().find('> div' + hash + '-content').removeClass(hidden_class);
+	        $(content).find('> div').addClass(hidden_class).end().find(hash_section).removeClass(hidden_class);
 	        /* eslint-enable newline-per-chained-call */
 	    }
 	};
