@@ -19458,8 +19458,7 @@
 	// and show the correct tab/content if hash is changed in url
 
 	var menu = void 0,
-	    content = void 0,
-	    offset_top = void 0;
+	    content = void 0;
 	var showHash = function showHash() {
 	    var hash = window.location.hash;
 	    if (hash) {
@@ -19473,34 +19472,16 @@
 	    }
 	};
 
-	var scrollToTop = function scrollToTop() {
-	    $.scrollTo(offset_top, 500);
-	};
-
-	var updateURLHash = function updateURLHash() {
-	    var href = this.getAttribute('href');
-	    if (href) {
-	        window.location.hash = href;
-	        showHash();
-	    }
-	};
-
 	var handleActive = function handleActive() {
 	    var hash = window.location.hash;
 	    menu = '.tab-menu-wrap';
 	    content = '.tab-content-wrapper';
-	    offset_top = $(document).scrollTop();
 	    // scroll to top of the page if client is too far down on the page
-	    if (offset_top > 350) {
-	        offset_top = 100;
-	        scrollToTop();
+	    if ($(document).scrollTop() > 350) {
+	        $.scrollTo(100, 500);
 	    }
-	    if (menu && content) {
-	        $(menu).find('a').unbind('click', updateURLHash).on('click', updateURLHash);
-	        $(window).unbind('hashchange', scrollToTop).on('hashchange', scrollToTop);
-	        if (hash) {
-	            showHash();
-	        }
+	    if (menu && content && hash) {
+	        showHash();
 	    }
 	};
 
