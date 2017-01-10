@@ -19452,11 +19452,19 @@
 	    });
 	};
 
+	var updateURLHash = function updateURLHash(menu) {
+	    $(menu).find('a').on('click', function () {
+	        window.location.hash = this.attr('href');
+	    });
+	};
+
 	var handleActive = function handleActive() {
 	    var hash = window.location.hash,
 	        menu = '.tab-menu-wrap',
 	        content = '.tab-content-wrapper';
 	    if (hash && menu && content) {
+	        $(menu).find('a').unbind('click', updateURLHash);
+	        updateURLHash(menu);
 	        var parent_active = 'first active',
 	            child_active = 'first a-active',
 	            hidden_class = 'invisible';
