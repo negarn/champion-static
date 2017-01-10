@@ -18930,9 +18930,11 @@
 	        return string.split('+').sort().map(function (str) {
 	            var items = str.split(':');
 	            var id = items[0];
+	            var real = items[1] === 'R';
+	            if (real) client_object.has_real = real;
 	            return {
 	                id: id,
-	                real: items[1] === 'R',
+	                real: real,
 	                disabled: items[2] === 'D'
 	            };
 	        });
@@ -18969,7 +18971,7 @@
 
 	    // use this function to get variables that are a boolean
 	    var get_boolean = function get_boolean(value) {
-	        return JSON.parse(get_storage_value(value) || false);
+	        return JSON.parse(client_object[value] || get_storage_value(value) || false);
 	    };
 
 	    var response_authorize = function response_authorize(response) {
@@ -19083,6 +19085,7 @@
 	        redirect_if_login: redirect_if_login,
 	        set_value: set_storage_value,
 	        get_value: get_storage_value,
+	        get_boolean: get_boolean,
 	        response_authorize: response_authorize,
 	        clear_storage_values: clear_storage_values,
 	        get_token: get_token,
@@ -20025,6 +20028,7 @@
 
 	__webpack_require__(315);
 	var Cookies = __webpack_require__(302);
+	var Client = __webpack_require__(304);
 
 	var BinaryOptions = function () {
 	    'use strict';
@@ -20033,7 +20037,7 @@
 	        var loginid_list = Cookies.get('loginid_list');
 	        if (loginid_list) {
 	            $('#virtual-signup-button').hide();
-	            if (/:R:/.test(loginid_list)) {
+	            if (Client.get_boolean('has_real')) {
 	                $('#real-signup-button').hide();
 	            }
 	        } else {
