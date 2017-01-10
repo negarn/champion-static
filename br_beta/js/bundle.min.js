@@ -18509,7 +18509,7 @@
 	            endpoint: ChampionEndpoint,
 	            logged_inws: LoggedIn,
 	            'binary-options': BinaryOptions,
-	            partnership: Partnership
+	            partnerships: Partnership
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
