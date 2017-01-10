@@ -19454,7 +19454,7 @@
 
 	var updateURLHash = function updateURLHash(menu) {
 	    $(menu).find('a').on('click', function () {
-	        window.location.hash = this.attr('href');
+	        window.location.hash = this.getAttribute('href');
 	    });
 	};
 
