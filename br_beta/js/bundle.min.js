@@ -19462,7 +19462,7 @@
 	        content = '.tab-content-wrapper',
 	        hash_section = 'div' + hash + '-content';
 	    if (menu && content && hash) {
-	        $.scrollTo(hash_section, 500);
+	        $.scrollTo($(hash_section), 500);
 	        var parent_active = 'first active',
 	            child_active = 'first a-active',
 	            hidden_class = 'invisible';
