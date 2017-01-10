@@ -19478,8 +19478,11 @@
 	};
 
 	var updateURLHash = function updateURLHash() {
-	    window.location.hash = this.getAttribute('href');
-	    showHash();
+	    var href = this.getAttribute('href');
+	    if (href) {
+	        window.location.hash = href;
+	        showHash();
+	    }
 	};
 
 	var handleActive = function handleActive() {
@@ -19492,7 +19495,7 @@
 	        offset_top = 100;
 	        scrollToTop();
 	    }
-	    if (menu && content && $(menu).find('a').attr('href')) {
+	    if (menu && content) {
 	        $(menu).find('a').unbind('click', updateURLHash).on('click', updateURLHash);
 	        $(window).unbind('hashchange', scrollToTop).on('hashchange', scrollToTop);
 	        if (hash) {
