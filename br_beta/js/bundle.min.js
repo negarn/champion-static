@@ -18464,9 +18464,10 @@
 	var ChampionContact = __webpack_require__(299);
 	var ChampionEndpoint = __webpack_require__(313);
 	var BinaryOptions = __webpack_require__(314);
+	var Partnership = __webpack_require__(316);
 	var Client = __webpack_require__(304);
-	var LoggedIn = __webpack_require__(316);
-	var Login = __webpack_require__(317);
+	var LoggedIn = __webpack_require__(317);
+	var Login = __webpack_require__(318);
 
 	var Champion = function () {
 	    'use strict';
@@ -18507,7 +18508,8 @@
 	            contact: ChampionContact,
 	            endpoint: ChampionEndpoint,
 	            logged_inws: LoggedIn,
-	            'binary-options': BinaryOptions
+	            'binary-options': BinaryOptions,
+	            partnership: Partnership
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
@@ -20275,6 +20277,37 @@
 
 /***/ },
 /* 316 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var Partnership = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        var hash = window.location.hash;
+	        if (hash) {
+	            var menu = '.tab-menu-wrap',
+	                content = '.tab-content-wrapper',
+	                parent_active = 'first active',
+	                child_active = 'first a-active',
+	                hidden_class = 'invisible';
+	            /* eslint-disable newline-per-chained-call */
+	            $(menu).find('li').removeClass(parent_active).find('a').removeClass(child_active).end().end().find(hash).addClass(parent_active).find('a').addClass(child_active);
+	            $(content).find('> div').addClass(hidden_class).end().find('> div' + hash + '-content').removeClass(hidden_class);
+	            /* eslint-enable newline-per-chained-call */
+	        }
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = Partnership;
+
+/***/ },
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20365,7 +20398,7 @@
 	module.exports = LoggedIn;
 
 /***/ },
-/* 317 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
