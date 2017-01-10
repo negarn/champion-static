@@ -19461,6 +19461,7 @@
 	        menu = '.tab-menu-wrap',
 	        content = '.tab-content-wrapper';
 	    if (menu && content && hash) {
+	        $.scrollTo($(hash), 500, { offset: -5 });
 	        var parent_active = 'first active',
 	            child_active = 'first a-active',
 	            hidden_class = 'invisible';
