@@ -19474,7 +19474,6 @@
 	};
 
 	var scrollToTop = function scrollToTop() {
-	    // scroll to top of the page if client was previously too low on the page
 	    $.scrollTo(offset_top);
 	};
 
@@ -19488,8 +19487,9 @@
 	    menu = '.tab-menu-wrap';
 	    content = '.tab-content-wrapper';
 	    offset_top = $(document).scrollTop();
+	    // scroll to top of the page if client is too far down on the page
 	    if (offset_top > 200) {
-	        offset_top = 0;
+	        offset_top = 100;
 	        scrollToTop();
 	    }
 	    if (menu && content) {
