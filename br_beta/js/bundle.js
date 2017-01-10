@@ -46,12 +46,6 @@
 
 	'use strict';
 
-	var exportAllFunctions = function exportAllFunctions(obj) {
-	    Object.keys(obj).forEach(function (key) {
-	        window[key] = obj[key];
-	    });
-	};
-
 	__webpack_require__(1);
 	__webpack_require__(2);
 
@@ -60,9 +54,6 @@
 	__webpack_require__(299);
 
 	var Champion = __webpack_require__(300);
-
-	// created for handling global onclick
-	exportAllFunctions(__webpack_require__(316));
 
 	$(window).on('load', Champion.init);
 
@@ -18472,9 +18463,10 @@
 	// const ChampionNewReal    = require('./../pages/new_account/real');
 	var ChampionContact = __webpack_require__(299);
 	var ChampionEndpoint = __webpack_require__(313);
+	var BinaryOptions = __webpack_require__(314);
 	var Client = __webpack_require__(304);
-	var LoggedIn = __webpack_require__(314);
-	var Login = __webpack_require__(315);
+	var LoggedIn = __webpack_require__(316);
+	var Login = __webpack_require__(317);
 
 	var Champion = function () {
 	    'use strict';
@@ -18514,7 +18506,8 @@
 	            // real       : ChampionNewReal,
 	            contact: ChampionContact,
 	            endpoint: ChampionEndpoint,
-	            logged_inws: LoggedIn
+	            logged_inws: LoggedIn,
+	            binary_options: BinaryOptions
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
@@ -20030,157 +20023,31 @@
 
 	'use strict';
 
-	var isEmptyObject = __webpack_require__(308).isEmptyObject;
-	var getLanguage = __webpack_require__(303).getLanguage;
-	var Client = __webpack_require__(304);
-	var url_for = __webpack_require__(306).url_for;
-	var default_redirect_url = __webpack_require__(306).default_redirect_url;
-	var Cookies = __webpack_require__(302);
+	__webpack_require__(315);
 
-	var LoggedIn = function () {
+	var BinaryOptions = function () {
 	    'use strict';
 
 	    var load = function load() {
-	        var tokens = storeTokens();
-	        var loginid = Cookies.get('loginid'),
-	            redirect_url = void 0;
-
-	        if (!loginid) {
-	            (function () {
-	                // redirected to another domain (e.g. github.io) so those cookie are not accessible here
-	                var loginids = Object.keys(tokens);
-	                var loginid_list = '';
-	                loginids.map(function (id) {
-	                    loginid_list += '' + (loginid_list ? '+' : '') + id + ':' + (/^V/i.test(id) ? 'V' : 'R') + ':E'; // since there is not any data source to check, so assume all are enabled, disabled accounts will be handled on authorize
-	                });
-	                loginid = loginids[0];
-	                // set cookies
-	                Client.set_cookie('loginid', loginid);
-	                Client.set_cookie('loginid_list', loginid_list);
-	            })();
-	        }
-	        Client.set_cookie('token', tokens[loginid]);
-
-	        // redirect url
-	        redirect_url = sessionStorage.getItem('redirect_url');
-	        sessionStorage.removeItem('redirect_url');
-
-	        // redirect back
-	        var set_default = true;
-	        if (redirect_url) {
-	            var do_not_redirect = ['reset_passwordws', 'lost_passwordws', 'change_passwordws', 'home'];
-	            var reg = new RegExp(do_not_redirect.join('|'), 'i');
-	            if (!reg.test(redirect_url) && url_for('') !== redirect_url) {
-	                set_default = false;
-	            }
-	        }
-	        if (set_default) {
-	            redirect_url = default_redirect_url();
-	            var lang_cookie = Cookies.get('language');
-	            var language = getLanguage();
-	            if (lang_cookie && lang_cookie !== language) {
-	                redirect_url = redirect_url.replace(new RegExp('/' + language + '/', 'i'), '/' + lang_cookie.toLowerCase() + '/');
-	            }
-	        }
-	        document.getElementById('loading_link').setAttribute('href', redirect_url);
-	        window.location.href = redirect_url;
+	        $('#virtual-signup-button').on('click', function () {
+	            $.scrollTo('#verify-email-form', 500);
+	        });
 	    };
 
-	    var storeTokens = function storeTokens() {
-	        // Parse hash for loginids and tokens returned by OAuth
-	        var hash = (/acct1/i.test(window.location.hash) ? window.location.hash : window.location.search).substr(1).split('&');
-	        var tokens = {};
-	        for (var i = 0; i < hash.length; i += 2) {
-	            var loginid = getHashValue(hash[i], 'acct');
-	            var token = getHashValue(hash[i + 1], 'token');
-	            if (loginid && token) {
-	                tokens[loginid] = token;
-	            }
-	        }
-	        if (!isEmptyObject(tokens)) {
-	            Client.set_value('tokens', JSON.stringify(tokens));
-	        }
-	        return tokens;
-	    };
-
-	    var getHashValue = function getHashValue(source, key) {
-	        var match = new RegExp('^' + key);
-	        return source && source.length > 0 ? match.test(source.split('=')[0]) ? source.split('=')[1] : '' : '';
+	    var unload = function unload() {
+	        $('#virtual-signup-button').off('click');
 	    };
 
 	    return {
-	        load: load
+	        load: load,
+	        unload: unload
 	    };
 	}();
 
-	module.exports = LoggedIn;
+	module.exports = BinaryOptions;
 
 /***/ },
 /* 315 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getAppId = __webpack_require__(301).getAppId;
-	var getLanguage = __webpack_require__(303).getLanguage;
-	var Client = __webpack_require__(304);
-
-	var Login = function () {
-	    'use strict';
-
-	    var redirect_to_login = function redirect_to_login() {
-	        if (!Client.is_logged_in() && !is_login_pages()) {
-	            try {
-	                sessionStorage.setItem('redirect_url', window.location.href);
-	            } catch (e) {
-	                console.error('The website needs features which are not enabled on private mode browsing. Please use normal mode.');
-	            }
-	            window.location.href = login_url();
-	        }
-	    };
-
-	    var login_url = function login_url() {
-	        var server_url = localStorage.getItem('config.server_url');
-	        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage() : 'https://oauth.champion-fx.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage();
-	    };
-
-	    var is_login_pages = function is_login_pages() {
-	        return (/logged_inws|oauth2/.test(document.URL)
-	        );
-	    };
-
-	    return {
-	        redirect_to_login: redirect_to_login
-	    };
-	}();
-
-	module.exports = Login;
-
-/***/ },
-/* 316 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	__webpack_require__(317);
-
-	var HandleClick = function HandleClick(param, value) {
-	    switch (param) {
-	        case 'scrollTo':
-	            return $.scrollTo(value, 500);
-	        // no default
-	    }
-	    return function () {
-	        return null;
-	    };
-	};
-
-	module.exports = {
-	    HandleClick: HandleClick
-	};
-
-/***/ },
-/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -20394,6 +20261,138 @@
 		return $scrollTo;
 	});
 
+
+/***/ },
+/* 316 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var isEmptyObject = __webpack_require__(308).isEmptyObject;
+	var getLanguage = __webpack_require__(303).getLanguage;
+	var Client = __webpack_require__(304);
+	var url_for = __webpack_require__(306).url_for;
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var Cookies = __webpack_require__(302);
+
+	var LoggedIn = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        var tokens = storeTokens();
+	        var loginid = Cookies.get('loginid'),
+	            redirect_url = void 0;
+
+	        if (!loginid) {
+	            (function () {
+	                // redirected to another domain (e.g. github.io) so those cookie are not accessible here
+	                var loginids = Object.keys(tokens);
+	                var loginid_list = '';
+	                loginids.map(function (id) {
+	                    loginid_list += '' + (loginid_list ? '+' : '') + id + ':' + (/^V/i.test(id) ? 'V' : 'R') + ':E'; // since there is not any data source to check, so assume all are enabled, disabled accounts will be handled on authorize
+	                });
+	                loginid = loginids[0];
+	                // set cookies
+	                Client.set_cookie('loginid', loginid);
+	                Client.set_cookie('loginid_list', loginid_list);
+	            })();
+	        }
+	        Client.set_cookie('token', tokens[loginid]);
+
+	        // redirect url
+	        redirect_url = sessionStorage.getItem('redirect_url');
+	        sessionStorage.removeItem('redirect_url');
+
+	        // redirect back
+	        var set_default = true;
+	        if (redirect_url) {
+	            var do_not_redirect = ['reset_passwordws', 'lost_passwordws', 'change_passwordws', 'home'];
+	            var reg = new RegExp(do_not_redirect.join('|'), 'i');
+	            if (!reg.test(redirect_url) && url_for('') !== redirect_url) {
+	                set_default = false;
+	            }
+	        }
+	        if (set_default) {
+	            redirect_url = default_redirect_url();
+	            var lang_cookie = Cookies.get('language');
+	            var language = getLanguage();
+	            if (lang_cookie && lang_cookie !== language) {
+	                redirect_url = redirect_url.replace(new RegExp('/' + language + '/', 'i'), '/' + lang_cookie.toLowerCase() + '/');
+	            }
+	        }
+	        document.getElementById('loading_link').setAttribute('href', redirect_url);
+	        window.location.href = redirect_url;
+	    };
+
+	    var storeTokens = function storeTokens() {
+	        // Parse hash for loginids and tokens returned by OAuth
+	        var hash = (/acct1/i.test(window.location.hash) ? window.location.hash : window.location.search).substr(1).split('&');
+	        var tokens = {};
+	        for (var i = 0; i < hash.length; i += 2) {
+	            var loginid = getHashValue(hash[i], 'acct');
+	            var token = getHashValue(hash[i + 1], 'token');
+	            if (loginid && token) {
+	                tokens[loginid] = token;
+	            }
+	        }
+	        if (!isEmptyObject(tokens)) {
+	            Client.set_value('tokens', JSON.stringify(tokens));
+	        }
+	        return tokens;
+	    };
+
+	    var getHashValue = function getHashValue(source, key) {
+	        var match = new RegExp('^' + key);
+	        return source && source.length > 0 ? match.test(source.split('=')[0]) ? source.split('=')[1] : '' : '';
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = LoggedIn;
+
+/***/ },
+/* 317 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getAppId = __webpack_require__(301).getAppId;
+	var getLanguage = __webpack_require__(303).getLanguage;
+	var Client = __webpack_require__(304);
+
+	var Login = function () {
+	    'use strict';
+
+	    var redirect_to_login = function redirect_to_login() {
+	        if (!Client.is_logged_in() && !is_login_pages()) {
+	            try {
+	                sessionStorage.setItem('redirect_url', window.location.href);
+	            } catch (e) {
+	                console.error('The website needs features which are not enabled on private mode browsing. Please use normal mode.');
+	            }
+	            window.location.href = login_url();
+	        }
+	    };
+
+	    var login_url = function login_url() {
+	        var server_url = localStorage.getItem('config.server_url');
+	        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage() : 'https://oauth.champion-fx.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage();
+	    };
+
+	    var is_login_pages = function is_login_pages() {
+	        return (/logged_inws|oauth2/.test(document.URL)
+	        );
+	    };
+
+	    return {
+	        redirect_to_login: redirect_to_login
+	    };
+	}();
+
+	module.exports = Login;
 
 /***/ }
 /******/ ]);
