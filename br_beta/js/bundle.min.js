@@ -18480,9 +18480,9 @@
 	        _signup = $('#signup');
 	        _container.on('champion:before', beforeContentChange);
 	        _container.on('champion:after', afterContentChange);
+	        Client.init();
 	        ChampionRouter.init(_container, '#champion-content');
 	        ChampionSocket.init();
-	        Client.init();
 	        if (!Client.is_logged_in()) {
 	            $('#main-login a').on('click', function () {
 	                Login.redirect_to_login();
