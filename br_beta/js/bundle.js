@@ -20024,14 +20024,22 @@
 	'use strict';
 
 	__webpack_require__(315);
+	var Client = __webpack_require__(304);
 
 	var BinaryOptions = function () {
 	    'use strict';
 
 	    var load = function load() {
-	        $('#virtual-signup-button').on('click', function () {
-	            $.scrollTo('#verify-email-form', 500);
-	        });
+	        if (Client.is_logged_in()) {
+	            $('#virtual-signup-button').hide();
+	            if (!Client.is_virtual()) {
+	                $('#real-signup-button').hide();
+	            }
+	        } else {
+	            $('#virtual-signup-button').on('click', function () {
+	                $.scrollTo('#verify-email-form', 500);
+	            });
+	        }
 	    };
 
 	    var unload = function unload() {
