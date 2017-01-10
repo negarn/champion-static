@@ -19479,7 +19479,6 @@
 	var updateURLHash = function updateURLHash() {
 	    window.location.hash = this.getAttribute('href');
 	    showHash();
-	    $.scrollTo(0);
 	};
 
 	var handleActive = function handleActive() {
@@ -19488,7 +19487,7 @@
 	    content = '.tab-content-wrapper';
 	    if (menu && content) {
 	        $(menu).find('a').unbind('click', updateURLHash).on('click', updateURLHash);
-	        $(content).find('button').unbind('click', scrollToTop).on('click', scrollToTop);
+	        $(window).unbind('hashchange', scrollToTop).on('hashchange', scrollToTop);
 	        if (hash) {
 	            showHash();
 	        }
