@@ -19452,19 +19452,14 @@
 	    });
 	};
 
-	var updateURLHash = function updateURLHash(menu) {
-	    $(menu).find('a').on('click', function () {
-	        window.location.hash = this.getAttribute('href');
-	    });
-	};
+	// functions used on any page that has tab menu to update url with the hash
+	// and show the correct tab/content if hash is changed in url
 
-	var handleActive = function handleActive() {
-	    var hash = window.location.hash,
-	        menu = '.tab-menu-wrap',
-	        content = '.tab-content-wrapper';
-	    if (hash && menu && content) {
-	        $(menu).find('a').unbind('click', updateURLHash);
-	        updateURLHash(menu);
+	var menu = void 0,
+	    content = void 0;
+	var showHash = function showHash() {
+	    var hash = window.location.hash;
+	    if (hash) {
 	        var parent_active = 'first active',
 	            child_active = 'first a-active',
 	            hidden_class = 'invisible';
@@ -19472,6 +19467,26 @@
 	        $(menu).find('li').removeClass(parent_active).find('a').removeClass(child_active).end().end().find(hash).addClass(parent_active).find('a').addClass(child_active);
 	        $(content).find('> div').addClass(hidden_class).end().find('> div' + hash + '-content').removeClass(hidden_class);
 	        /* eslint-enable newline-per-chained-call */
+	    }
+	};
+
+	var updateURLHash = function updateURLHash() {
+	    $(menu).find('a').on('click', function () {
+	        window.location.hash = this.getAttribute('href');
+	        showHash();
+	    });
+	};
+
+	var handleActive = function handleActive() {
+	    var hash = window.location.hash;
+	    menu = '.tab-menu-wrap';
+	    content = '.tab-content-wrapper';
+	    if (menu && content) {
+	        $(menu).find('a').unbind('click', updateURLHash);
+	        updateURLHash();
+	        if (hash) {
+	            showHash();
+	        }
 	    }
 	};
 
