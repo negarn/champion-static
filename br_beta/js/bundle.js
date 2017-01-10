@@ -20024,15 +20024,16 @@
 	'use strict';
 
 	__webpack_require__(315);
-	var Client = __webpack_require__(304);
+	var Cookies = __webpack_require__(302);
 
 	var BinaryOptions = function () {
 	    'use strict';
 
 	    var load = function load() {
-	        if (Client.is_logged_in()) {
+	        var loginid_list = Cookies.get('loginid_list');
+	        if (loginid_list) {
 	            $('#virtual-signup-button').hide();
-	            if (!Client.is_virtual()) {
+	            if (/:R:/.test(loginid_list)) {
 	                $('#real-signup-button').hide();
 	            }
 	        } else {
