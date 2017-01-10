@@ -19472,12 +19472,14 @@
 	    }
 	};
 
+	var scrollToTop = function scrollToTop() {
+	    $.scrollTo(0);
+	};
+
 	var updateURLHash = function updateURLHash() {
-	    $(menu).find('a').on('click', function () {
-	        window.location.hash = this.getAttribute('href');
-	        showHash();
-	        $.scrollTo(0);
-	    });
+	    window.location.hash = this.getAttribute('href');
+	    showHash();
+	    $.scrollTo(0);
 	};
 
 	var handleActive = function handleActive() {
@@ -19485,8 +19487,8 @@
 	    menu = '.tab-menu-wrap';
 	    content = '.tab-content-wrapper';
 	    if (menu && content) {
-	        $(menu).find('a').unbind('click', updateURLHash);
-	        updateURLHash();
+	        $(menu).find('a').unbind('click', updateURLHash).on('click', updateURLHash);
+	        $(content).find('button').unbind('click', scrollToTop).on('click', scrollToTop);
 	        if (hash) {
 	            showHash();
 	        }
