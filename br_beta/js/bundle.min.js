@@ -18503,11 +18503,11 @@
 	        var page = content.getAttribute('data-page');
 	        var pages_map = {
 	            virtual: ChampionNewVirtual,
-	            // real       : ChampionNewReal,
+	            // real            : ChampionNewReal,
 	            contact: ChampionContact,
 	            endpoint: ChampionEndpoint,
 	            logged_inws: LoggedIn,
-	            binary_options: BinaryOptions
+	            'binary-options': BinaryOptions
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
