@@ -18457,13 +18457,13 @@
 	'use strict';
 
 	var ChampionSocket = __webpack_require__(301);
-	var ChampionRouter = __webpack_require__(310);
-	var ChampionSignup = __webpack_require__(311);
-	var ChampionNewVirtual = __webpack_require__(312);
+	var ChampionRouter = __webpack_require__(311);
+	var ChampionSignup = __webpack_require__(312);
+	var ChampionNewVirtual = __webpack_require__(313);
 	// const ChampionNewReal    = require('./../pages/new_account/real');
 	var ChampionContact = __webpack_require__(299);
-	var ChampionEndpoint = __webpack_require__(313);
-	var BinaryOptions = __webpack_require__(314);
+	var ChampionEndpoint = __webpack_require__(314);
+	var BinaryOptions = __webpack_require__(315);
 	var Client = __webpack_require__(304);
 	var LoggedIn = __webpack_require__(316);
 	var Login = __webpack_require__(317);
@@ -19329,7 +19329,7 @@
 
 	var Client = __webpack_require__(304);
 	var Utility = __webpack_require__(308);
-	var formatMoney = __webpack_require__(309).formatMoney;
+	var formatMoney = __webpack_require__(310).formatMoney;
 
 	var Header = function () {
 	    'use strict';
@@ -19421,9 +19421,11 @@
 
 /***/ },
 /* 308 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	__webpack_require__(309);
 
 	function isEmptyObject(obj) {
 	    var isEmpty = true;
@@ -19474,6 +19476,7 @@
 	    $(menu).find('a').on('click', function () {
 	        window.location.hash = this.getAttribute('href');
 	        showHash();
+	        $.scrollTo(0);
 	    });
 	};
 
@@ -19500,606 +19503,6 @@
 
 /***/ },
 /* 309 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var addComma = __webpack_require__(308).addComma;
-	var getLanguage = __webpack_require__(303).getLanguage;
-
-	function formatMoney(currencyValue, amount) {
-	    var money = void 0;
-	    if (amount) amount = String(amount).replace(/,/g, '');
-	    if (typeof Intl !== 'undefined' && currencyValue && currencyValue !== '' && amount && amount !== '') {
-	        var options = { style: 'currency', currency: currencyValue },
-	            language = typeof window !== 'undefined' ? getLanguage().toLowerCase() : 'en';
-	        money = new Intl.NumberFormat(language.replace('_', '-'), options).format(amount);
-	    } else {
-	        var updatedAmount = addComma(parseFloat(amount).toFixed(2));
-	        var symbol = formatCurrency(currencyValue);
-	        if (symbol === undefined) {
-	            money = currencyValue + ' ' + updatedAmount;
-	        } else {
-	            money = symbol + updatedAmount;
-	        }
-	    }
-	    return money;
-	}
-
-	function formatCurrency(currency) {
-	    // Taken with modifications from:
-	    //    https://github.com/bengourley/currency-symbol-map/blob/master/map.js
-	    // When we need to handle more currencies please look there.
-	    var currency_map = {
-	        USD: '$',
-	        GBP: '£',
-	        AUD: 'A$',
-	        EUR: '€',
-	        JPY: '¥'
-	    };
-
-	    return currency_map[currency];
-	}
-
-	module.exports = {
-	    formatMoney: formatMoney
-	};
-
-/***/ },
-/* 310 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getLanguage = __webpack_require__(303).getLanguage;
-
-	/**
-	 * Router module for ChampionFX
-	 * Some code was borrowed from pjax lib
-	 * https://github.com/defunkt/jquery-pjax
-	 */
-	var ChampionRouter = function () {
-	    'use strict';
-
-	    var xhr = void 0;
-	    var params = {},
-	        defaults = {
-	        timeout: 650,
-	        type: 'GET',
-	        dataType: 'html'
-	    },
-	        cache = {};
-
-	    var init = function init(container, content_selector) {
-	        if (!(window.history && window.history.pushState && window.history.replaceState &&
-	        // pushState isn't reliable on iOS until 5.
-	        !navigator.userAgent.match(/((iPod|iPhone|iPad).+\bOS\s+[1-4]\D|WebApps\/.+CFNetwork)/))) {
-	            console.error('Unable to initialize router');
-	            return;
-	        }
-
-	        container = $(container);
-
-	        if (!container.length) {
-	            console.error('Could not find container');
-	            return;
-	        }
-
-	        if (!(content_selector && content_selector.length)) {
-	            console.error('No content selector provided');
-	            return;
-	        }
-
-	        params.container = container;
-	        params.content_selector = content_selector;
-
-	        var url = window.location.href;
-	        var title = document.title;
-	        var content = container.find(content_selector);
-
-	        // put current content to cache, so we won't need to load it again
-	        if (title && content && content.length) {
-	            cachePut(url, {
-	                title: title,
-	                content: content
-	            });
-	            window.history.replaceState({ url: url }, title, url);
-	            content.attr('data-page', url.match('.+\/(.+)\.html.*')[1]);
-	            params.container.trigger('champion:after', content);
-	        }
-
-	        $(document).on('click', 'a', handleClick);
-	        $(window).on('popstate', handlePopstate);
-	    };
-
-	    var handleClick = function handleClick(event) {
-	        var link = event.currentTarget,
-	            url = link.href;
-
-	        if (url.length <= 0) {
-	            return;
-	        }
-	        // Middle click, cmd click, and ctrl click should open
-	        // links in a new tab as normal.
-	        if (event.which > 1 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-	            return;
-	        }
-
-	        // Ignore cross origin links
-	        if (location.protocol !== link.protocol || location.hostname !== link.hostname) {
-	            return;
-	        }
-
-	        // Ignore event with default prevented
-	        if (event.isDefaultPrevented()) {
-	            return;
-	        }
-
-	        event.preventDefault();
-	        // check if url is not same as current
-	        if (location.href !== url) {
-	            processUrl(url);
-	        }
-	    };
-
-	    var processUrl = function processUrl(url, replace) {
-	        var cached_content = cacheGet(url);
-	        if (cached_content) {
-	            replaceContent(url, cached_content, replace);
-	        } else {
-	            load(url, replace);
-	        }
-	    };
-
-	    /**
-	     * Load url from server
-	     */
-	    var load = function load(url, replace) {
-	        var lang = getLanguage();
-	        var options = $.extend(true, {}, $.ajaxSettings, defaults, {
-	            url: url.replace(new RegExp('/' + lang + '/', 'i'), '/' + lang.toLowerCase() + '/pjax/') });
-
-	        options.success = function (data) {
-	            var result = {};
-
-	            result.title = $(data).find('title').text().trim();
-	            result.content = $('<div/>', { html: data }).find(params.content_selector);
-
-	            // If failed to find title or content, load the page in traditional way
-	            if (result.title.length === 0 || result.content.length === 0) {
-	                locationReplace(url);
-	                return;
-	            }
-
-	            cachePut(url, result);
-	            replaceContent(url, result, replace);
-	        };
-
-	        // Cancel the current request if we're already loading some page
-	        abortXHR(xhr);
-
-	        xhr = $.ajax(options);
-	    };
-
-	    var handlePopstate = function handlePopstate(e) {
-	        var url = e.originalEvent.state ? e.originalEvent.state.url : window.location.href;
-	        if (url) {
-	            processUrl(url, true);
-	        }
-	        return false;
-	    };
-
-	    var replaceContent = function replaceContent(url, content, replace) {
-	        window.history[replace ? 'replaceState' : 'pushState']({ url: url }, content.title, url);
-
-	        params.container.trigger('champion:before');
-
-	        document.title = content.title;
-	        params.container.find(params.content_selector).remove();
-	        params.container.append(content.content);
-
-	        params.container.trigger('champion:after', content.content);
-	    };
-
-	    var abortXHR = function abortXHR(xhrObj) {
-	        if (xhrObj && xhrObj.readyState < 4) {
-	            xhrObj.abort();
-	        }
-	    };
-
-	    var cachePut = function cachePut(url, content) {
-	        cache[url] = content;
-	    };
-
-	    var cacheGet = function cacheGet(url) {
-	        return cache[url];
-	    };
-
-	    var locationReplace = function locationReplace(url) {
-	        window.history.replaceState(null, '', url);
-	        window.location.replace(url);
-	    };
-
-	    return {
-	        init: init,
-	        forward: processUrl
-	    };
-	}();
-
-	module.exports = ChampionRouter;
-
-/***/ },
-/* 311 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(301);
-	var ChampionRouter = __webpack_require__(310);
-	var url_for = __webpack_require__(306).url_for;
-
-	var ChampionSignup = function () {
-	    'use strict';
-
-	    var _active = false,
-	        _element = void 0,
-	        _input = void 0,
-	        _error_empty = void 0,
-	        _error_email = void 0,
-	        _button = void 0,
-	        _timeout = void 0;
-
-	    var _email_regex = /[^@]+@[^@\.]+\.[^@]+/;
-	    // const _email_regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
-	    var _validate_delay = 500;
-
-	    var load = function load(element) {
-	        _element = element;
-	        _input = _element.find('input');
-	        _error_empty = _element.find('#signup_error_empty');
-	        _error_email = _element.find('#signup_error_email');
-	        _button = _element.find('button');
-
-	        _element.removeClass('hidden');
-	        _input.on('input', inputChanged);
-	        _button.on('click', submitClicked);
-
-	        _active = true;
-	    };
-
-	    var unload = function unload() {
-	        if (_active) {
-	            _element.addClass('hidden');
-	            _input.off('input', inputChanged);
-	            _button.off('click', submitClicked);
-	            _input.val('');
-	            _error_empty.addClass('hidden');
-	            _error_email.addClass('hidden');
-	            if (_timeout) {
-	                clearTimeout(_timeout);
-	            }
-	        }
-	        _active = false;
-	    };
-
-	    var inputChanged = function inputChanged() {
-	        if (_timeout) {
-	            clearTimeout(_timeout);
-	        }
-	        _timeout = setTimeout(validate, _validate_delay);
-	    };
-
-	    var validate = function validate() {
-	        var value = void 0,
-	            error = true;
-	        if (_active) {
-	            value = _input.val();
-	            _error_empty.addClass('hidden');
-	            _error_email.addClass('hidden');
-	            if (!value || value.length < 1) {
-	                _error_empty.removeClass('hidden');
-	            } else if (!_email_regex.test(value)) {
-	                _error_email.removeClass('hidden');
-	            } else {
-	                error = false;
-	            }
-	        }
-	        return !error;
-	    };
-
-	    var submitClicked = function submitClicked(e) {
-	        e.preventDefault();
-	        if (_active && validate()) {
-	            ChampionSocket.send({
-	                verify_email: _input.val(),
-	                type: 'account_opening'
-	            }, function (response) {
-	                if (response.verify_email) {
-	                    ChampionRouter.forward(url_for('new-account/virtual'));
-	                }
-	            });
-	        }
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ChampionSignup;
-
-/***/ },
-/* 312 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(301);
-	var Client = __webpack_require__(304);
-	var default_redirect_url = __webpack_require__(306).default_redirect_url;
-
-	var ChampionNewVirtualAccount = function () {
-	    'use strict';
-
-	    var _passwd_regex = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
-	    // const _code_regex = /.{48}/;
-
-	    var _residences = null,
-	        _active = false;
-
-	    var _input_code = void 0,
-	        _input_pass = void 0,
-	        _input_rpass = void 0,
-	        _input_country = void 0,
-	        _submit_btn = void 0,
-	        _input_residence = void 0;
-
-	    var _code_error = void 0,
-	        _pass_error_short = void 0,
-	        _pass_error_char = void 0,
-	        _pass_error_nomatch = void 0,
-	        _create_acc_error = void 0;
-
-	    var load = function load() {
-	        if (Client.redirect_if_login()) return;
-	        var container = $('#champion-container');
-	        _input_code = container.find('#verification-code');
-	        _input_pass = container.find('#password');
-	        _input_rpass = container.find('#r-password');
-	        _input_country = container.find('#residence');
-	        _input_residence = container.find('#residence');
-	        _submit_btn = container.find('#btn-submit');
-
-	        _code_error = container.find('#error-code');
-	        _pass_error_short = container.find('#error-pass-short');
-	        _pass_error_char = container.find('#error-pass-char');
-	        _pass_error_nomatch = container.find('#error-pass-nomatch');
-	        _create_acc_error = container.find('#error-create-account');
-
-	        _input_code.on('input', validateCode);
-	        _input_pass.on('input', validatePass);
-	        _input_rpass.on('input', validateRpass);
-	        _submit_btn.on('click', submit);
-
-	        if (!_residences) {
-	            ChampionSocket.send({ residence_list: 1 }, function (response) {
-	                _residences = response.residence_list;
-	                renderResidences();
-	            });
-	        } else {
-	            renderResidences();
-	        }
-	        _active = true;
-	    };
-
-	    var renderResidences = function renderResidences() {
-	        _input_residence.empty();
-	        _residences.forEach(function (res) {
-	            var option = $('<option></option>');
-	            option.text(res.text);
-	            option.attr('value', res.value);
-	            if (res.disabled) {
-	                option.attr('disabled', '1');
-	            }
-	            _input_residence.append(option);
-	        });
-	    };
-
-	    var unload = function unload() {
-	        _input_code.off('input', validateCode);
-	        _input_pass.off('input', validatePass);
-	        _input_rpass.off('input', validateRpass);
-	        _submit_btn.off('click', submit);
-
-	        _code_error.addClass('hidden');
-	        _pass_error_short.addClass('hidden');
-	        _pass_error_char.addClass('hidden');
-	        _pass_error_nomatch.addClass('hidden');
-	        _create_acc_error.addClass('hidden');
-
-	        _input_code.val('');
-	        _input_pass.val('');
-	        _input_rpass.val('');
-	        _input_country.val('');
-	        _input_residence.empty();
-	        _active = false;
-	    };
-
-	    var validateCode = function validateCode() {
-	        var value = _input_code.val();
-
-	        _create_acc_error.addClass('hidden');
-	        _code_error.addClass('hidden');
-	        if (value.length < 48) {
-	            _code_error.removeClass('hidden');
-	            return false;
-	        }
-	        return true;
-	    };
-
-	    var validatePass = function validatePass() {
-	        var value = _input_pass.val();
-
-	        _create_acc_error.addClass('hidden');
-	        _pass_error_short.addClass('hidden');
-	        _pass_error_char.addClass('hidden');
-
-	        if (value.length < 6) {
-	            _pass_error_short.removeClass('hidden');
-	            return false;
-	        } else if (!_passwd_regex.test(value)) {
-	            _pass_error_char.removeClass('hidden');
-	            return false;
-	        }
-
-	        validateRpass();
-
-	        return true;
-	    };
-
-	    var validateRpass = function validateRpass() {
-	        _pass_error_nomatch.addClass('hidden');
-	        if (_input_pass.val() !== _input_rpass.val()) {
-	            _pass_error_nomatch.removeClass('hidden');
-	            return false;
-	        }
-	        return true;
-	    };
-
-	    var submit = function submit(e) {
-	        e.preventDefault();
-	        if (_active && validateCode() && validatePass()) {
-	            var data = {
-	                new_account_virtual: 1,
-	                verification_code: _input_code.val(),
-	                client_password: _input_pass.val(),
-	                residence: _input_residence.val()
-	            };
-	            ChampionSocket.send(data, function (response) {
-	                if (response.error) {
-	                    _create_acc_error.removeClass('hidden').text(response.error.message);
-	                } else {
-	                    var acc_info = response.new_account_virtual;
-	                    Client.process_new_account(acc_info.email, acc_info.client_id, acc_info.oauth_token, true);
-	                    window.location.href = default_redirect_url();
-	                }
-	            });
-	        }
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ChampionNewVirtualAccount;
-
-/***/ },
-/* 313 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getAppId = __webpack_require__(301).getAppId;
-	var getServer = __webpack_require__(301).getServer;
-
-	var ChampionEndpoint = function () {
-	    'use strict';
-
-	    var $container = void 0,
-	        $txt_server_url = void 0,
-	        $txt_app_id = void 0,
-	        $btn_set_endpoint = void 0,
-	        $btn_reset_endpoint = void 0;
-
-	    var load = function load() {
-	        $container = $('#champion-container');
-	        $txt_server_url = $container.find('#txt_server_url');
-	        $txt_app_id = $container.find('#txt_app_id');
-	        $btn_set_endpoint = $container.find('#btn_set_endpoint');
-	        $btn_reset_endpoint = $container.find('#btn_reset_endpoint');
-
-	        $txt_server_url.val(getServer());
-	        $txt_app_id.val(getAppId());
-
-	        $btn_set_endpoint.on('click', function (e) {
-	            e.preventDefault();
-
-	            var server_url = ($txt_server_url.val() || '').trim().toLowerCase().replace(/[><()\"\']/g, '');
-	            if (server_url) {
-	                localStorage.setItem('config.server_url', server_url);
-	            }
-
-	            var app_id = ($txt_app_id.val() || '').trim();
-	            if (app_id && !isNaN(app_id)) {
-	                localStorage.setItem('config.app_id', parseInt(app_id));
-	            }
-
-	            window.location.reload();
-	        });
-
-	        $btn_reset_endpoint.on('click', function (e) {
-	            e.preventDefault();
-	            localStorage.removeItem('config.server_url');
-	            localStorage.removeItem('config.app_id');
-	            window.location.reload();
-	        });
-	    };
-
-	    var unload = function unload() {
-	        $btn_set_endpoint.off('click');
-	        $btn_reset_endpoint.off('click');
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ChampionEndpoint;
-
-/***/ },
-/* 314 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	__webpack_require__(315);
-	var Client = __webpack_require__(304);
-
-	var BinaryOptions = function () {
-	    'use strict';
-
-	    var load = function load() {
-	        if (Client.is_logged_in()) {
-	            $('#virtual-signup-button').hide();
-	            if (Client.get_boolean('has_real')) {
-	                $('#real-signup-button').hide();
-	            }
-	        } else {
-	            $('#virtual-signup-button').on('click', function () {
-	                $.scrollTo('#verify-email-form', 500);
-	            });
-	        }
-	    };
-
-	    var unload = function unload() {
-	        $('#virtual-signup-button').off('click');
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = BinaryOptions;
-
-/***/ },
-/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -20313,6 +19716,606 @@
 		return $scrollTo;
 	});
 
+
+/***/ },
+/* 310 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var addComma = __webpack_require__(308).addComma;
+	var getLanguage = __webpack_require__(303).getLanguage;
+
+	function formatMoney(currencyValue, amount) {
+	    var money = void 0;
+	    if (amount) amount = String(amount).replace(/,/g, '');
+	    if (typeof Intl !== 'undefined' && currencyValue && currencyValue !== '' && amount && amount !== '') {
+	        var options = { style: 'currency', currency: currencyValue },
+	            language = typeof window !== 'undefined' ? getLanguage().toLowerCase() : 'en';
+	        money = new Intl.NumberFormat(language.replace('_', '-'), options).format(amount);
+	    } else {
+	        var updatedAmount = addComma(parseFloat(amount).toFixed(2));
+	        var symbol = formatCurrency(currencyValue);
+	        if (symbol === undefined) {
+	            money = currencyValue + ' ' + updatedAmount;
+	        } else {
+	            money = symbol + updatedAmount;
+	        }
+	    }
+	    return money;
+	}
+
+	function formatCurrency(currency) {
+	    // Taken with modifications from:
+	    //    https://github.com/bengourley/currency-symbol-map/blob/master/map.js
+	    // When we need to handle more currencies please look there.
+	    var currency_map = {
+	        USD: '$',
+	        GBP: '£',
+	        AUD: 'A$',
+	        EUR: '€',
+	        JPY: '¥'
+	    };
+
+	    return currency_map[currency];
+	}
+
+	module.exports = {
+	    formatMoney: formatMoney
+	};
+
+/***/ },
+/* 311 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getLanguage = __webpack_require__(303).getLanguage;
+
+	/**
+	 * Router module for ChampionFX
+	 * Some code was borrowed from pjax lib
+	 * https://github.com/defunkt/jquery-pjax
+	 */
+	var ChampionRouter = function () {
+	    'use strict';
+
+	    var xhr = void 0;
+	    var params = {},
+	        defaults = {
+	        timeout: 650,
+	        type: 'GET',
+	        dataType: 'html'
+	    },
+	        cache = {};
+
+	    var init = function init(container, content_selector) {
+	        if (!(window.history && window.history.pushState && window.history.replaceState &&
+	        // pushState isn't reliable on iOS until 5.
+	        !navigator.userAgent.match(/((iPod|iPhone|iPad).+\bOS\s+[1-4]\D|WebApps\/.+CFNetwork)/))) {
+	            console.error('Unable to initialize router');
+	            return;
+	        }
+
+	        container = $(container);
+
+	        if (!container.length) {
+	            console.error('Could not find container');
+	            return;
+	        }
+
+	        if (!(content_selector && content_selector.length)) {
+	            console.error('No content selector provided');
+	            return;
+	        }
+
+	        params.container = container;
+	        params.content_selector = content_selector;
+
+	        var url = window.location.href;
+	        var title = document.title;
+	        var content = container.find(content_selector);
+
+	        // put current content to cache, so we won't need to load it again
+	        if (title && content && content.length) {
+	            cachePut(url, {
+	                title: title,
+	                content: content
+	            });
+	            window.history.replaceState({ url: url }, title, url);
+	            content.attr('data-page', url.match('.+\/(.+)\.html.*')[1]);
+	            params.container.trigger('champion:after', content);
+	        }
+
+	        $(document).on('click', 'a', handleClick);
+	        $(window).on('popstate', handlePopstate);
+	    };
+
+	    var handleClick = function handleClick(event) {
+	        var link = event.currentTarget,
+	            url = link.href;
+
+	        if (url.length <= 0) {
+	            return;
+	        }
+	        // Middle click, cmd click, and ctrl click should open
+	        // links in a new tab as normal.
+	        if (event.which > 1 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+	            return;
+	        }
+
+	        // Ignore cross origin links
+	        if (location.protocol !== link.protocol || location.hostname !== link.hostname) {
+	            return;
+	        }
+
+	        // Ignore event with default prevented
+	        if (event.isDefaultPrevented()) {
+	            return;
+	        }
+
+	        event.preventDefault();
+	        // check if url is not same as current
+	        if (location.href !== url) {
+	            processUrl(url);
+	        }
+	    };
+
+	    var processUrl = function processUrl(url, replace) {
+	        var cached_content = cacheGet(url);
+	        if (cached_content) {
+	            replaceContent(url, cached_content, replace);
+	        } else {
+	            load(url, replace);
+	        }
+	    };
+
+	    /**
+	     * Load url from server
+	     */
+	    var load = function load(url, replace) {
+	        var lang = getLanguage();
+	        var options = $.extend(true, {}, $.ajaxSettings, defaults, {
+	            url: url.replace(new RegExp('/' + lang + '/', 'i'), '/' + lang.toLowerCase() + '/pjax/') });
+
+	        options.success = function (data) {
+	            var result = {};
+
+	            result.title = $(data).find('title').text().trim();
+	            result.content = $('<div/>', { html: data }).find(params.content_selector);
+
+	            // If failed to find title or content, load the page in traditional way
+	            if (result.title.length === 0 || result.content.length === 0) {
+	                locationReplace(url);
+	                return;
+	            }
+
+	            cachePut(url, result);
+	            replaceContent(url, result, replace);
+	        };
+
+	        // Cancel the current request if we're already loading some page
+	        abortXHR(xhr);
+
+	        xhr = $.ajax(options);
+	    };
+
+	    var handlePopstate = function handlePopstate(e) {
+	        var url = e.originalEvent.state ? e.originalEvent.state.url : window.location.href;
+	        if (url) {
+	            processUrl(url, true);
+	        }
+	        return false;
+	    };
+
+	    var replaceContent = function replaceContent(url, content, replace) {
+	        window.history[replace ? 'replaceState' : 'pushState']({ url: url }, content.title, url);
+
+	        params.container.trigger('champion:before');
+
+	        document.title = content.title;
+	        params.container.find(params.content_selector).remove();
+	        params.container.append(content.content);
+
+	        params.container.trigger('champion:after', content.content);
+	    };
+
+	    var abortXHR = function abortXHR(xhrObj) {
+	        if (xhrObj && xhrObj.readyState < 4) {
+	            xhrObj.abort();
+	        }
+	    };
+
+	    var cachePut = function cachePut(url, content) {
+	        cache[url] = content;
+	    };
+
+	    var cacheGet = function cacheGet(url) {
+	        return cache[url];
+	    };
+
+	    var locationReplace = function locationReplace(url) {
+	        window.history.replaceState(null, '', url);
+	        window.location.replace(url);
+	    };
+
+	    return {
+	        init: init,
+	        forward: processUrl
+	    };
+	}();
+
+	module.exports = ChampionRouter;
+
+/***/ },
+/* 312 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(301);
+	var ChampionRouter = __webpack_require__(311);
+	var url_for = __webpack_require__(306).url_for;
+
+	var ChampionSignup = function () {
+	    'use strict';
+
+	    var _active = false,
+	        _element = void 0,
+	        _input = void 0,
+	        _error_empty = void 0,
+	        _error_email = void 0,
+	        _button = void 0,
+	        _timeout = void 0;
+
+	    var _email_regex = /[^@]+@[^@\.]+\.[^@]+/;
+	    // const _email_regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
+	    var _validate_delay = 500;
+
+	    var load = function load(element) {
+	        _element = element;
+	        _input = _element.find('input');
+	        _error_empty = _element.find('#signup_error_empty');
+	        _error_email = _element.find('#signup_error_email');
+	        _button = _element.find('button');
+
+	        _element.removeClass('hidden');
+	        _input.on('input', inputChanged);
+	        _button.on('click', submitClicked);
+
+	        _active = true;
+	    };
+
+	    var unload = function unload() {
+	        if (_active) {
+	            _element.addClass('hidden');
+	            _input.off('input', inputChanged);
+	            _button.off('click', submitClicked);
+	            _input.val('');
+	            _error_empty.addClass('hidden');
+	            _error_email.addClass('hidden');
+	            if (_timeout) {
+	                clearTimeout(_timeout);
+	            }
+	        }
+	        _active = false;
+	    };
+
+	    var inputChanged = function inputChanged() {
+	        if (_timeout) {
+	            clearTimeout(_timeout);
+	        }
+	        _timeout = setTimeout(validate, _validate_delay);
+	    };
+
+	    var validate = function validate() {
+	        var value = void 0,
+	            error = true;
+	        if (_active) {
+	            value = _input.val();
+	            _error_empty.addClass('hidden');
+	            _error_email.addClass('hidden');
+	            if (!value || value.length < 1) {
+	                _error_empty.removeClass('hidden');
+	            } else if (!_email_regex.test(value)) {
+	                _error_email.removeClass('hidden');
+	            } else {
+	                error = false;
+	            }
+	        }
+	        return !error;
+	    };
+
+	    var submitClicked = function submitClicked(e) {
+	        e.preventDefault();
+	        if (_active && validate()) {
+	            ChampionSocket.send({
+	                verify_email: _input.val(),
+	                type: 'account_opening'
+	            }, function (response) {
+	                if (response.verify_email) {
+	                    ChampionRouter.forward(url_for('new-account/virtual'));
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionSignup;
+
+/***/ },
+/* 313 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(301);
+	var Client = __webpack_require__(304);
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+
+	var ChampionNewVirtualAccount = function () {
+	    'use strict';
+
+	    var _passwd_regex = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
+	    // const _code_regex = /.{48}/;
+
+	    var _residences = null,
+	        _active = false;
+
+	    var _input_code = void 0,
+	        _input_pass = void 0,
+	        _input_rpass = void 0,
+	        _input_country = void 0,
+	        _submit_btn = void 0,
+	        _input_residence = void 0;
+
+	    var _code_error = void 0,
+	        _pass_error_short = void 0,
+	        _pass_error_char = void 0,
+	        _pass_error_nomatch = void 0,
+	        _create_acc_error = void 0;
+
+	    var load = function load() {
+	        if (Client.redirect_if_login()) return;
+	        var container = $('#champion-container');
+	        _input_code = container.find('#verification-code');
+	        _input_pass = container.find('#password');
+	        _input_rpass = container.find('#r-password');
+	        _input_country = container.find('#residence');
+	        _input_residence = container.find('#residence');
+	        _submit_btn = container.find('#btn-submit');
+
+	        _code_error = container.find('#error-code');
+	        _pass_error_short = container.find('#error-pass-short');
+	        _pass_error_char = container.find('#error-pass-char');
+	        _pass_error_nomatch = container.find('#error-pass-nomatch');
+	        _create_acc_error = container.find('#error-create-account');
+
+	        _input_code.on('input', validateCode);
+	        _input_pass.on('input', validatePass);
+	        _input_rpass.on('input', validateRpass);
+	        _submit_btn.on('click', submit);
+
+	        if (!_residences) {
+	            ChampionSocket.send({ residence_list: 1 }, function (response) {
+	                _residences = response.residence_list;
+	                renderResidences();
+	            });
+	        } else {
+	            renderResidences();
+	        }
+	        _active = true;
+	    };
+
+	    var renderResidences = function renderResidences() {
+	        _input_residence.empty();
+	        _residences.forEach(function (res) {
+	            var option = $('<option></option>');
+	            option.text(res.text);
+	            option.attr('value', res.value);
+	            if (res.disabled) {
+	                option.attr('disabled', '1');
+	            }
+	            _input_residence.append(option);
+	        });
+	    };
+
+	    var unload = function unload() {
+	        _input_code.off('input', validateCode);
+	        _input_pass.off('input', validatePass);
+	        _input_rpass.off('input', validateRpass);
+	        _submit_btn.off('click', submit);
+
+	        _code_error.addClass('hidden');
+	        _pass_error_short.addClass('hidden');
+	        _pass_error_char.addClass('hidden');
+	        _pass_error_nomatch.addClass('hidden');
+	        _create_acc_error.addClass('hidden');
+
+	        _input_code.val('');
+	        _input_pass.val('');
+	        _input_rpass.val('');
+	        _input_country.val('');
+	        _input_residence.empty();
+	        _active = false;
+	    };
+
+	    var validateCode = function validateCode() {
+	        var value = _input_code.val();
+
+	        _create_acc_error.addClass('hidden');
+	        _code_error.addClass('hidden');
+	        if (value.length < 48) {
+	            _code_error.removeClass('hidden');
+	            return false;
+	        }
+	        return true;
+	    };
+
+	    var validatePass = function validatePass() {
+	        var value = _input_pass.val();
+
+	        _create_acc_error.addClass('hidden');
+	        _pass_error_short.addClass('hidden');
+	        _pass_error_char.addClass('hidden');
+
+	        if (value.length < 6) {
+	            _pass_error_short.removeClass('hidden');
+	            return false;
+	        } else if (!_passwd_regex.test(value)) {
+	            _pass_error_char.removeClass('hidden');
+	            return false;
+	        }
+
+	        validateRpass();
+
+	        return true;
+	    };
+
+	    var validateRpass = function validateRpass() {
+	        _pass_error_nomatch.addClass('hidden');
+	        if (_input_pass.val() !== _input_rpass.val()) {
+	            _pass_error_nomatch.removeClass('hidden');
+	            return false;
+	        }
+	        return true;
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        if (_active && validateCode() && validatePass()) {
+	            var data = {
+	                new_account_virtual: 1,
+	                verification_code: _input_code.val(),
+	                client_password: _input_pass.val(),
+	                residence: _input_residence.val()
+	            };
+	            ChampionSocket.send(data, function (response) {
+	                if (response.error) {
+	                    _create_acc_error.removeClass('hidden').text(response.error.message);
+	                } else {
+	                    var acc_info = response.new_account_virtual;
+	                    Client.process_new_account(acc_info.email, acc_info.client_id, acc_info.oauth_token, true);
+	                    window.location.href = default_redirect_url();
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionNewVirtualAccount;
+
+/***/ },
+/* 314 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getAppId = __webpack_require__(301).getAppId;
+	var getServer = __webpack_require__(301).getServer;
+
+	var ChampionEndpoint = function () {
+	    'use strict';
+
+	    var $container = void 0,
+	        $txt_server_url = void 0,
+	        $txt_app_id = void 0,
+	        $btn_set_endpoint = void 0,
+	        $btn_reset_endpoint = void 0;
+
+	    var load = function load() {
+	        $container = $('#champion-container');
+	        $txt_server_url = $container.find('#txt_server_url');
+	        $txt_app_id = $container.find('#txt_app_id');
+	        $btn_set_endpoint = $container.find('#btn_set_endpoint');
+	        $btn_reset_endpoint = $container.find('#btn_reset_endpoint');
+
+	        $txt_server_url.val(getServer());
+	        $txt_app_id.val(getAppId());
+
+	        $btn_set_endpoint.on('click', function (e) {
+	            e.preventDefault();
+
+	            var server_url = ($txt_server_url.val() || '').trim().toLowerCase().replace(/[><()\"\']/g, '');
+	            if (server_url) {
+	                localStorage.setItem('config.server_url', server_url);
+	            }
+
+	            var app_id = ($txt_app_id.val() || '').trim();
+	            if (app_id && !isNaN(app_id)) {
+	                localStorage.setItem('config.app_id', parseInt(app_id));
+	            }
+
+	            window.location.reload();
+	        });
+
+	        $btn_reset_endpoint.on('click', function (e) {
+	            e.preventDefault();
+	            localStorage.removeItem('config.server_url');
+	            localStorage.removeItem('config.app_id');
+	            window.location.reload();
+	        });
+	    };
+
+	    var unload = function unload() {
+	        $btn_set_endpoint.off('click');
+	        $btn_reset_endpoint.off('click');
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionEndpoint;
+
+/***/ },
+/* 315 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	__webpack_require__(309);
+	var Client = __webpack_require__(304);
+
+	var BinaryOptions = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        if (Client.is_logged_in()) {
+	            $('#virtual-signup-button').hide();
+	            if (Client.get_boolean('has_real')) {
+	                $('#real-signup-button').hide();
+	            }
+	        } else {
+	            $('#virtual-signup-button').on('click', function () {
+	                $.scrollTo('#verify-email-form', 500);
+	            });
+	        }
+	    };
+
+	    var unload = function unload() {
+	        $('#virtual-signup-button').off('click');
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = BinaryOptions;
 
 /***/ },
 /* 316 */
