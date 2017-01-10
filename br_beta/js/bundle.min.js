@@ -19458,7 +19458,8 @@
 	// and show the correct tab/content if hash is changed in url
 
 	var menu = void 0,
-	    content = void 0;
+	    content = void 0,
+	    offset_top = void 0;
 	var showHash = function showHash() {
 	    var hash = window.location.hash;
 	    if (hash) {
@@ -19473,7 +19474,7 @@
 	};
 
 	var scrollToTop = function scrollToTop() {
-	    $.scrollTo(0);
+	    $.scrollTo(offset_top);
 	};
 
 	var updateURLHash = function updateURLHash() {
@@ -19485,6 +19486,7 @@
 	    var hash = window.location.hash;
 	    menu = '.tab-menu-wrap';
 	    content = '.tab-content-wrapper';
+	    offset_top = $(document).scrollTop();
 	    if (menu && content) {
 	        $(menu).find('a').unbind('click', updateURLHash).on('click', updateURLHash);
 	        $(window).unbind('hashchange', scrollToTop).on('hashchange', scrollToTop);
