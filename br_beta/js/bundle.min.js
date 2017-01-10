@@ -19474,7 +19474,8 @@
 	};
 
 	var scrollToTop = function scrollToTop() {
-	    $.scrollTo(offset_top < 200 ? offset_top : 0);
+	    // scroll to top of the page if client was previously too low on the page
+	    $.scrollTo(offset_top);
 	};
 
 	var updateURLHash = function updateURLHash() {
@@ -19487,6 +19488,10 @@
 	    menu = '.tab-menu-wrap';
 	    content = '.tab-content-wrapper';
 	    offset_top = $(document).scrollTop();
+	    if (offset_top > 200) {
+	        offset_top = 0;
+	        scrollToTop();
+	    }
 	    if (menu && content) {
 	        $(menu).find('a').unbind('click', updateURLHash).on('click', updateURLHash);
 	        $(window).unbind('hashchange', scrollToTop).on('hashchange', scrollToTop);
