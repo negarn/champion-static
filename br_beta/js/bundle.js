@@ -19491,7 +19491,7 @@
 	    content = '.tab-content-wrapper';
 	    offset_top = $(document).scrollTop();
 	    // scroll to top of the page if client is too far down on the page
-	    if (offset_top > 300) {
+	    if (offset_top > 350) {
 	        offset_top = 100;
 	        scrollToTop();
 	    }
