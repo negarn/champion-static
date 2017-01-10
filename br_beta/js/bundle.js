@@ -19492,7 +19492,7 @@
 	        offset_top = 100;
 	        scrollToTop();
 	    }
-	    if (menu && content) {
+	    if (menu && content && $(menu).find('a').attr('href')) {
 	        $(menu).find('a').unbind('click', updateURLHash).on('click', updateURLHash);
 	        $(window).unbind('hashchange', scrollToTop).on('hashchange', scrollToTop);
 	        if (hash) {
