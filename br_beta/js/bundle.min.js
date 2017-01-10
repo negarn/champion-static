@@ -20027,15 +20027,13 @@
 	'use strict';
 
 	__webpack_require__(315);
-	var Cookies = __webpack_require__(302);
 	var Client = __webpack_require__(304);
 
 	var BinaryOptions = function () {
 	    'use strict';
 
 	    var load = function load() {
-	        var loginid_list = Cookies.get('loginid_list');
-	        if (loginid_list) {
+	        if (Client.is_logged_in()) {
 	            $('#virtual-signup-button').hide();
 	            if (Client.get_boolean('has_real')) {
 	                $('#real-signup-button').hide();
