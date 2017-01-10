@@ -19474,7 +19474,7 @@
 	};
 
 	var scrollToTop = function scrollToTop() {
-	    $.scrollTo(offset_top, 300);
+	    $.scrollTo(offset_top, 500);
 	};
 
 	var updateURLHash = function updateURLHash() {
