@@ -18459,14 +18459,14 @@
 	var ChampionSocket = __webpack_require__(301);
 	var ChampionRouter = __webpack_require__(311);
 	var ChampionSignup = __webpack_require__(312);
-	var ChampionNewVirtual = __webpack_require__(313);
+	var ChampionNewVirtual = __webpack_require__(314);
 	// const ChampionNewReal    = require('./../pages/new_account/real');
 	var ChampionContact = __webpack_require__(299);
-	var ChampionEndpoint = __webpack_require__(314);
-	var BinaryOptions = __webpack_require__(315);
+	var ChampionEndpoint = __webpack_require__(315);
+	var BinaryOptions = __webpack_require__(316);
 	var Client = __webpack_require__(304);
-	var LoggedIn = __webpack_require__(316);
-	var Login = __webpack_require__(317);
+	var LoggedIn = __webpack_require__(317);
+	var Login = __webpack_require__(318);
 	var Utility = __webpack_require__(308);
 
 	var Champion = function () {
@@ -18482,8 +18482,8 @@
 	        _container.on('champion:before', beforeContentChange);
 	        _container.on('champion:after', afterContentChange);
 	        Client.init();
-	        ChampionRouter.init(_container, '#champion-content');
 	        ChampionSocket.init();
+	        ChampionRouter.init(_container, '#champion-content');
 	        if (!Client.is_logged_in()) {
 	            $('#main-login').find('a').on('click', function () {
 	                Login.redirect_to_login();
@@ -18610,7 +18610,7 @@
 	    };
 
 	    var getAppId = function getAppId() {
-	        return localStorage.getItem('config.app_id') ? localStorage.getItem('config.app_id') : '1';
+	        return localStorage.getItem('config.app_id') ? localStorage.getItem('config.app_id') : '2472';
 	    };
 
 	    var getServer = function getServer() {
@@ -19802,12 +19802,16 @@
 	                content: content
 	            });
 	            window.history.replaceState({ url: url }, title, url);
-	            content.attr('data-page', url.match('.+\/(.+)\.html.*')[1]);
+	            setDataPage(content, url);
 	            params.container.trigger('champion:after', content);
 	        }
 
-	        $(document).on('click', 'a', handleClick);
+	        $(document).find('a').on('click', handleClick);
 	        $(window).on('popstate', handlePopstate);
+	    };
+
+	    var setDataPage = function setDataPage(content, url) {
+	        content.attr('data-page', url.match('.+\/(.+)\.html.*')[1]);
 	    };
 
 	    var handleClick = function handleClick(event) {
@@ -19869,6 +19873,7 @@
 	                return;
 	            }
 
+	            setDataPage(result.content, url);
 	            cachePut(url, result);
 	            replaceContent(url, result, replace);
 	        };
@@ -19894,7 +19899,7 @@
 
 	        document.title = content.title;
 	        params.container.find(params.content_selector).remove();
-	        params.container.append(content.content);
+	        params.container.append(content.content.clone());
 
 	        params.container.trigger('champion:after', content.content);
 	    };
@@ -19935,85 +19940,46 @@
 	var ChampionSocket = __webpack_require__(301);
 	var ChampionRouter = __webpack_require__(311);
 	var url_for = __webpack_require__(306).url_for;
+	var Validation = __webpack_require__(313);
 
 	var ChampionSignup = function () {
 	    'use strict';
 
-	    var _active = false,
-	        _element = void 0,
-	        _input = void 0,
-	        _error_empty = void 0,
-	        _error_email = void 0,
-	        _button = void 0,
-	        _timeout = void 0;
+	    var form_selector = '.frm-verify-email';
+	    var is_active = false,
+	        $form = void 0,
+	        $input = void 0,
+	        $button = void 0;
 
-	    var _email_regex = /[^@]+@[^@\.]+\.[^@]+/;
-	    // const _email_regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
-	    var _validate_delay = 500;
-
-	    var load = function load(element) {
-	        _element = element;
-	        _input = _element.find('input');
-	        _error_empty = _element.find('#signup_error_empty');
-	        _error_email = _element.find('#signup_error_email');
-	        _button = _element.find('button');
-
-	        _element.removeClass('hidden');
-	        _input.on('input', inputChanged);
-	        _button.on('click', submitClicked);
-
-	        _active = true;
+	    var load = function load() {
+	        $form = $(form_selector + ':visible');
+	        $input = $form.find('input');
+	        $button = $form.find('button');
+	        $button.off('click', submit).on('click', submit);
+	        is_active = true;
+	        Validation.init(form_selector, [{ selector: '#email', validations: ['req', 'email'], msg_element: '#signup_error' }]);
 	    };
 
 	    var unload = function unload() {
-	        if (_active) {
-	            _element.addClass('hidden');
-	            _input.off('input', inputChanged);
-	            _button.off('click', submitClicked);
-	            _input.val('');
-	            _error_empty.addClass('hidden');
-	            _error_email.addClass('hidden');
-	            if (_timeout) {
-	                clearTimeout(_timeout);
-	            }
+	        if (is_active) {
+	            $form.addClass('hidden');
+	            $button.off('click', submit);
+	            $input.val('');
 	        }
-	        _active = false;
+	        is_active = false;
 	    };
 
-	    var inputChanged = function inputChanged() {
-	        if (_timeout) {
-	            clearTimeout(_timeout);
-	        }
-	        _timeout = setTimeout(validate, _validate_delay);
-	    };
-
-	    var validate = function validate() {
-	        var value = void 0,
-	            error = true;
-	        if (_active) {
-	            value = _input.val();
-	            _error_empty.addClass('hidden');
-	            _error_email.addClass('hidden');
-	            if (!value || value.length < 1) {
-	                _error_empty.removeClass('hidden');
-	            } else if (!_email_regex.test(value)) {
-	                _error_email.removeClass('hidden');
-	            } else {
-	                error = false;
-	            }
-	        }
-	        return !error;
-	    };
-
-	    var submitClicked = function submitClicked(e) {
+	    var submit = function submit(e) {
 	        e.preventDefault();
-	        if (_active && validate()) {
+	        if (is_active && Validation.validate(form_selector)) {
 	            ChampionSocket.send({
-	                verify_email: _input.val(),
+	                verify_email: $input.val(),
 	                type: 'account_opening'
 	            }, function (response) {
 	                if (response.verify_email) {
 	                    ChampionRouter.forward(url_for('new-account/virtual'));
+	                } else if (response.error) {
+	                    $(form_selector + ':visible #signup_error').text(response.error.message).removeClass('hidden');
 	                }
 	            });
 	        }
@@ -20029,6 +19995,158 @@
 
 /***/ },
 /* 313 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var Validation = function () {
+	    'use strict';
+
+	    var forms = {};
+	    var error_class = 'error-msg';
+	    var hidden_class = 'hidden';
+
+	    var events_map = {
+	        input: 'input',
+	        select: 'change'
+	    };
+
+	    var initForm = function initForm(form_selector, fields) {
+	        var $form = $(form_selector + ':visible');
+	        if ($form.length && Array.isArray(fields) && fields.length) {
+	            forms[form_selector] = { fields: fields, $form: $form };
+	            fields.forEach(function (field) {
+	                field.$ = $form.find(field.selector);
+	                if (!field.$.length) return;
+
+	                if (field.msg_element) {
+	                    field.$error = $form.find(field.msg_element);
+	                } else {
+	                    var $parent = field.$.parent();
+	                    if ($parent.find('div.' + error_class).length === 0) {
+	                        $parent.append($('<div/>', { class: error_class + ' ' + hidden_class }));
+	                    }
+	                    field.$error = $parent.find('.' + error_class);
+	                }
+
+	                var event = events_map[field.$.get(0).localName];
+	                field.$.unbind(event).on(event, function () {
+	                    checkField(field);
+	                });
+	            });
+	        }
+	    };
+
+	    // ------------------------------
+	    // ----- Validation Methods -----
+	    // ------------------------------
+	    var validRequired = function validRequired(value) {
+	        return value.length;
+	    };
+
+	    var validEmail = function validEmail(value) {
+	        return (/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/.test(value)
+	        );
+	    };
+
+	    var validPassword = function validPassword(value) {
+	        return (/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+/.test(value)
+	        );
+	    };
+
+	    var validLength = function validLength(value, options) {
+	        return (options.min ? value.length >= options.min : true) && (options.max ? value.length <= options.max : true);
+	    };
+
+	    var validCompare = function validCompare(value, options) {
+	        return value === $(options.to).val();
+	    };
+
+	    var validators_map = {
+	        req: { func: validRequired, message: 'This field is required' },
+	        email: { func: validEmail, message: 'Invalid email address' },
+	        password: { func: validPassword, message: 'Password should have lower and uppercase letters with numbers.' },
+	        length: { func: validLength, message: 'You should enter [_1] characters.' },
+	        compare: { func: validCompare, message: 'The two passwords that you entered do not match.' }
+	    };
+
+	    var pass_length = { min: 6, max: 25 };
+
+	    // --------------------
+	    // ----- Validate -----
+	    // --------------------
+	    var checkField = function checkField(field) {
+	        var all_is_ok = true,
+	            message = void 0;
+
+	        field.validations.some(function (valid) {
+	            var type = void 0,
+	                options = {};
+
+	            if (typeof valid === 'string') {
+	                type = valid;
+	            } else {
+	                type = valid[0];
+	                options = valid[1];
+	            }
+
+	            if (type === 'password' && !validLength(field.$.val(), pass_length)) {
+	                field.is_ok = false;
+	                type = 'length';
+	                options = pass_length;
+	            } else {
+	                var validator = validators_map[type].func;
+	                field.is_ok = validator(field.$.val(), options);
+	            }
+
+	            if (!field.is_ok) {
+	                message = options.message || validators_map[type].message;
+	                if (type === 'length') {
+	                    message = message.replace('[_1]', options.min === options.max ? options.min : options.min + '-' + options.max);
+	                }
+	                all_is_ok = false;
+	                return true;
+	            }
+	            return false;
+	        });
+
+	        if (!all_is_ok) {
+	            showError(field, message);
+	        } else {
+	            clearError(field);
+	        }
+
+	        return all_is_ok;
+	    };
+
+	    var clearError = function clearError(field) {
+	        field.$error.addClass(hidden_class);
+	    };
+
+	    var showError = function showError(field, message) {
+	        clearError(field);
+	        field.$error.text(message).removeClass(hidden_class);
+	    };
+
+	    var validate = function validate(form_selector) {
+	        var form = forms[form_selector];
+	        form.is_ok = true;
+	        form.fields.forEach(function (field) {
+	            if (!checkField(field)) form.is_ok = false;
+	        });
+	        return form.is_ok;
+	    };
+
+	    return {
+	        init: initForm,
+	        validate: validate
+	    };
+	}();
+
+	module.exports = Validation;
+
+/***/ },
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20036,147 +20154,67 @@
 	var ChampionSocket = __webpack_require__(301);
 	var Client = __webpack_require__(304);
 	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var Validation = __webpack_require__(313);
 
 	var ChampionNewVirtualAccount = function () {
 	    'use strict';
 
-	    var _passwd_regex = /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/;
-	    // const _code_regex = /.{48}/;
+	    var form_selector = '#frm_new_account_virtual';
 
-	    var _residences = null,
-	        _active = false;
+	    var residences = null;
 
-	    var _input_code = void 0,
-	        _input_pass = void 0,
-	        _input_rpass = void 0,
-	        _input_country = void 0,
-	        _submit_btn = void 0,
-	        _input_residence = void 0;
-
-	    var _code_error = void 0,
-	        _pass_error_short = void 0,
-	        _pass_error_char = void 0,
-	        _pass_error_nomatch = void 0,
-	        _create_acc_error = void 0;
+	    var submit_btn = void 0,
+	        input_residence = void 0;
 
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
 	        var container = $('#champion-container');
-	        _input_code = container.find('#verification-code');
-	        _input_pass = container.find('#password');
-	        _input_rpass = container.find('#r-password');
-	        _input_country = container.find('#residence');
-	        _input_residence = container.find('#residence');
-	        _submit_btn = container.find('#btn-submit');
+	        input_residence = container.find('#residence');
+	        submit_btn = container.find('#btn-submit');
 
-	        _code_error = container.find('#error-code');
-	        _pass_error_short = container.find('#error-pass-short');
-	        _pass_error_char = container.find('#error-pass-char');
-	        _pass_error_nomatch = container.find('#error-pass-nomatch');
-	        _create_acc_error = container.find('#error-create-account');
+	        submit_btn.on('click', submit);
 
-	        _input_code.on('input', validateCode);
-	        _input_pass.on('input', validatePass);
-	        _input_rpass.on('input', validateRpass);
-	        _submit_btn.on('click', submit);
+	        Validation.init(form_selector, [{ selector: '#verification-code', validations: ['req', ['length', { min: 48, max: 48, message: 'Please submit a valid verification token.' }]] }, { selector: '#password', validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }, { selector: '#residence', validations: ['req'] }]);
 
-	        if (!_residences) {
+	        if (!residences) {
 	            ChampionSocket.send({ residence_list: 1 }, function (response) {
-	                _residences = response.residence_list;
+	                residences = response.residence_list;
 	                renderResidences();
 	            });
 	        } else {
 	            renderResidences();
 	        }
-	        _active = true;
 	    };
 
 	    var renderResidences = function renderResidences() {
-	        _input_residence.empty();
-	        _residences.forEach(function (res) {
+	        input_residence.empty();
+	        residences.forEach(function (res) {
 	            var option = $('<option></option>');
 	            option.text(res.text);
 	            option.attr('value', res.value);
 	            if (res.disabled) {
 	                option.attr('disabled', '1');
 	            }
-	            _input_residence.append(option);
+	            input_residence.append(option);
 	        });
 	    };
 
 	    var unload = function unload() {
-	        _input_code.off('input', validateCode);
-	        _input_pass.off('input', validatePass);
-	        _input_rpass.off('input', validateRpass);
-	        _submit_btn.off('click', submit);
-
-	        _code_error.addClass('hidden');
-	        _pass_error_short.addClass('hidden');
-	        _pass_error_char.addClass('hidden');
-	        _pass_error_nomatch.addClass('hidden');
-	        _create_acc_error.addClass('hidden');
-
-	        _input_code.val('');
-	        _input_pass.val('');
-	        _input_rpass.val('');
-	        _input_country.val('');
-	        _input_residence.empty();
-	        _active = false;
-	    };
-
-	    var validateCode = function validateCode() {
-	        var value = _input_code.val();
-
-	        _create_acc_error.addClass('hidden');
-	        _code_error.addClass('hidden');
-	        if (value.length < 48) {
-	            _code_error.removeClass('hidden');
-	            return false;
-	        }
-	        return true;
-	    };
-
-	    var validatePass = function validatePass() {
-	        var value = _input_pass.val();
-
-	        _create_acc_error.addClass('hidden');
-	        _pass_error_short.addClass('hidden');
-	        _pass_error_char.addClass('hidden');
-
-	        if (value.length < 6) {
-	            _pass_error_short.removeClass('hidden');
-	            return false;
-	        } else if (!_passwd_regex.test(value)) {
-	            _pass_error_char.removeClass('hidden');
-	            return false;
-	        }
-
-	        validateRpass();
-
-	        return true;
-	    };
-
-	    var validateRpass = function validateRpass() {
-	        _pass_error_nomatch.addClass('hidden');
-	        if (_input_pass.val() !== _input_rpass.val()) {
-	            _pass_error_nomatch.removeClass('hidden');
-	            return false;
-	        }
-	        return true;
+	        submit_btn.off('click', submit);
 	    };
 
 	    var submit = function submit(e) {
 	        e.preventDefault();
-	        if (_active && validateCode() && validatePass()) {
+	        if (Validation.validate(form_selector)) {
 	            var data = {
 	                new_account_virtual: 1,
-	                verification_code: _input_code.val(),
-	                client_password: _input_pass.val(),
-	                residence: _input_residence.val()
+	                verification_code: $('#verification-code').val(),
+	                client_password: $('#password').val(),
+	                residence: $('#residence').val()
 	            };
 	            ChampionSocket.send(data, function (response) {
 	                if (response.error) {
-	                    _create_acc_error.removeClass('hidden').text(response.error.message);
+	                    $('#error-create-account').removeClass('hidden').text(response.error.message);
 	                } else {
 	                    var acc_info = response.new_account_virtual;
 	                    Client.process_new_account(acc_info.email, acc_info.client_id, acc_info.oauth_token, true);
@@ -20195,7 +20233,7 @@
 	module.exports = ChampionNewVirtualAccount;
 
 /***/ },
-/* 314 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20260,7 +20298,7 @@
 	module.exports = ChampionEndpoint;
 
 /***/ },
-/* 315 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20297,7 +20335,7 @@
 	module.exports = BinaryOptions;
 
 /***/ },
-/* 316 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20388,7 +20426,7 @@
 	module.exports = LoggedIn;
 
 /***/ },
-/* 317 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
