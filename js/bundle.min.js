@@ -19460,18 +19460,20 @@
 	    var hash = window.location.hash,
 	        menu = '.tab-menu-wrap',
 	        content = '.tab-content-wrapper';
-	    if (menu && content && hash) {
+	    if (menu && content) {
 	        // tabListener is called from binary-style
 	        // to init when page loaded with pjax
 	        tabListener();
-	        $.scrollTo($(hash), 500, { offset: -5 });
-	        var parent_active = 'first active',
-	            child_active = 'first a-active',
-	            hidden_class = 'invisible';
-	        /* eslint-disable newline-per-chained-call */
-	        $(menu).find('li').removeClass(parent_active).find('a').removeClass(child_active).end().end().find(hash).addClass(parent_active).find('a').addClass(child_active);
-	        $(content).find('> div').addClass(hidden_class).end().find('div' + hash + '-content').removeClass(hidden_class);
-	        /* eslint-enable newline-per-chained-call */
+	        if (hash) {
+	            $.scrollTo($(hash), 500, { offset: -5 });
+	            var parent_active = 'first active',
+	                child_active = 'first a-active',
+	                hidden_class = 'invisible';
+	            /* eslint-disable newline-per-chained-call */
+	            $(menu).find('li').removeClass(parent_active).find('a').removeClass(child_active).end().end().find(hash).addClass(parent_active).find('a').addClass(child_active);
+	            $(content).find('> div').addClass(hidden_class).end().find('div' + hash + '-content').removeClass(hidden_class);
+	            /* eslint-enable newline-per-chained-call */
+	        }
 	    }
 	};
 
