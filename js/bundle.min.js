@@ -20388,10 +20388,10 @@
 	    };
 
 	    var load = function load() {
-	        // if (!Client.is_logged_in()) {
-	        //     window.location.href = default_redirect_url();
-	        //     return;
-	        // }
+	        if (!Client.is_logged_in()) {
+	            window.location.href = default_redirect_url();
+	            return;
+	        }
 	        container = $('#champion-container');
 
 	        client_residence = Client.get_value('residence');
@@ -35739,12 +35739,13 @@
 	var LostPassword = function () {
 	    'use strict';
 
-	    var form_selector = $('#frm_lost_password');
-	    var submit_btn = void 0;
+	    var form_selector = void 0,
+	        submit_btn = void 0;
 
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
 	        var container = $('#lost_passwordws');
+	        form_selector = $('#frm_lost_password');
 	        submit_btn = container.find('#btn-submit');
 
 	        submit_btn.on('click', submit);
