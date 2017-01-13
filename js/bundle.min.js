@@ -18465,9 +18465,10 @@
 	var ChampionEndpoint = __webpack_require__(428);
 	var ChangePassword = __webpack_require__(429);
 	var LostPassword = __webpack_require__(431);
-	var BinaryOptions = __webpack_require__(432);
+	var ResetPassword = __webpack_require__(432);
+	var BinaryOptions = __webpack_require__(433);
 	var Client = __webpack_require__(304);
-	var LoggedIn = __webpack_require__(433);
+	var LoggedIn = __webpack_require__(434);
 	var Login = __webpack_require__(430);
 	var Utility = __webpack_require__(308);
 
@@ -18512,7 +18513,8 @@
 	            logged_inws: LoggedIn,
 	            'binary-options': BinaryOptions,
 	            change_password: ChangePassword,
-	            lost_passwordws: LostPassword
+	            lost_passwordws: LostPassword,
+	            reset_passwordws: ResetPassword
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
@@ -20159,6 +20161,10 @@
 	        return (options.min ? value.trim().length >= options.min : true) && (options.max ? value.trim().length <= options.max : true);
 	    };
 
+	    var validEmailToken = function validEmailToken(value) {
+	        return value.trim().length === 48;
+	    };
+
 	    var validators_map = {
 	        req: { func: validRequired, message: 'This field is required' },
 	        email: { func: validEmail, message: 'Invalid email address' },
@@ -20166,6 +20172,7 @@
 	        general: { func: validGeneral, message: 'Only letters, space, hyphen, period, apost are allowed.' },
 	        postcode: { func: validPostCode, message: 'Only letters, numbers, hyphen are allowed.' },
 	        phone: { func: validPhone, message: 'Only numbers, space are allowed.' },
+	        email_token: { func: validEmailToken, message: 'Please submit a valid verification token.' },
 	        compare: { func: validCompare, message: 'The two passwords that you entered do not match.' },
 	        min: { func: validMin, message: 'Minimum of [_1] characters required.' },
 	        length: { func: validLength, message: 'You should enter [_1] characters.' }
@@ -20287,7 +20294,7 @@
 
 	        submit_btn.on('click', submit);
 
-	        Validation.init(form_selector, [{ selector: '#verification-code', validations: ['req', ['length', { min: 48, max: 48, message: 'Please submit a valid verification token.' }]] }, { selector: '#password', validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }, { selector: '#residence', validations: ['req'] }]);
+	        Validation.init(form_selector, [{ selector: '#verification-code', validations: ['req', 'email_token'] }, { selector: '#password', validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }, { selector: '#residence', validations: ['req'] }]);
 
 	        populateResidence();
 	    };
@@ -35765,7 +35772,7 @@
 	            };
 	            ChampionSocket.send(data, function (response) {
 	                if (response.error) {
-	                    $('#error-lost-password').removeClass('hidden').text(response.error.message);
+	                    $('#error-lost-password').removeClass('invisible').text(response.error.message);
 	                } else {
 	                    window.location.href = url_for('user/reset_passwordws');
 	                }
@@ -35783,6 +35790,62 @@
 
 /***/ },
 /* 432 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(304);
+	var Validation = __webpack_require__(313);
+	var ChampionSocket = __webpack_require__(301);
+	var url_for = __webpack_require__(306).url_for;
+
+	var ResetPassword = function () {
+	    'use strict';
+
+	    var form_selector = '#frm_reset_password';
+	    var submit_btn = void 0;
+
+	    var load = function load() {
+	        if (Client.redirect_if_login()) return;
+	        var container = $('#reset_passwordws');
+	        submit_btn = container.find('#btn-submit');
+
+	        submit_btn.on('click', submit);
+
+	        Validation.init(form_selector, [{ selector: '#verification-code', validations: ['req', 'email_token'] }, { selector: '#password', validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }]);
+	    };
+
+	    var unload = function unload() {
+	        submit_btn.off('click', submit);
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        if (Validation.validate(form_selector)) {
+	            var data = {
+	                verify_email: $('#lp_email').val(),
+	                type: 'reset_password'
+	            };
+	            ChampionSocket.send(data, function (response) {
+	                if (response.error) {
+	                    $('#error-lost-password').removeClass('invisible').text(response.error.message);
+	                } else {
+	                    window.location.href = url_for('user/reset_passwordws');
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ResetPassword;
+
+/***/ },
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35819,7 +35882,7 @@
 	module.exports = BinaryOptions;
 
 /***/ },
-/* 433 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
