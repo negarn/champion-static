@@ -35809,13 +35809,15 @@
 
 	    var container = void 0,
 	        submit_btn = void 0,
-	        real_acc = void 0;
+	        real_acc = void 0,
+	        dob_field = void 0;
 
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
 	        container = $('#reset_passwordws');
 	        submit_btn = container.find('#btn-submit');
 	        real_acc = container.find('#have-real-account');
+	        dob_field = container.find('#dob-field');
 
 	        real_acc.on('click', haveRealAccountHandler);
 	        submit_btn.on('click', submit);
@@ -35825,7 +35827,7 @@
 	    };
 
 	    var haveRealAccountHandler = function haveRealAccountHandler() {
-	        $('#dob-field').toggleClass(hiddenClass);
+	        dob_field.toggleClass(hiddenClass);
 	    };
 
 	    var submit = function submit(e) {
