@@ -35749,7 +35749,7 @@
 
 	        submit_btn.on('click', submit);
 
-	        Validation.init(form_selector, [{ selector: '#email', validations: ['req', 'email'] }]);
+	        Validation.init(form_selector, [{ selector: '#lp_email', validations: ['req', 'email'] }]);
 	    };
 
 	    var unload = function unload() {
@@ -35760,7 +35760,7 @@
 	        e.preventDefault();
 	        if (Validation.validate(form_selector)) {
 	            var data = {
-	                verify_email: $('#email').val(),
+	                verify_email: $('#lp_email').val(),
 	                type: 'reset_password'
 	            };
 	            ChampionSocket.send(data, function (response) {
