@@ -35846,7 +35846,7 @@
 	            }
 	            ChampionSocket.send(data, function (response) {
 	                submit_btn.prop('disabled', true);
-	                container.addClass(hiddenClass);
+	                $(form_selector).addClass(hiddenClass);
 	                if (response.error) {
 	                    $('p.notice-msg').addClass(hiddenClass);
 	                    $('#reset-error').removeClass(hiddenClass);
