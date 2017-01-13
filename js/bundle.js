@@ -35739,13 +35739,12 @@
 	var LostPassword = function () {
 	    'use strict';
 
-	    var form_selector = void 0,
-	        submit_btn = void 0;
+	    var form_selector = '#frm_lost_password';
+	    var submit_btn = void 0;
 
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
 	        var container = $('#lost_passwordws');
-	        form_selector = $('#frm_lost_password');
 	        submit_btn = container.find('#btn-submit');
 
 	        submit_btn.on('click', submit);
