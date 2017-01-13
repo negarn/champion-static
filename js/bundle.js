@@ -20386,10 +20386,10 @@
 	    };
 
 	    var load = function load() {
-	        if (!Client.is_logged_in()) {
-	            window.location.href = default_redirect_url();
-	            return;
-	        }
+	        // if (!Client.is_logged_in()) {
+	        //     window.location.href = default_redirect_url();
+	        //     return;
+	        // }
 	        container = $('#champion-container');
 
 	        client_residence = Client.get_value('residence');
