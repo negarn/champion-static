@@ -18464,9 +18464,10 @@
 	var ChampionContact = __webpack_require__(299);
 	var ChampionEndpoint = __webpack_require__(428);
 	var ChangePassword = __webpack_require__(429);
-	var BinaryOptions = __webpack_require__(431);
+	var LostPassword = __webpack_require__(431);
+	var BinaryOptions = __webpack_require__(432);
 	var Client = __webpack_require__(304);
-	var LoggedIn = __webpack_require__(432);
+	var LoggedIn = __webpack_require__(433);
 	var Login = __webpack_require__(430);
 	var Utility = __webpack_require__(308);
 
@@ -18510,7 +18511,8 @@
 	            endpoint: ChampionEndpoint,
 	            logged_inws: LoggedIn,
 	            'binary-options': BinaryOptions,
-	            change_password: ChangePassword
+	            change_password: ChangePassword,
+	            lost_passwordws: LostPassword
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
@@ -35729,6 +35731,63 @@
 
 	'use strict';
 
+	var Client = __webpack_require__(304);
+	var Validation = __webpack_require__(313);
+	var ChampionSocket = __webpack_require__(301);
+	var url_for = __webpack_require__(306).url_for;
+
+	var LostPassword = function () {
+	    'use strict';
+
+	    var form_selector = void 0,
+	        submit_btn = void 0;
+
+	    var load = function load() {
+	        if (Client.redirect_if_login()) return;
+	        var container = $('#lost_passwordws');
+	        form_selector = container.find('#frm_lost_password');
+	        submit_btn = container.find('#btn-submit');
+
+	        submit_btn.on('click', submit);
+
+	        Validation.init(form_selector, [{ selector: '#email', validations: ['req', 'email'] }]);
+	    };
+
+	    var unload = function unload() {
+	        submit_btn.off('click', submit);
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        if (Validation.validate(form_selector)) {
+	            var data = {
+	                verify_email: $('#email').val(),
+	                type: 'reset_password'
+	            };
+	            ChampionSocket.send(data, function (response) {
+	                if (response.error) {
+	                    $('#error-lost-password').removeClass('hidden').text(response.error.message);
+	                } else {
+	                    window.location.href = url_for('user/reset_passwordws');
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = LostPassword;
+
+/***/ },
+/* 432 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	__webpack_require__(309);
 	var Client = __webpack_require__(304);
 
@@ -35761,7 +35820,7 @@
 	module.exports = BinaryOptions;
 
 /***/ },
-/* 432 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
