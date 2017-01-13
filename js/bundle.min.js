@@ -35797,7 +35797,7 @@
 	var Client = __webpack_require__(304);
 	var Validation = __webpack_require__(313);
 	var ChampionSocket = __webpack_require__(301);
-	var url_for = __webpack_require__(306).url_for;
+	var Login = __webpack_require__(430);
 
 	var ResetPassword = function () {
 	    'use strict';
@@ -35805,12 +35805,13 @@
 	    var form_selector = '#frm_reset_password',
 	        hiddenClass = 'invisible';
 
-	    var submit_btn = void 0,
+	    var container = void 0,
+	        submit_btn = void 0,
 	        real_acc = void 0;
 
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
-	        var container = $('#reset_passwordws');
+	        container = $('#reset_passwordws');
 	        submit_btn = container.find('#btn-submit');
 	        real_acc = container.find('#have-real-account');
 
@@ -35841,10 +35842,23 @@
 	                type: 'reset_password'
 	            };
 	            ChampionSocket.send(data, function (response) {
+	                submit_btn.prop('disabled', true);
+	                container.addClass(hiddenClass);
 	                if (response.error) {
-	                    $('#error-lost-password').removeClass('invisible').text(response.error.message);
+	                    $('p.notice-msg').addClass(hiddenClass);
+	                    $('#reset-error').removeClass(hiddenClass);
+
+	                    var resetErrorTemplate = '[_1]' + ' Please click the link below to restart the password recovery process. ' + 'If you require further assistance, please contact our Customer Support.';
+
+	                    // special handling as backend returns inconsistent format
+	                    var errMsg = resetErrorTemplate.replace('[_1]', response.error.code === 'InputValidationFailed' ? 'Token has expired.' : response.error.message);
+
+	                    $('#reset-error-msg').text(errMsg);
 	                } else {
-	                    window.location.href = url_for('user/reset_passwordws');
+	                    $('p.notice-msg').text('Your password has been successfully reset. ' + 'Please log into your account using your new password.');
+	                    window.setTimeout(function () {
+	                        Login.redirect_to_login();
+	                    }, 5000);
 	                }
 	            });
 	        }
