@@ -35751,8 +35751,7 @@
 
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
-	        var container = $('#lost_passwordws');
-	        submit_btn = container.find('#btn-submit');
+	        submit_btn = $('#lost_passwordws').find('#btn-submit');
 
 	        submit_btn.on('click', submit);
 
@@ -35826,11 +35825,7 @@
 	    };
 
 	    var haveRealAccountHandler = function haveRealAccountHandler() {
-	        if (real_acc.is(':checked')) {
-	            $('#dob-field').removeClass(hiddenClass);
-	        } else {
-	            $('#dob-field').addClass(hiddenClass);
-	        }
+	        $('#dob-field').toggleClass(hiddenClass);
 	    };
 
 	    var submit = function submit(e) {
