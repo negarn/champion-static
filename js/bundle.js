@@ -35774,7 +35774,7 @@
 	                if (response.error) {
 	                    $('#error-lost-password').removeClass('invisible').text(response.error.message);
 	                } else {
-	                    window.location.href = url_for('user/reset_password');
+	                    window.location.href = url_for('reset_password');
 	                }
 	            });
 	        }
