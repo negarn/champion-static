@@ -486,6 +486,16 @@ fieldset .form-input {
   background-color: #013365;
 }
 
+select[disabled=disabled] {
+  color: #C2C2C2;
+}
+
+.big-error-code {
+  color: #C2C2C2;
+  font-size: 10em;
+  font-weight: normal;
+}
+
 .fx-advisors {
   background: url("../images/symbols/advisors.svg");
 }
@@ -650,7 +660,7 @@ fieldset .form-input {
   background: url("../images/binary_options/define_position.svg");
 }
 
-.fx-xlg, .fx-lg, .fx-md, .fx-sm, .fx-xs, .fx-xss {
+.fx-xlg, .fx-lg, .fx-md, .fx-sm, .fx-xs, .fx-xxs {
   margin-left: auto;
   margin-right: auto;
   background-repeat: no-repeat;

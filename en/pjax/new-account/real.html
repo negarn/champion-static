@@ -12,23 +12,22 @@
 
         <form id="frm_new_account_real">
             <fieldset>
-                <legend id="details">Details</legend>
+                <legend>Details</legend>
 
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="title">Title</label>
+                            <label for="ddl_title">Title</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <select id="title" name="title">
+                            <select id="ddl_title">
                                 <option value="Mr">Mr</option>
                                 <option value="Mrs">Mrs</option>
                                 <option value="Ms">Ms</option>
                                 <option value="Miss">Miss</option>
                             </select>
-                            <p class="error-msg hidden" id="error-title" style="display:none"></p>
                         </div>
                     </div>
                 </div>
@@ -36,13 +35,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="fname">First name</label>
+                            <label for="txt_fname">First name</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input type="text" class="text" id="fname" name="fname" maxlength="30" />
-                            <p class="error-msg hidden" id="error-fname" style="display:none"></p>
+                            <input id="txt_fname" type="text" class="text" maxlength="30" />
                         </div>
                     </div>
                 </div>
@@ -50,13 +48,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="lname">Family name</label>
+                            <label for="txt_lname">Family name</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input type="text" class="text" id="lname" name="lname" maxlength="30" />
-                            <p class="error-msg hidden" id="error-lname" style="display:none"></p>
+                            <input id="txt_lname" type="text" class="text" maxlength="30" />
                         </div>
                     </div>
                 </div>
@@ -64,15 +61,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="dobdd">Date of birth</label>
+                            <label for="ddl_day">Date of birth</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <select name="dobdd" id="dobdd"></select>
-                            <select name="dobmm" id="dobmm"></select>
-                            <select name="dobyy" id="dobyy"></select>
-                            <p class="error-msg hidden" id="error-birthdate" style="display:none"></p>
+                            <input id="txt_birth_date" type="text" class="text" size="12" readonly="readonly" />
                         </div>
                     </div>
                 </div>
@@ -80,14 +74,13 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="residence-disabled">Country of residence</label>
+                            <label for="ddl_residence">Country of residence</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
                             <span id="move-residence-back"></span>
-                            <select name="residence-disabled" id="residence-disabled" disabled></select>
-                            <p class="error-msg hidden" id="error-residence" style="display:none"></p>
+                            <select id="ddl_residence" disabled="disabled"></select>
                         </div>
                     </div>
                 </div>
@@ -99,13 +92,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="address1">First line of home address</label>
+                            <label for="txt_address1">First line of home address</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input type="text" class="text" id="address1" name="address1" maxlength="70" />
-                            <p class="error-msg hidden" id="error-address1" style="display:none"></p>
+                            <input id="txt_address1" type="text" class="text" maxlength="70" />
                         </div>
                     </div>
                 </div>
@@ -113,13 +105,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="address2">Second line of home address</label>
+                            <label for="txt_address2">Second line of home address</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input type="text" class="text" id="address2" name="address2" maxlength="70" />
-                            <p class="error-msg hidden" id="error-address2" style="display:none"></p>
+                            <input id="txt_address2" type="text" class="text" maxlength="70" />
                         </div>
                     </div>
                 </div>
@@ -127,13 +118,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="address-town">Town/City</label>
+                            <label for="txt_city">Town/City</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input type="text" class="text" id="address-town" name="address-town" maxlength="35" />
-                            <p class="error-msg hidden" id="error-town" style="display:none"></p>
+                            <input id="txt_city" type="text" class="text" maxlength="35" />
                         </div>
                     </div>
                 </div>
@@ -141,13 +131,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="address-state">State/Province</label>
+                            <label for="ddl_state">State/Province</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <select id="address-state" name="address-state"></select>
-                            <p class="error-msg hidden" id="error-state" style="display:none"></p>
+                            <select id="ddl_state"></select>
                         </div>
                     </div>
                 </div>
@@ -155,13 +144,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="address-postcode">Postal code/ZIP</label>
+                            <label for="txt_postcode">Postal code/ZIP</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input type="text" class="text" id="address-postcode" name="address-postcode" maxlength="20">
-                            <p class="error-msg hidden" id="error-postcode" style="display:none"></p>
+                            <input id="txt_postcode" type="text" class="text" maxlength="20" />
                         </div>
                     </div>
                 </div>
@@ -169,13 +157,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="tel">Telephone</label>
+                            <label for="txt_phone">Telephone</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input type="text" class="text" id="tel" name="tel" maxlength="35">
-                            <p class="error-msg hidden" id="error-tel" style="display:none"></p>
+                            <input id="txt_phone" type="text" class="text" maxlength="35" />
                         </div>
                     </div>
                 </div>
@@ -187,12 +174,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="secret-question">Secret question</label>
+                            <label for="ddl_secret_question">Secret question</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <select id="secret-question">
+                            <select id="ddl_secret_question">
                                 <option value="Favourite dish">Favourite dish</option>
                                 <option value="Mother's maiden name">Mother's maiden name</option>
                                 <option value="Name of your pet">Name of your pet</option>
@@ -202,7 +189,6 @@
                                 <option value="Brand of first car">Brand of first car</option>
                                 <option value="Favourite artist">Favourite artist</option>
                             </select>
-                            <p class="error-msg hidden" id="error-question" style="display:none"></p>
                         </div>
                     </div>
                 </div>
@@ -210,13 +196,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="secret-answer">Answer to secret question</label>
+                            <label for="txt_secret_answer">Answer to secret question</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input type="text" class="text" id="secret-answer" maxlength="50" autocomplete="off"/>
-                            <p class="error-msg hidden" id="error-answer" style="display:none"></p>
+                            <input id="txt_secret_answer" type="text" class="text" maxlength="50" autocomplete="off" />
                         </div>
                     </div>
                 </div>
@@ -226,14 +211,14 @@
                 <div class="row">
                     <div class="col-xs-12 centered">
                         <p>
-                            <input type="checkbox" name="tnc" id="tnc">
-                                <span onclick="document.getElementById('tnc').checked=!document.getElementById('tnc').checked">I have read and agree to the <a target="_blank" href="/champion-static/en/terms-and-conditions.html">terms and conditions</a> of the site.</span>
+                            <input id="chk_tnc" type="checkbox" />
+                            <label for="chk_tnc">I have read and agree to the <a target="_blank" href="/champion-static/en/terms-and-conditions.html">terms and conditions</a> of the site.</label>
                         </p>
-                        <p class="errorfield" id="error-tnc" style="display:none"></p>
                     </div>
                 </div>
             </fieldset>
             <div class="submit-holder">
+                <p class="error-msg hidden" id="error-create-account"></p>
                 <button class="btn btn-default" id="btn_submit" type="submit">Open Account</button>
             </div>
         </form>
