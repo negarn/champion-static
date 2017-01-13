@@ -35798,6 +35798,9 @@
 	var Validation = __webpack_require__(313);
 	var ChampionSocket = __webpack_require__(301);
 	var Login = __webpack_require__(430);
+	var DatePicker = __webpack_require__(427).DatePicker;
+	var Utility = __webpack_require__(308);
+	var moment = __webpack_require__(316);
 
 	var ResetPassword = function () {
 	    'use strict';
@@ -35817,6 +35820,7 @@
 
 	        real_acc.on('click', haveRealAccountHandler);
 	        submit_btn.on('click', submit);
+	        attachDatePicker();
 
 	        Validation.init(form_selector, [{ selector: '#verification-code', validations: ['req', 'email_token'] }, { selector: '#password', validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }]);
 	    };
@@ -35827,11 +35831,6 @@
 	        } else {
 	            $('#dob-field').addClass(hiddenClass);
 	        }
-	    };
-
-	    var unload = function unload() {
-	        real_acc.off('click', haveRealAccountHandler);
-	        submit_btn.off('click', submit);
 	    };
 
 	    var submit = function submit(e) {
@@ -35862,6 +35861,25 @@
 	                }
 	            });
 	        }
+	    };
+
+	    var attachDatePicker = function attachDatePicker() {
+	        var dob = '#dob';
+	        var datePickerInst = new DatePicker(dob);
+	        datePickerInst.hide();
+	        datePickerInst.show({
+	            minDate: -100 * 365,
+	            maxDate: -18 * 365,
+	            yearRange: '-100:-18'
+	        });
+	        $(dob).attr('data-value', Utility.toISOFormat(moment())).change(function () {
+	            return Utility.dateValueChanged(this, 'date');
+	        });
+	    };
+
+	    var unload = function unload() {
+	        real_acc.off('click', haveRealAccountHandler);
+	        submit_btn.off('click', submit);
 	    };
 
 	    return {
