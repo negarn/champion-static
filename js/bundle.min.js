@@ -18513,8 +18513,8 @@
 	            logged_inws: LoggedIn,
 	            'binary-options': BinaryOptions,
 	            change_password: ChangePassword,
-	            lost_passwordws: LostPassword,
-	            reset_passwordws: ResetPassword
+	            lost_password: LostPassword,
+	            reset_password: ResetPassword
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
