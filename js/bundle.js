@@ -35812,6 +35812,12 @@
 	        real_acc = void 0,
 	        dob_field = void 0;
 
+	    var fields = {
+	        email_token: '#verification-code',
+	        password: '#password',
+	        dob: '#dob'
+	    };
+
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
 	        container = $('#reset_passwordws');
@@ -35823,7 +35829,7 @@
 	        submit_btn.on('click', submit);
 	        attachDatePicker();
 
-	        Validation.init(form_selector, [{ selector: '#verification-code', validations: ['req', 'email_token'] }, { selector: '#password', validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }]);
+	        Validation.init(form_selector, [{ selector: fields.email_token, validations: ['req', 'email_token'] }, { selector: fields.password, validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }]);
 	    };
 
 	    var haveRealAccountHandler = function haveRealAccountHandler() {
@@ -35835,11 +35841,11 @@
 	        if (Validation.validate(form_selector)) {
 	            var data = {
 	                reset_password: 1,
-	                verification_code: $('#verification-code').val(),
-	                new_password: $('#password').val()
+	                verification_code: $(fields.email_token).val(),
+	                new_password: $(fields.password).val()
 	            };
 	            if (real_acc.is(':checked')) {
-	                data.date_of_birth = $('#dob').val();
+	                data.date_of_birth = $(fields.dob).val();
 	            }
 	            ChampionSocket.send(data, function (response) {
 	                submit_btn.prop('disabled', true);
@@ -35865,15 +35871,14 @@
 	    };
 
 	    var attachDatePicker = function attachDatePicker() {
-	        var dob = '#dob';
-	        var datePickerInst = new DatePicker(dob);
+	        var datePickerInst = new DatePicker(fields.dob);
 	        datePickerInst.hide();
 	        datePickerInst.show({
 	            minDate: -100 * 365,
 	            maxDate: -18 * 365,
 	            yearRange: '-100:-18'
 	        });
-	        $(dob).attr('data-value', Utility.toISOFormat(moment())).change(function () {
+	        $(fields.dob).attr('data-value', Utility.toISOFormat(moment())).change(function () {
 	            return Utility.dateValueChanged(this, 'date');
 	        });
 	    };
