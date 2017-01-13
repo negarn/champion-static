@@ -35837,9 +35837,13 @@
 	        e.preventDefault();
 	        if (Validation.validate(form_selector)) {
 	            var data = {
-	                verify_email: $('#lp_email').val(),
-	                type: 'reset_password'
+	                reset_password: 1,
+	                verification_code: $('#verification-code').val(),
+	                new_password: $('#password').val()
 	            };
+	            if (real_acc.is(':checked')) {
+	                data.date_of_birth = $('#dob').val();
+	            }
 	            ChampionSocket.send(data, function (response) {
 	                submit_btn.prop('disabled', true);
 	                container.addClass(hiddenClass);
