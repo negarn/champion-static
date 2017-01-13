@@ -20184,6 +20184,7 @@
 	    // ----- Validate -----
 	    // --------------------
 	    var checkField = function checkField(field) {
+	        if (!field.$.is(':Visible')) return true;
 	        var all_is_ok = true,
 	            message = void 0;
 
@@ -35829,7 +35830,7 @@
 	        submit_btn.on('click', submit);
 	        attachDatePicker();
 
-	        Validation.init(form_selector, [{ selector: fields.email_token, validations: ['req', 'email_token'] }, { selector: fields.password, validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }]);
+	        Validation.init(form_selector, [{ selector: fields.email_token, validations: ['req', 'email_token'] }, { selector: fields.password, validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }, { selector: fields.dob, validations: ['req'] }]);
 	    };
 
 	    var haveRealAccountHandler = function haveRealAccountHandler() {
