@@ -376,10 +376,10 @@ fieldset {
 }
 fieldset .form-label {
   text-align: right;
-  margin: 10px;
+  margin: 10px 0;
 }
 fieldset .form-input {
-  margin: 10px;
+  margin: 10px 0;
 }
 
 .submit-holder {
