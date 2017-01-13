@@ -35809,23 +35809,35 @@
 
 	    var container = void 0,
 	        submit_btn = void 0,
-	        real_acc = void 0;
+	        real_acc = void 0,
+	        dob_field = void 0;
+
+	    var fields = {
+	        email_token: '#verification-code',
+	        btn_submit: '#btn_submit',
+	        password: '#password',
+	        r_password: '#r-password',
+	        dob: '#dob',
+	        dob_field: '#dob-field',
+	        real_acc: '#have-real-account'
+	    };
 
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
 	        container = $('#reset_passwordws');
-	        submit_btn = container.find('#btn-submit');
-	        real_acc = container.find('#have-real-account');
+	        submit_btn = container.find(fields.btn_submit);
+	        real_acc = container.find(fields.real_acc);
+	        dob_field = container.find(fields.dob_field);
 
 	        real_acc.on('click', haveRealAccountHandler);
 	        submit_btn.on('click', submit);
 	        attachDatePicker();
 
-	        Validation.init(form_selector, [{ selector: '#verification-code', validations: ['req', 'email_token'] }, { selector: '#password', validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }]);
+	        Validation.init(form_selector, [{ selector: fields.email_token, validations: ['req', 'email_token'] }, { selector: fields.password, validations: ['req', 'password'] }, { selector: fields.r_password, validations: ['req', ['compare', { to: '#password' }]] }]);
 	    };
 
 	    var haveRealAccountHandler = function haveRealAccountHandler() {
-	        $('#dob-field').toggleClass(hiddenClass);
+	        dob_field.toggleClass(hiddenClass);
 	    };
 
 	    var submit = function submit(e) {
@@ -35833,11 +35845,11 @@
 	        if (Validation.validate(form_selector)) {
 	            var data = {
 	                reset_password: 1,
-	                verification_code: $('#verification-code').val(),
-	                new_password: $('#password').val()
+	                verification_code: $(fields.email_token).val(),
+	                new_password: $(fields.password).val()
 	            };
 	            if (real_acc.is(':checked')) {
-	                data.date_of_birth = $('#dob').val();
+	                data.date_of_birth = $(fields.dob).val();
 	            }
 	            ChampionSocket.send(data, function (response) {
 	                submit_btn.prop('disabled', true);
@@ -35863,15 +35875,14 @@
 	    };
 
 	    var attachDatePicker = function attachDatePicker() {
-	        var dob = '#dob';
-	        var datePickerInst = new DatePicker(dob);
+	        var datePickerInst = new DatePicker(fields.dob);
 	        datePickerInst.hide();
 	        datePickerInst.show({
 	            minDate: -100 * 365,
 	            maxDate: -18 * 365,
 	            yearRange: '-100:-18'
 	        });
-	        $(dob).attr('data-value', Utility.toISOFormat(moment())).change(function () {
+	        $(fields.dob).attr('data-value', Utility.toISOFormat(moment())).change(function () {
 	            return Utility.dateValueChanged(this, 'date');
 	        });
 	    };
