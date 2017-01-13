@@ -35802,20 +35802,34 @@
 	var ResetPassword = function () {
 	    'use strict';
 
-	    var form_selector = '#frm_reset_password';
-	    var submit_btn = void 0;
+	    var form_selector = '#frm_reset_password',
+	        hiddenClass = 'invisible';
+
+	    var submit_btn = void 0,
+	        real_acc = void 0;
 
 	    var load = function load() {
 	        if (Client.redirect_if_login()) return;
 	        var container = $('#reset_passwordws');
 	        submit_btn = container.find('#btn-submit');
+	        real_acc = container.find('#have-real-account');
 
+	        real_acc.on('click', haveRealAccountHandler);
 	        submit_btn.on('click', submit);
 
 	        Validation.init(form_selector, [{ selector: '#verification-code', validations: ['req', 'email_token'] }, { selector: '#password', validations: ['req', 'password'] }, { selector: '#r-password', validations: ['req', ['compare', { to: '#password' }]] }]);
 	    };
 
+	    var haveRealAccountHandler = function haveRealAccountHandler() {
+	        if (real_acc.is(':checked')) {
+	            $('#dob-field').removeClass(hiddenClass);
+	        } else {
+	            $('#dob-field').addClass(hiddenClass);
+	        }
+	    };
+
 	    var unload = function unload() {
+	        real_acc.off('click', haveRealAccountHandler);
 	        submit_btn.off('click', submit);
 	    };
 
