@@ -36151,7 +36151,7 @@
 
 	    var btn_accept = 'btn-accept';
 
-	    var onload = function onload() {
+	    var load = function load() {
 	        hiddenClass = 'invisible';
 	        showLoadingImage($('#tnc-loading'));
 
@@ -36213,7 +36213,7 @@
 	    };
 
 	    return {
-	        onload: onload,
+	        load: load,
 	        unload: unload
 	    };
 	}();
