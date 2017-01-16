@@ -18,11 +18,11 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/css/flex.min.css?a3stbu15" />
-     <link rel="stylesheet" href="/champion-static/css/style.min.css?a3stbu15" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?a3stbu15" />
-      <script src="/champion-static/js/bundle.js?a3stbu15" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?a3stbu15" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/css/flex.min.css?w2jl7qux" />
+     <link rel="stylesheet" href="/champion-static/css/style.min.css?w2jl7qux" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?w2jl7qux" />
+      <script src="/champion-static/js/bundle.js?w2jl7qux" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?w2jl7qux" type="text/javascript"></script>
      
 </head>
 <body>
@@ -30,6 +30,9 @@
     <div class="fx-container">
         <div class="row">
             <div class="col-sm-12 topbar-container flex-items-sm-middle">
+                <div class=" col-sm-3 upgrade-message hidden">
+                    <a href="/champion-static/en/new-account/real.html">Upgrade to a Real Account</a>
+                </div>
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/en/contact.html">Contact Us</a></li>
@@ -171,12 +174,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="verification-code">Verification token</label>
+                            <label for="txt_verification_code">Verification token</label>
                         </div>
                     </div>
                     <div class="col-xs-8 ">
                         <div class="form-input">
-                            <input id="verification-code" type="text" maxlength="48" autocomplete="off">
+                            <input id="txt_verification_code" type="text" maxlength="48" autocomplete="off" />
                             <div class="hint">Please check your email for the value of this token</div>
                         </div>
                     </div>
@@ -185,12 +188,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="password">Choose a password</label>
+                            <label for="txt_password">Choose a password</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input id="password" type="password" maxlength="25" autocomplete="off">
+                            <input id="txt_password" type="password" maxlength="25" />
                             <div class="hint">Minimum of six lower and uppercase letters with numbers</div>
                         </div>
                     </div>
@@ -199,12 +202,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="r-password">Re-enter password</label>
+                            <label for="txt_re_password">Re-enter password</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input id="r-password" type="password" maxlength="25" autocomplete="off">
+                            <input id="txt_re_password" type="password" maxlength="25" />
                         </div>
                     </div>
                 </div>
@@ -212,19 +215,19 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="residence">Country of residence</label>
+                            <label for="ddl_residence">Country of residence</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <select id="residence"></select>
+                            <select id="ddl_residence"></select>
                         </div>
                     </div>
                 </div>
             </fieldset>
             <div class="submit-holder">
                 <p class="error-msg hidden" id="error-create-account"></p>
-                <button class="button-secondary" id="btn-submit" type="submit">Create Free Account</button>
+                <button id="btn_submit" type="submit">Create Free Account</button>
             </div>
         </form>
     </div>
@@ -273,7 +276,7 @@
         <div class="container centered">
             <div class="row">
                 <div class="col-sm">
-                    &copy; 2016 Champion FX
+                    &copy; 2017 Champion FX
                 </div>
             </div>
         </div>

@@ -22,12 +22,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="verification-code">Verification token</label>
+                            <label for="txt_verification_code">Verification token</label>
                         </div>
                     </div>
                     <div class="col-xs-8 ">
                         <div class="form-input">
-                            <input id="verification-code" type="text" maxlength="48" autocomplete="off">
+                            <input id="txt_verification_code" type="text" maxlength="48" autocomplete="off" />
                             <div class="hint">Please check your email for the value of this token</div>
                         </div>
                     </div>
@@ -36,12 +36,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="password">Choose a password</label>
+                            <label for="txt_password">Choose a password</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input id="password" type="password" maxlength="25" autocomplete="off">
+                            <input id="txt_password" type="password" maxlength="25" />
                             <div class="hint">Minimum of six lower and uppercase letters with numbers</div>
                         </div>
                     </div>
@@ -50,12 +50,12 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="r-password">Re-enter password</label>
+                            <label for="txt_re_password">Re-enter password</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <input id="r-password" type="password" maxlength="25" autocomplete="off">
+                            <input id="txt_re_password" type="password" maxlength="25" />
                         </div>
                     </div>
                 </div>
@@ -63,19 +63,19 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="form-label">
-                            <label for="residence">Country of residence</label>
+                            <label for="ddl_residence">Country of residence</label>
                         </div>
                     </div>
                     <div class="col-xs-8">
                         <div class="form-input">
-                            <select id="residence"></select>
+                            <select id="ddl_residence"></select>
                         </div>
                     </div>
                 </div>
             </fieldset>
             <div class="submit-holder">
                 <p class="error-msg hidden" id="error-create-account"></p>
-                <button class="button-secondary" id="btn-submit" type="submit">Create Free Account</button>
+                <button id="btn_submit" type="submit">Create Free Account</button>
             </div>
         </form>
     </div>
