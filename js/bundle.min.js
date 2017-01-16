@@ -18471,6 +18471,7 @@
 	var LoggedIn = __webpack_require__(434);
 	var Login = __webpack_require__(430);
 	var Utility = __webpack_require__(308);
+	var TNCApproval = __webpack_require__(435);
 
 	var Champion = function () {
 	    'use strict';
@@ -18514,7 +18515,8 @@
 	            'binary-options': BinaryOptions,
 	            'change-password': ChangePassword,
 	            'lost-password': LostPassword,
-	            'reset-password': ResetPassword
+	            'reset-password': ResetPassword,
+	            'tnc-approval': TNCApproval
 	        };
 	        if (page in pages_map) {
 	            _active_script = pages_map[page];
@@ -36123,6 +36125,100 @@
 	}();
 
 	module.exports = LoggedIn;
+
+/***/ },
+/* 435 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var showLoadingImage = __webpack_require__(308).showLoadingImage;
+	var template = __webpack_require__(308).template;
+	var Client = __webpack_require__(304);
+	var url_for_static = __webpack_require__(306).url_for_static;
+	var url_for = __webpack_require__(306).url_for;
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var ChampionSocket = __webpack_require__(301);
+
+	var TNCApproval = function () {
+	    'use strict';
+
+	    var terms_conditions_version = void 0,
+	        client_tnc_status = void 0,
+	        hiddenClass = void 0,
+	        redirectUrl = void 0,
+	        isReal = void 0;
+
+	    var btn_accept = 'btn-accept';
+
+	    var onload = function onload() {
+	        hiddenClass = 'invisible';
+	        showLoadingImage($('#tnc-loading'));
+
+	        redirectUrl = sessionStorage.getItem('tnc_redirect');
+	        sessionStorage.removeItem('tnc_redirect');
+
+	        ChampionSocket.send({ get_settings: '1' }, function (response) {
+	            client_tnc_status = response.get_settings.client_tnc_status || '-';
+	            showTNC();
+	        });
+	        ChampionSocket.send({ website_status: '1' }, function (response) {
+	            terms_conditions_version = response.website_status.terms_conditions_version;
+	            showTNC();
+	        });
+
+	        $(btn_accept).on('click', function (e) {
+	            approveTNC(e);
+	        });
+	    };
+
+	    var approveTNC = function approveTNC(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        ChampionSocket.send({ tnc_approval: '1' }, function (response) {
+	            if (!Object.prototype.hasOwnProperty.call(response, 'error')) {
+	                sessionStorage.setItem('check_tnc', 'checked');
+	                redirectBack();
+	            } else {
+	                $('#err_message').html(response.error.message).removeClass(hiddenClass);
+	            }
+	        });
+	    };
+
+	    var showTNC = function showTNC() {
+	        isReal = !Client.get_boolean('is_virtual');
+	        if (!isReal || terms_conditions_version === client_tnc_status) {
+	            redirectBack();
+	        }
+	        if (!terms_conditions_version || !client_tnc_status || !Client.get_value('landing_company_fullname')) {
+	            return;
+	        }
+	        $('#tnc-loading').addClass(hiddenClass);
+	        $('#tnc_image').attr('src', url_for_static('images/protection-icon.svg'));
+	        $('#tnc_approval').removeClass(hiddenClass);
+	        var $tnc_msg = $('#tnc-message');
+	        var tnc_message = template($tnc_msg.html(), [Client.get_value('landing_company_fullname'), url_for('terms-and-conditions')]);
+	        $tnc_msg.html(tnc_message).removeClass(hiddenClass);
+	        $('#btn-accept').text('OK');
+	    };
+
+	    var redirectBack = function redirectBack() {
+	        window.location.href = redirectUrl || default_redirect_url();
+	    };
+
+	    var unload = function unload() {
+	        $('#btn-accept').off('click', function (e) {
+	            approveTNC(e);
+	        });
+	    };
+
+	    return {
+	        onload: onload,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = TNCApproval;
 
 /***/ }
 /******/ ]);
