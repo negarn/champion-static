@@ -18564,7 +18564,7 @@
 
 	    var buffered = [],
 	        registered_callbacks = {},
-	        priority_requests = { authorize: true, balance: true, get_settings: true };
+	        priority_requests = { authorize: false, balance: false, get_settings: false };
 
 	    var promise = new Promise(function (resolve, reject) {
 	        socketResolve = resolve;
@@ -18597,7 +18597,7 @@
 	                            // TODO: to be moved from here
 	                            ChampionSocket.send({ logout: 1 });
 	                        });
-	                        delete priority_requests.authorize;
+	                        priority_requests.authorize = true;
 	                    }
 	                    break;
 	                case 'logout':
@@ -18605,7 +18605,7 @@
 	                    break;
 	                case 'balance':
 	                    Header.updateBalance(message);
-	                    delete priority_requests.balance;
+	                    priority_requests.balance = true;
 	                    break;
 	                case 'get_settings':
 	                    if (message.error) {
@@ -18617,11 +18617,13 @@
 	                        Client.set_value('residence', country_code);
 	                        ChampionSocket.send({ landing_company: country_code });
 	                    }
-	                    delete priority_requests.get_settings;
+	                    priority_requests.get_settings = true;
 	                    break;
 	                // no default
 	            }
-	            if (Object.keys(priority_requests).length === 0) {
+	            if (Object.keys(priority_requests).every(function (c) {
+	                return priority_requests[c];
+	            })) {
 	                socketResolve();
 	            }
 	        }
