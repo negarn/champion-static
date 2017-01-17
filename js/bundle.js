@@ -18667,12 +18667,15 @@
 
 	    var send = function send(data, callback, subscribe) {
 	        var msg_type = '';
-	        var duplicated_call = Object.keys(priority_requests).some(function (c) {
-	            msg_type = c;
-	            return c in data;
+	        Object.keys(priority_requests).some(function (c) {
+	            if (c in data) {
+	                msg_type = c;
+	                return true;
+	            }
+	            return false;
 	        });
 	        var exist_in_state = State.get('response')[msg_type];
-	        if (duplicated_call && exist_in_state) {
+	        if (exist_in_state) {
 	            callback(exist_in_state);
 	            return;
 	        }
