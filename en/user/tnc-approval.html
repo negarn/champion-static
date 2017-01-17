@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-    <title>Licensing | Champion-FX.com</title>
+    <title>Terms and Conditions Approval | Champion-FX.com</title>
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
@@ -154,20 +154,28 @@
     </div>
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
-            <div class="fx-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <h1>Regulation & Licensing</h1>
-            </div>
+            <div class="container">
+    <div id="tnc-loading"></div>
+
+    <div class="row fx-section invisible" id="tnc_approval">
+        <div class="col-xs-2">
+            <p><img class="responsive" id="tnc_image" src="" /></p>
         </div>
-        <div class="row">
-            <div class="col-sm centered">
-                <img class="img-lg" src="/champion-static/images/vfsc.jpg" alt="VFSC">
-                <p>Champion Group Ltd. is fully regulated by Vanuatu Financial Services Commission (VFSC) bearing license number 14660. Champion Group Ltd. is also registered with the Financial Intelligence unit (FIU) of Vanuatu for compliance with the Anti-Money Laundering rules of the VFSC</p>
-            </div>
+        <div class="col-xs-10">
+            <form>
+                <p id="tnc-message" class="invisible">
+                    [_1] has updated its  <a class="pjaxload" href="[_2]">Terms & Conditions</a>. By clicking OK, you confirm that you have read and accepted the updated <a class="pjaxload" href="[_2]">Terms & Conditions</a>.
+                </p>
+                <div class="centered">
+                    <span class="button">
+                        <button class="button" id="btn-accept"></button>
+                    </span>
+                </div>
+            </form>
         </div>
     </div>
+
+    <p class="invisible error-msg center-text" id="err_message"></p>
 </div>
         </div>
     </main>

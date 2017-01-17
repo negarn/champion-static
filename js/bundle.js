@@ -19035,23 +19035,21 @@
 	    };
 
 	    var check_tnc = function check_tnc() {
-	        if (/tnc_approvalws/.test(window.location.href) || /terms-and-conditions/.test(window.location.href) || get_boolean('is_virtual') || sessionStorage.getItem('check_tnc') !== 'check') {
+	        if (/tnc-approval/.test(window.location.href) || /terms-and-conditions/.test(window.location.href) || get_boolean('is_virtual') || sessionStorage.getItem('check_tnc') !== 'check') {
 	            return;
 	        }
 	        var client_tnc_status = get_storage_value('tnc_status'),
 	            website_tnc_version = LocalStore.get('website.tnc_version');
 	        if (client_tnc_status && website_tnc_version && client_tnc_status !== website_tnc_version) {
 	            sessionStorage.setItem('tnc_redirect', window.location.href);
-	            window.location.href = url_for('tnc_approvalws');
+	            window.location.href = url_for('user/tnc-approval');
 	        }
 	    };
 
 	    var set_check_tnc = function set_check_tnc() {
-	        if (!$('body').hasClass('BlueTopBack')) {
-	            sessionStorage.setItem('check_tnc', 'check');
-	            localStorage.removeItem('client.tnc_status');
-	            localStorage.removeItem('website.tnc_version');
-	        }
+	        sessionStorage.setItem('check_tnc', 'check');
+	        localStorage.removeItem('client.tnc_status');
+	        localStorage.removeItem('website.tnc_version');
 	    };
 
 	    var clear_storage_values = function clear_storage_values() {
@@ -19994,6 +19992,12 @@
 	        if (url.length <= 0) {
 	            return;
 	        }
+
+	        // Exclude links having no-ajax
+	        if (link.classList.contains('no-ajax')) {
+	            return;
+	        }
+
 	        // Middle click, cmd click, and ctrl click should open
 	        // links in a new tab as normal.
 	        if (event.which > 1 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
