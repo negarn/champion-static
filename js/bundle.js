@@ -18597,8 +18597,8 @@
 	                            // TODO: to be moved from here
 	                            ChampionSocket.send({ logout: 1 });
 	                        });
+	                        delete priority_requests.authorize;
 	                    }
-	                    delete priority_requests.authorize;
 	                    break;
 	                case 'logout':
 	                    Client.do_logout(message);
@@ -18666,6 +18666,16 @@
 	    };
 
 	    var send = function send(data, callback, subscribe) {
+	        var msg_type = '';
+	        var duplicated_call = Object.keys(priority_requests).some(function (c) {
+	            msg_type = c;
+	            return c in data;
+	        });
+	        var exist_in_state = State.get('response')[msg_type];
+	        if (duplicated_call && exist_in_state) {
+	            callback(exist_in_state);
+	            return;
+	        }
 	        if (typeof callback === 'function') {
 	            registered_callbacks[++req_id] = {
 	                callback: callback,
