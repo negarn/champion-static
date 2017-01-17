@@ -36167,13 +36167,17 @@
 	        redirectUrl = sessionStorage.getItem('tnc_redirect');
 	        sessionStorage.removeItem('tnc_redirect');
 
-	        ChampionSocket.promise.then(ChampionSocket.send({ get_settings: '1' }, function (response) {
-	            client_tnc_status = response.get_settings.client_tnc_status || '-';
-	            showTNC();
-	        })).then(ChampionSocket.send({ website_status: '1' }, function (response) {
-	            terms_conditions_version = response.website_status.terms_conditions_version;
-	            showTNC();
-	        }));
+	        ChampionSocket.promise.then(function () {
+	            ChampionSocket.send({ get_settings: '1' }, function (response) {
+	                client_tnc_status = response.get_settings.client_tnc_status || '-';
+	                showTNC();
+	            });
+	        }).then(function () {
+	            ChampionSocket.send({ website_status: '1' }, function (response) {
+	                terms_conditions_version = response.website_status.terms_conditions_version;
+	                showTNC();
+	            });
+	        });
 
 	        $(btn_accept).on('click', function (e) {
 	            approveTNC(e);
