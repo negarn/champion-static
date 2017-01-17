@@ -18558,10 +18558,19 @@
 
 	    var socket = void 0,
 	        req_id = 0,
-	        message_callback = void 0;
+	        message_callback = void 0,
+	        socketResolve = void 0,
+	        socketReject = void 0;
 
 	    var buffered = [],
 	        registered_callbacks = {};
+
+	    var priorityRequests = function priorityRequests() {
+	        return new Promise(function (resolve, reject) {
+	            socketResolve = resolve;
+	            socketReject = reject;
+	        });
+	    };
 
 	    var socketMessage = function socketMessage(message) {
 	        if (!message) {
@@ -18580,6 +18589,7 @@
 	                case 'authorize':
 	                    if (message.error || message.authorize.loginid !== Client.get_value('loginid')) {
 	                        ChampionSocket.send({ logout: '1' });
+	                        socketReject();
 	                    } else {
 	                        Client.response_authorize(message);
 	                        ChampionSocket.send({ balance: 1, subscribe: 1 });
@@ -18589,6 +18599,7 @@
 	                            // TODO: to be moved from here
 	                            ChampionSocket.send({ logout: 1 });
 	                        });
+	                        socketResolve();
 	                    }
 	                    break;
 	                case 'logout':
@@ -18656,7 +18667,6 @@
 	            };
 	            data.req_id = req_id;
 	        }
-
 	        if (isReady()) {
 	            socket.send(JSON.stringify(data));
 	        } else {
@@ -18697,7 +18707,8 @@
 	        init: init,
 	        send: send,
 	        getAppId: getAppId,
-	        getServer: getServer
+	        getServer: getServer,
+	        priorityRequests: priorityRequests
 	    };
 	}();
 
@@ -36158,14 +36169,13 @@
 	        redirectUrl = sessionStorage.getItem('tnc_redirect');
 	        sessionStorage.removeItem('tnc_redirect');
 
-	        ChampionSocket.send({ get_settings: '1' }, function (response) {
+	        ChampionSocket.priorityRequests.then(ChampionSocket.send({ get_settings: '1' }, function (response) {
 	            client_tnc_status = response.get_settings.client_tnc_status || '-';
 	            showTNC();
-	        });
-	        ChampionSocket.send({ website_status: '1' }, function (response) {
+	        })).then(ChampionSocket.send({ website_status: '1' }, function (response) {
 	            terms_conditions_version = response.website_status.terms_conditions_version;
 	            showTNC();
-	        });
+	        }));
 
 	        $(btn_accept).on('click', function (e) {
 	            approveTNC(e);
