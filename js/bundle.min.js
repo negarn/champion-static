@@ -18668,20 +18668,20 @@
 	    };
 
 	    var send = function send(data, callback, subscribe) {
-	        var msg_type = '';
-	        Object.keys(priority_requests).some(function (c) {
-	            if (c in data) {
-	                msg_type = c;
-	                return true;
-	            }
-	            return false;
-	        });
-	        var exist_in_state = State.get('response')[msg_type];
-	        if (exist_in_state) {
-	            callback(exist_in_state);
-	            return;
-	        }
 	        if (typeof callback === 'function') {
+	            var msg_type = '';
+	            Object.keys(priority_requests).some(function (c) {
+	                if (c in data) {
+	                    msg_type = c;
+	                    return true;
+	                }
+	                return false;
+	            });
+	            var exist_in_state = State.get('response')[msg_type];
+	            if (exist_in_state) {
+	                callback(exist_in_state);
+	                return;
+	            }
 	            registered_callbacks[++req_id] = {
 	                callback: callback,
 	                subscribe: subscribe
@@ -36195,7 +36195,6 @@
 	                client_tnc_status = response.get_settings.client_tnc_status || '-';
 	                showTNC();
 	            });
-	        }).then(function () {
 	            ChampionSocket.send({ website_status: '1' }, function (response) {
 	                terms_conditions_version = response.website_status.terms_conditions_version;
 	                showTNC();
