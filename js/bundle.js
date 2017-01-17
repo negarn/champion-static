@@ -18565,12 +18565,10 @@
 	    var buffered = [],
 	        registered_callbacks = {};
 
-	    var priorityRequests = function priorityRequests() {
-	        return new Promise(function (resolve, reject) {
-	            socketResolve = resolve;
-	            socketReject = reject;
-	        });
-	    };
+	    var promise = new Promise(function (resolve, reject) {
+	        socketResolve = resolve;
+	        socketReject = reject;
+	    });
 
 	    var socketMessage = function socketMessage(message) {
 	        if (!message) {
@@ -18708,7 +18706,7 @@
 	        send: send,
 	        getAppId: getAppId,
 	        getServer: getServer,
-	        priorityRequests: priorityRequests
+	        promise: promise
 	    };
 	}();
 
@@ -36169,7 +36167,7 @@
 	        redirectUrl = sessionStorage.getItem('tnc_redirect');
 	        sessionStorage.removeItem('tnc_redirect');
 
-	        ChampionSocket.priorityRequests.then(ChampionSocket.send({ get_settings: '1' }, function (response) {
+	        ChampionSocket.promise.then(ChampionSocket.send({ get_settings: '1' }, function (response) {
 	            client_tnc_status = response.get_settings.client_tnc_status || '-';
 	            showTNC();
 	        })).then(ChampionSocket.send({ website_status: '1' }, function (response) {
