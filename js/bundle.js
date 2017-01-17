@@ -35921,7 +35921,7 @@
 	    };
 
 	    var showTNC = function showTNC() {
-	        if (Client.is_virtual()) {
+	        if (!Client.is_logged_in() || Client.is_virtual()) {
 	            redirectBack();
 	        }
 	        $('#tnc-loading').addClass(hiddenClass);
