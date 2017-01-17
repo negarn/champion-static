@@ -36181,7 +36181,7 @@
 	        redirectUrl = void 0,
 	        isReal = void 0;
 
-	    var btn_accept = 'btn-accept';
+	    var btn_accept = '#btn-accept';
 
 	    var load = function load() {
 	        hiddenClass = 'invisible';
@@ -36234,7 +36234,7 @@
 	        var $tnc_msg = $('#tnc-message');
 	        var tnc_message = template($tnc_msg.html(), [Client.get_value('landing_company_fullname'), url_for('terms-and-conditions')]);
 	        $tnc_msg.html(tnc_message).removeClass(hiddenClass);
-	        $('#btn-accept').text('OK');
+	        $(btn_accept).text('OK');
 	    };
 
 	    var redirectBack = function redirectBack() {
@@ -36242,7 +36242,7 @@
 	    };
 
 	    var unload = function unload() {
-	        $('#btn-accept').off('click', function (e) {
+	        $(btn_accept).off('click', function (e) {
 	            approveTNC(e);
 	        });
 	    };
