@@ -18464,14 +18464,14 @@
 	var ChampionContact = __webpack_require__(299);
 	var ChampionEndpoint = __webpack_require__(428);
 	var ChangePassword = __webpack_require__(429);
-	var LostPassword = __webpack_require__(431);
-	var ResetPassword = __webpack_require__(432);
-	var BinaryOptions = __webpack_require__(433);
+	var TNCApproval = __webpack_require__(431);
+	var LostPassword = __webpack_require__(432);
+	var ResetPassword = __webpack_require__(433);
+	var BinaryOptions = __webpack_require__(434);
 	var Client = __webpack_require__(304);
-	var LoggedIn = __webpack_require__(434);
+	var LoggedIn = __webpack_require__(435);
 	var Login = __webpack_require__(430);
 	var Utility = __webpack_require__(308);
-	var TNCApproval = __webpack_require__(435);
 
 	var Champion = function () {
 	    'use strict';
@@ -18531,7 +18531,6 @@
 	            ChampionSignup.load(form.length ? form : _signup);
 	        }
 	        Utility.handleActive();
-	        Client.set_check_tnc();
 	    };
 
 	    return {
@@ -18559,12 +18558,13 @@
 	    var socket = void 0,
 	        req_id = 0,
 	        message_callback = void 0,
+	        socket_resolved = false,
 	        socketResolve = void 0,
 	        socketReject = void 0;
 
 	    var buffered = [],
 	        registered_callbacks = {},
-	        priority_requests = { authorize: false, balance: false, get_settings: false };
+	        priority_requests = { authorize: false, balance: false, get_settings: false, website_status: false };
 
 	    var promise = new Promise(function (resolve, reject) {
 	        socketResolve = resolve;
@@ -18580,6 +18580,7 @@
 	            } else {
 	                Header.userMenu();
 	            }
+	            ChampionSocket.send({ website_status: 1 });
 	        } else {
 	            var country_code = void 0;
 	            State.set(['response', message.msg_type], message);
@@ -18619,12 +18620,16 @@
 	                    }
 	                    priority_requests.get_settings = true;
 	                    break;
+	                case 'website_status':
+	                    priority_requests.website_status = true;
 	                // no default
 	            }
-	            if (Object.keys(priority_requests).every(function (c) {
+	            if (!socket_resolved && Object.keys(priority_requests).every(function (c) {
 	                return priority_requests[c];
 	            })) {
 	                socketResolve();
+	                Client.check_tnc();
+	                socket_resolved = true;
 	            }
 	        }
 	    };
@@ -18677,7 +18682,7 @@
 	                }
 	                return false;
 	            });
-	            var exist_in_state = State.get('response')[msg_type];
+	            var exist_in_state = State.get(['response', msg_type]);
 	            if (exist_in_state) {
 	                callback(exist_in_state);
 	                return;
@@ -18960,6 +18965,7 @@
 
 	var CookieStorage = __webpack_require__(305).CookieStorage;
 	var LocalStore = __webpack_require__(305).LocalStore;
+	var State = __webpack_require__(305).State;
 	var default_redirect_url = __webpack_require__(306).default_redirect_url;
 	var url_for = __webpack_require__(306).url_for;
 	var Cookies = __webpack_require__(302);
@@ -19031,25 +19037,18 @@
 	        if (authorize.is_virtual && !get_boolean('has_real')) {
 	            $('.upgrade-message').removeClass('hidden');
 	        }
-	        check_tnc();
 	    };
 
 	    var check_tnc = function check_tnc() {
-	        if (/tnc-approval/.test(window.location.href) || /terms-and-conditions/.test(window.location.href) || get_boolean('is_virtual') || sessionStorage.getItem('check_tnc') !== 'check') {
+	        if (/tnc-approval/.test(window.location.href) || /terms-and-conditions/.test(window.location.href) || get_boolean('is_virtual')) {
 	            return;
 	        }
-	        var client_tnc_status = get_storage_value('tnc_status'),
-	            website_tnc_version = LocalStore.get('website.tnc_version');
-	        if (client_tnc_status && website_tnc_version && client_tnc_status !== website_tnc_version) {
+	        var client_tnc_status = State.get(['response', 'get_settings', 'get_settings', 'client_tnc_status']),
+	            terms_conditions_version = State.get(['response', 'website_status', 'website_status', 'terms_conditions_version']);
+	        if (client_tnc_status !== terms_conditions_version) {
 	            sessionStorage.setItem('tnc_redirect', window.location.href);
 	            window.location.href = url_for('user/tnc-approval');
 	        }
-	    };
-
-	    var set_check_tnc = function set_check_tnc() {
-	        sessionStorage.setItem('check_tnc', 'check');
-	        localStorage.removeItem('client.tnc_status');
-	        localStorage.removeItem('website.tnc_version');
 	    };
 
 	    var clear_storage_values = function clear_storage_values() {
@@ -19059,7 +19058,6 @@
 	                LocalStore.set(c, '');
 	            }
 	        });
-	        set_check_tnc();
 	        sessionStorage.setItem('currencies', '');
 	    };
 
@@ -19155,7 +19153,6 @@
 	        get_boolean: get_boolean,
 	        response_authorize: response_authorize,
 	        check_tnc: check_tnc,
-	        set_check_tnc: set_check_tnc,
 	        clear_storage_values: clear_storage_values,
 	        get_token: get_token,
 	        add_token: add_token,
@@ -19220,7 +19217,20 @@
 
 	InScriptStore.prototype = {
 	    get: function get(key) {
-	        return this.store[key];
+	        var obj = this.store;
+	        var keys = key.slice(0);
+	        if (Array.isArray(keys)) {
+	            keys.some(function (k, idx) {
+	                if (k in obj && idx !== keys.length - 1) {
+	                    obj = obj[k];
+	                    key.shift();
+	                    return false;
+	                }
+	                key = k;
+	                return true;
+	            });
+	        }
+	        return obj[key];
 	    },
 	    set: function set(key, value) {
 	        var obj = this.store;
@@ -20410,7 +20420,7 @@
 
 	    var populateResidence = function populateResidence() {
 	        ddl_residence = container.find(fields.ddl_residence);
-	        residences = State.get('response').residence_list;
+	        residences = State.get(['response', 'residence_list']);
 	        var renderResidence = function renderResidence() {
 	            Utility.dropDownFromObject(ddl_residence, residences);
 	        };
@@ -20537,7 +20547,7 @@
 
 	    var populateResidence = function populateResidence() {
 	        ddl_residence = container.find(fields.ddl_residence);
-	        residences = State.get('response').residence_list;
+	        residences = State.get(['response', 'residence_list']);
 	        var renderResidence = function renderResidence() {
 	            Utility.dropDownFromObject(ddl_residence, residences, client_residence);
 	        };
@@ -20553,7 +20563,7 @@
 
 	    var populateState = function populateState() {
 	        ddl_state = container.find(fields.ddl_state);
-	        states = State.get('response').states_list;
+	        states = State.get(['response', 'states_list']);
 	        var renderState = function renderState() {
 	            if (states && states.length) {
 	                Utility.dropDownFromObject(ddl_state, states);
@@ -35866,6 +35876,87 @@
 
 	'use strict';
 
+	var showLoadingImage = __webpack_require__(308).showLoadingImage;
+	var template = __webpack_require__(308).template;
+	var Client = __webpack_require__(304);
+	var url_for_static = __webpack_require__(306).url_for_static;
+	var url_for = __webpack_require__(306).url_for;
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var ChampionSocket = __webpack_require__(301);
+
+	var TNCApproval = function () {
+	    'use strict';
+
+	    var hiddenClass = void 0,
+	        redirectUrl = void 0;
+
+	    var btn_accept = '#btn-accept';
+
+	    var load = function load() {
+	        hiddenClass = 'invisible';
+	        showLoadingImage($('#tnc-loading'));
+
+	        redirectUrl = sessionStorage.getItem('tnc_redirect');
+	        sessionStorage.removeItem('tnc_redirect');
+
+	        ChampionSocket.promise.then(function () {
+	            showTNC();
+	        });
+
+	        $(btn_accept).on('click', function (e) {
+	            approveTNC(e);
+	        });
+	    };
+
+	    var approveTNC = function approveTNC(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        ChampionSocket.send({ tnc_approval: '1' }, function (response) {
+	            if (!Object.prototype.hasOwnProperty.call(response, 'error')) {
+	                redirectBack();
+	            } else {
+	                $('#err_message').html(response.error.message).removeClass(hiddenClass);
+	            }
+	        });
+	    };
+
+	    var showTNC = function showTNC() {
+	        if (Client.is_virtual()) {
+	            redirectBack();
+	        }
+	        $('#tnc-loading').addClass(hiddenClass);
+	        $('#tnc_image').attr('src', url_for_static('images/protection-icon.svg'));
+	        $('#tnc_approval').removeClass(hiddenClass);
+	        var $tnc_msg = $('#tnc-message');
+	        var tnc_message = template($tnc_msg.html(), [Client.get_value('landing_company_fullname'), url_for('terms-and-conditions')]);
+	        $tnc_msg.html(tnc_message).removeClass(hiddenClass);
+	        $(btn_accept).text('OK');
+	    };
+
+	    var redirectBack = function redirectBack() {
+	        window.location.href = redirectUrl || default_redirect_url();
+	    };
+
+	    var unload = function unload() {
+	        $(btn_accept).off('click', function (e) {
+	            approveTNC(e);
+	        });
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = TNCApproval;
+
+/***/ },
+/* 432 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var Client = __webpack_require__(304);
 	var Validation = __webpack_require__(313);
 	var ChampionSocket = __webpack_require__(301);
@@ -35923,7 +36014,7 @@
 	module.exports = LostPassword;
 
 /***/ },
-/* 432 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36035,7 +36126,7 @@
 	module.exports = ResetPassword;
 
 /***/ },
-/* 433 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36072,7 +36163,7 @@
 	module.exports = BinaryOptions;
 
 /***/ },
-/* 434 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36107,7 +36198,7 @@
 	            })();
 	        }
 	        Client.set_cookie('token', tokens[loginid]);
-	        Client.set_check_tnc();
+
 	        // redirect url
 	        redirect_url = sessionStorage.getItem('redirect_url');
 	        sessionStorage.removeItem('redirect_url');
@@ -36161,102 +36252,6 @@
 	}();
 
 	module.exports = LoggedIn;
-
-/***/ },
-/* 435 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var showLoadingImage = __webpack_require__(308).showLoadingImage;
-	var template = __webpack_require__(308).template;
-	var Client = __webpack_require__(304);
-	var url_for_static = __webpack_require__(306).url_for_static;
-	var url_for = __webpack_require__(306).url_for;
-	var default_redirect_url = __webpack_require__(306).default_redirect_url;
-	var ChampionSocket = __webpack_require__(301);
-
-	var TNCApproval = function () {
-	    'use strict';
-
-	    var terms_conditions_version = void 0,
-	        client_tnc_status = void 0,
-	        hiddenClass = void 0,
-	        redirectUrl = void 0,
-	        isReal = void 0;
-
-	    var btn_accept = '#btn-accept';
-
-	    var load = function load() {
-	        hiddenClass = 'invisible';
-	        showLoadingImage($('#tnc-loading'));
-
-	        redirectUrl = sessionStorage.getItem('tnc_redirect');
-	        sessionStorage.removeItem('tnc_redirect');
-
-	        ChampionSocket.promise.then(function () {
-	            ChampionSocket.send({ get_settings: '1' }, function (response) {
-	                client_tnc_status = response.get_settings.client_tnc_status || '-';
-	                showTNC();
-	            });
-	            ChampionSocket.send({ website_status: '1' }, function (response) {
-	                terms_conditions_version = response.website_status.terms_conditions_version;
-	                showTNC();
-	            });
-	        });
-
-	        $(btn_accept).on('click', function (e) {
-	            approveTNC(e);
-	        });
-	    };
-
-	    var approveTNC = function approveTNC(e) {
-	        e.preventDefault();
-	        e.stopPropagation();
-	        ChampionSocket.send({ tnc_approval: '1' }, function (response) {
-	            if (!Object.prototype.hasOwnProperty.call(response, 'error')) {
-	                sessionStorage.setItem('check_tnc', 'checked');
-	                redirectBack();
-	            } else {
-	                $('#err_message').html(response.error.message).removeClass(hiddenClass);
-	            }
-	        });
-	    };
-
-	    var showTNC = function showTNC() {
-	        isReal = !Client.get_boolean('is_virtual');
-	        if (!isReal || terms_conditions_version === client_tnc_status) {
-	            redirectBack();
-	        }
-	        if (!terms_conditions_version || !client_tnc_status || !Client.get_value('landing_company_fullname')) {
-	            return;
-	        }
-	        $('#tnc-loading').addClass(hiddenClass);
-	        $('#tnc_image').attr('src', url_for_static('images/protection-icon.svg'));
-	        $('#tnc_approval').removeClass(hiddenClass);
-	        var $tnc_msg = $('#tnc-message');
-	        var tnc_message = template($tnc_msg.html(), [Client.get_value('landing_company_fullname'), url_for('terms-and-conditions')]);
-	        $tnc_msg.html(tnc_message).removeClass(hiddenClass);
-	        $(btn_accept).text('OK');
-	    };
-
-	    var redirectBack = function redirectBack() {
-	        window.location.href = redirectUrl || default_redirect_url();
-	    };
-
-	    var unload = function unload() {
-	        $(btn_accept).off('click', function (e) {
-	            approveTNC(e);
-	        });
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = TNCApproval;
 
 /***/ }
 /******/ ]);
