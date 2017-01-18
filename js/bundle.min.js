@@ -20132,17 +20132,21 @@
 	var ChampionSignup = function () {
 	    'use strict';
 
-	    var form_selector = '.frm-verify-email';
+	    var form_selector = '.frm-verify-email',
+	        signup_selector = '#signup';
 	    var is_active = false,
 	        $form = void 0,
 	        $input = void 0,
 	        $button = void 0;
 
 	    var load = function load() {
-	        $form = $(form_selector + ':visible');
-	        if ($form.length === 0) {
-	            $('#signup').removeClass('hidden');
+	        $form = $(form_selector);
+	        if ($form.length === 1) {
+	            $(signup_selector).removeClass('hidden');
+	        } else {
+	            $(signup_selector).addClass('hidden');
 	        }
+	        $form = $(form_selector + ':visible');
 	        $input = $form.find('input');
 	        $button = $form.find('button');
 	        $button.off('click', submit).on('click', submit);
