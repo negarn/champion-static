@@ -20156,7 +20156,6 @@
 
 	    var unload = function unload() {
 	        if (is_active) {
-	            $form.addClass('hidden');
 	            $button.off('click', submit);
 	            $input.val('');
 	        }
