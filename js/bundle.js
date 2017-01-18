@@ -18521,6 +18521,7 @@
 	            _active_script.load();
 	        }
 
+	        if (!_active_script) _active_script = ChampionSignup;
 	        ChampionSignup.load();
 	        Utility.handleActive();
 	    };
