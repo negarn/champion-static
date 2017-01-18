@@ -18523,7 +18523,7 @@
 	            _active_script.load();
 	        }
 
-	        var form = _container.find('#verify-email-form');
+	        var form = $('#verify-email-form');
 	        if (Client.is_logged_in() || /new-account/.test(window.location.pathname)) {
 	            form.hide();
 	        } else {
