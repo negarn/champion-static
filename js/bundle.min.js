@@ -18521,8 +18521,13 @@
 	            _active_script.load();
 	        }
 
-	        if (!_active_script) _active_script = ChampionSignup;
-	        ChampionSignup.load();
+	        var form = $('#verify-email-form');
+	        if (Client.is_logged_in() || /new-account/.test(window.location.pathname)) {
+	            form.hide();
+	        } else {
+	            if (!_active_script) _active_script = ChampionSignup;
+	            ChampionSignup.load();
+	        }
 	        Utility.handleActive();
 	    };
 
