@@ -20140,7 +20140,7 @@
 
 	    var load = function load() {
 	        $form = $(form_selector + ':visible');
-	        if (!$form) {
+	        if ($form.length === 0) {
 	            $('#signup').removeClass('hidden');
 	        }
 	        $input = $form.find('input');
