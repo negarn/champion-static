@@ -18477,12 +18477,10 @@
 	    'use strict';
 
 	    var _container = void 0,
-	        _signup = void 0,
 	        _active_script = null;
 
 	    var init = function init() {
 	        _container = $('#champion-container');
-	        _signup = $('#signup');
 	        _container.on('champion:before', beforeContentChange);
 	        _container.on('champion:after', afterContentChange);
 	        Client.init();
@@ -18523,13 +18521,7 @@
 	            _active_script.load();
 	        }
 
-	        var form = $('#verify-email-form');
-	        if (Client.is_logged_in() || /new-account/.test(window.location.pathname)) {
-	            form.hide();
-	        } else {
-	            if (!_active_script) _active_script = ChampionSignup;
-	            ChampionSignup.load(form.length ? form : _signup);
-	        }
+	        ChampionSignup.load();
 	        Utility.handleActive();
 	    };
 
@@ -20128,6 +20120,7 @@
 	var ChampionRouter = __webpack_require__(311);
 	var url_for = __webpack_require__(306).url_for;
 	var Validation = __webpack_require__(313);
+	var Client = __webpack_require__(304);
 
 	var ChampionSignup = function () {
 	    'use strict';
@@ -20140,12 +20133,19 @@
 	        $button = void 0;
 
 	    var load = function load() {
-	        $form = $(form_selector);
-	        if ($form.length === 1) {
-	            $(signup_selector).removeClass('hidden');
+	        if (Client.is_logged_in() || /new-account/.test(window.location.pathname)) {
+	            $(form_selector).hide();
 	        } else {
-	            $(signup_selector).addClass('hidden');
+	            if ($(form_selector).length === 1) {
+	                $(signup_selector).removeClass('hidden');
+	            } else {
+	                $(signup_selector).addClass('hidden');
+	            }
+	            eventHandler();
 	        }
+	    };
+
+	    var eventHandler = function eventHandler() {
 	        $form = $(form_selector + ':visible');
 	        $input = $form.find('input');
 	        $button = $form.find('button');
