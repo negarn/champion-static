@@ -20135,7 +20135,7 @@
 
 	    var load = function load() {
 	        if (Client.is_logged_in() || /(new-account|terms-and-conditions)/.test(window.location.pathname)) {
-	            $(form_selector).hide();
+	            $(form_selector).addClass('hidden');
 	        } else {
 	            if ($(form_selector).length === 1) {
 	                $(signup_selector).removeClass('hidden');
