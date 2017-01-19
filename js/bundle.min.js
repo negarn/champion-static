@@ -36572,14 +36572,14 @@
 	                    var val = response.get_financial_assessment[key];
 	                    $('#' + key).val(val);
 	                });
+	                arr_validation = [];
+	                var all_ids = $(form_selector).find('.form-input').find('>:first-child');
+	                for (var i = 0; i < all_ids.length; i++) {
+	                    arr_validation.push({ selector: all_ids[i].getAttribute('id'), validations: ['req'] });
+	                }
+	                Validation.init(form_selector, arr_validation);
 	            });
 	        });
-	        arr_validation = [];
-	        var all_ids = $('.form-input').find('>:first-child');
-	        for (var i = 0; i < all_ids.length; i++) {
-	            arr_validation.push({ selector: all_ids[i].getAttribute('id'), validations: ['req'] });
-	        }
-	        Validation.init(form_selector, arr_validation);
 	    };
 
 	    var submitForm = function submitForm() {
