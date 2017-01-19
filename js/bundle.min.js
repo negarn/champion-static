@@ -36568,16 +36568,18 @@
 	            ChampionSocket.send({ get_financial_assessment: 1 }, function (response) {
 	                hideLoadingImg();
 	                financial_assessment = response.get_financial_assessment;
-	                arr_validation = [];
 	                Object.keys(response.get_financial_assessment).forEach(function (key) {
 	                    var val = response.get_financial_assessment[key];
-	                    var id_key = '#' + key;
-	                    arr_validation.push({ selector: id_key, validations: ['req'] });
-	                    $(id_key).val(val);
+	                    $('#' + key).val(val);
 	                });
-	                Validation.init(form_selector, arr_validation);
 	            });
 	        });
+	        arr_validation = [];
+	        var all_ids = $('.form-input').find('>:first-child');
+	        for (var i = 0; i < all_ids.length; i++) {
+	            arr_validation.push({ selector: all_ids[i].getAttribute('id'), validations: ['req'] });
+	        }
+	        Validation.init(form_selector, arr_validation);
 	    };
 
 	    var submitForm = function submitForm() {
