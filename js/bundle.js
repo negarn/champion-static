@@ -36608,7 +36608,7 @@
 	                var data = { set_financial_assessment: 1 };
 	                showLoadingImage($('#form_message'));
 	                $('#assessment_form').find('select').each(function () {
-	                    financial_assessment[$(undefined).attr('id')] = data[$(undefined).attr('id')] = $(undefined).val();
+	                    financial_assessment[$(this).attr('id')] = data[$(this).attr('id')] = $(this).val();
 	                });
 	                ChampionSocket.send(data, function (response) {
 	                    $('#submit').removeAttr('disabled');
