@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-    <title>Champion FX | Champion-FX.com</title>
+    <title>Payment Methods | Champion-FX.com</title>
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
@@ -154,155 +154,179 @@
     </div>
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
-            <div class="fill-bg-color centered">
-    <div class="container">
+            <div class="fx-section">
+    <div class="fx-payment-methods container">
+
         <div class="row">
             <div class="col-sm">
-                <h1 class="fx-title">Champion FX: Where the Client is King</h1>
+                <h1>Available payment methods</h1>
             </div>
         </div>
-    </div>
-</div>
-<div class="fx-home-header content-inverse-color">
-    <div class="">
-        <p>Trade in the financial markets with a multi-asset trading platform: Meta Trader 5.<br>The choice of the modern trader. One platform, many markets.</p>
-    </div>
-    <form id="verify-email-form" class="frm-verify-email">
-    <div class="signup-box border primary-bg-color fx-material">
-        <div class="">
-            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
+
+        <div class="row centered">
+            <div class="col-sm">
+                <div class="fx-logged-out">
+                    <a href="/champion-static/en/home.html" class="button button_large">
+                        <span>Open an account now</span>
+                    </a>
+                </div>
+                <div class="fx-real">
+                    <a href="/champion-static/en/home.html" class="button button_large">
+                        <span>Deposit</span>
+                    </a>
+                    <a href="/champion-static/en/home.html" class="button button_large">
+                        <span class="withdraw">Withdraw</span>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="">
-            <button class="button" id="btn-verify-email" type="submit">Create Free Account</button>
-        </div>
-        <span class="error-msg hint color-white center-text hidden" id="signup_error"></span>
-    </div>
-</form>
-</div>
-<div class="fx-section fx-home-intro">
-    <div class="container">
+
         <div class="row">
-            <div class="col-md flex-md-middle">
-                <p>Join a licensed broker with a clear vision and unwavering commitment to treating all its clients like champions.</p>
-            </div>
-            <div class="col-md flex-md-middle centered">
-                <img class="w-300" src="/champion-static/images/license.svg" alt="">
-            </div>
+            <table class="table">
+                <tr>
+                    <th>Method</th>
+                    <th>Currencies</th>
+                    <th>Min-Max Deposit</th>
+                    <th>Min-Max Withdrawal</th>
+                    <th>Processing Time</th>
+                </tr>
+
+                <!-- Bank wire / Money transfer section -->
+                <tr>
+                    <th class="fx-subheader" colspan="5">Bank wire / Money transfer</th>
+                </tr>
+                <tr>
+                    <td id="int_bank_wire"></td>
+                    <td>USD GBP EUR AUD</td>
+                    <td>25 - 100,000</td>
+                    <td>25 - 100,000</td>
+                    <td>Deposit: 5 working days<br>Withdraw: 5 working days</td>
+                </tr>
+                <tr>
+                    <td id="local_bank_transfer"></td>
+                    <td>USD GBP EUR AUD</td>
+                    <td>25 - 100,000</td>
+                    <td>25 - 100,000</td>
+                    <td>Deposit: 5 working days<br>Withdraw: 5 working days</td>
+                </tr>
+                <tr>
+                    <td id="western_union"></td>
+                    <td>USD GBP EUR AUD</td>
+                    <td>10 - 3,000</td>
+                    <td>50 - 250</td>
+                    <td>Deposit: 1 working day<br>Withdraw: 2 working days</td>
+                </tr>
+                <tr>
+                    <td id="citadel"></td>
+                    <td>USD GBP EUR AUD</td>
+                    <td>100 - 5,000</td>
+                    <td>100 - 5,000</td>
+                    <td>Deposit: 5 working days<br>Withdraw: 5 working days</td>
+                </tr>
+
+                <!-- Credit / Debit card section -->
+                <tr>
+                    <th class="fx-subheader" colspan="5">Credit / Debit card</th>
+                </tr>
+                <tr>
+                    <td id="visa"></td>
+                    <td>USD GBP EUR AUD</td>
+                    <td>10 - 10,000</td>
+                    <td>10 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 3 working days</td>
+                </tr>
+                <tr>
+                    <td id="mastercard"></td>
+                    <td>USD GBP EUR AUD</td>
+                    <td>10 - 10,000</td>
+                    <td>10 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 3 working days</td>
+                </tr>
+                <tr>
+                    <td id="cuo-credit-card"></td>
+                    <td>USD</td>
+                    <td>10 - 1,000</td>
+                    <td></td>
+                    <td>Deposit: Instant<br>Withdraw: Not applicable</td>
+                </tr>
+
+                <!-- E-cash section -->
+                <tr>
+                    <th class="fx-subheader" colspan="5">E-cash</th>
+                </tr>
+                <tr>
+                    <td id="okpay"></td>
+                    <td>USD</td>
+                    <td>5 - 10,000</td>
+                    <td>5 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 1 working day</td>
+                </tr>
+                <tr>
+                    <td id="fastpay"></td>
+                    <td>USD</td>
+                    <td>5 - 10,000</td>
+                    <td>5 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 1 working day</td>
+                </tr>
+                <tr>
+                    <td id="perfect_money"></td>
+                    <td>USD</td>
+                    <td>5 - 10,000</td>
+                    <td>5 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 1 working day</td>
+                </tr>
+                <tr>
+                    <td id="moneybrokers"></td>
+                    <td>USD GBP EUR AUD</td>
+                    <td>5 - 10,000</td>
+                    <td>5 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 1 working day</td>
+                </tr>
+                <tr>
+                    <td id="neteller"></td>
+                    <td>USD GBP EUR AUD</td>
+                    <td>5 - 10,000</td>
+                    <td>5 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 1 working day</td>
+                </tr>
+                <tr>
+                    <td id="moneta"></td>
+                    <td>USD EUR</td>
+                    <td>5 - 10,000</td>
+                    <td>5 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 1 working day</td>
+                </tr>
+                <tr>
+                    <td id="webmoney"></td>
+                    <td>USD EUR</td>
+                    <td>5 - 10,000</td>
+                    <td>5 - 10,000</td>
+                    <td>Deposit: Instant<br>Withdraw: 1 working day</td>
+                </tr>
+                <tr>
+                    <td id="qiwi"></td>
+                    <td>USD EUR</td>
+                    <td>5 - 200(USD)<br>5 - 150(EUR)</td>
+                    <td>5 - 200(USD)<br>5 - 150(EUR)</td>
+                    <td>Deposit: 1 working day<br>Withdraw: 1 working day</td>
+                </tr>
+                <tr>
+                    <td id="yandex"></td>
+                    <td>USD EUR</td>
+                    <td>25 - 640</td>
+                    <td></td>
+                    <td>Deposit: Instant</td>
+                </tr>
+                <tr>
+                    <td id="paysafecard"></td>
+                    <td>USD EUR</td>
+                    <td>5 - 1,000</td>
+                    <td></td>
+                    <td>Deposit: Instant</td>
+                </tr>
+            </table>
         </div>
-    </div>
-</div>
-<div class="fx-section fill-bg-color centered">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm flex-md-middle">
-                <p class="p-title">Gain access to our multi-asset trading platform and you can trade Forex, stocks, futures, and CFDs<br>all through one platform. We provide you with all the necessary tools for financial trading, including:</p>
-            </div>
-        </div>
-    </div>
-    <div class="container centered">
-        <div class="row">
-            <div class="col-md flex-md-middle">
-                <div class="fx-feature-box">
-                    <div class="fx-md fx-technical"></div>
-                    <p>Technical and<br>fundamental analysis</p>
-                </div>
-            </div>
-            <div class="col-md flex-md-middle">
-                <div class="fx-feature-box">
-                    <div class="fx-md fx-algorithmic"></div>
-                    <p>Alogorithmic and<br>copy trading</p>
-                </div>
-            </div>
-            <div class="col-md flex-md-middle">
-                <div class="fx-feature-box">
-                    <div class="fx-md fx-technical-indicator"></div>
-                    <p>Custom technical indicators<br>and trading robots</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="fx-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm centered">
-                <h2 class="fx-features-title">Why Choose Champion FX</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-king"></div>
-                        <div>The Client is always King</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customer-service"></div>
-                        <div>Personalised Customer Service</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-type-accounts"></div>
-                        <div>Trade a Wide Range of Markets</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-rebate"></div>
-                        <div>Low Latency & Fast Execution</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-cent"></div>
-                        <div>Gold Spreads Fixed at 10 Cents</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-no-commission"></div>
-                        <div>Low-Cost Trading</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customised-trade"></div>
-                        <div>Tight Spreads with No Commission</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-no-deal"></div>
-                        <div>No Dealing Desk (NDD) Execution</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-deposit-withdrawal"></div>
-                        <div>Lightning Fast deposits & Withdrawals </div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-devices"></div>
-                        <div>Wide Choice of Platforms - Desktop, Web & Mobile</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-licensed-broker"></div>
-                        <div>Licensed Broker</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-fast-execution"></div>
-                        <div>Access to the Largest Market of Expert Advisors</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customise"></div>
-                        <div>Customised Trading Conditions</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-hassle-free"></div>
-                        <div>Fast & Hassle-Free Account Opening</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-unbeatable"></div>
-                        <div>Unbeatable Leverage Up to 1,000</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
         </div>

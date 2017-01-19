@@ -18472,6 +18472,10 @@
 	var LoggedIn = __webpack_require__(435);
 	var Login = __webpack_require__(430);
 	var Utility = __webpack_require__(308);
+	var Cashier = __webpack_require__(436);
+	var CashierTopUpVirtual = __webpack_require__(437);
+	var CashierPaymentMethods = __webpack_require__(438);
+	var CashierPassword = __webpack_require__(439);
 
 	var Champion = function () {
 	    'use strict';
@@ -18514,6 +18518,10 @@
 	            'change-password': ChangePassword,
 	            'lost-password': LostPassword,
 	            'reset-password': ResetPassword,
+	            cashier: Cashier,
+	            'payment-methods': CashierPaymentMethods,
+	            'top-up-virtual': CashierTopUpVirtual,
+	            'cashier-password': CashierPassword,
 	            'tnc-approval': TNCApproval
 	        };
 	        if (page in pages_map) {
@@ -36268,6 +36276,261 @@
 	}();
 
 	module.exports = LoggedIn;
+
+/***/ },
+/* 436 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(304);
+
+	var Cashier = function () {
+	    'use strict';
+
+	    var cashierContainer = void 0;
+
+	    var load = function load() {
+	        cashierContainer = $('.fx-cashier');
+
+	        if (Client.is_logged_in() && Client.is_virtual()) {
+	            cashierContainer.find('.fx-virtual').show();
+	            cashierContainer.find('.fx-real').hide();
+	            if (Client.get_value('balance') > 1000) {
+	                $('#VRT_topup_link').prop('href', 'javascript;:').addClass('button-disabled');
+	            }
+	        } else if (Client.is_logged_in() && !Client.is_virtual()) {
+	            cashierContainer.find('.fx-real').show();
+	            cashierContainer.find('.fx-virtual').hide();
+	        } else {
+	            cashierContainer.find('.fx-virtual').hide();
+	            cashierContainer.find('.fx-real').hide();
+	        }
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = Cashier;
+
+/***/ },
+/* 437 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(301);
+	var Client = __webpack_require__(304);
+	var Login = __webpack_require__(430);
+
+	var CashierTopUpVirtual = function () {
+	    'use strict';
+
+	    var container = void 0,
+	        viewError = void 0,
+	        viewSuccess = void 0;
+
+	    var load = function load() {
+	        container = $('#topup_virtual');
+	        viewError = container.find('#viewError');
+	        viewSuccess = container.find('#viewSuccess');
+
+	        if (Client.is_logged_in() && Client.is_virtual()) {
+	            top_up_virtual();
+	        } else if (Client.is_logged_in() && !Client.is_virtual()) {
+	            viewError.removeClass('hidden').find('.notice-msg').text('Sorry, this feature is available to virtual accounts only.');
+	        } else {
+	            viewError.removeClass('hidden').find('.notice-msg').html('Please <a href="javascript:;">log in</a> to view this page.').find('a').on('click', function () {
+	                Login.redirect_to_login();
+	            });
+	        }
+	    };
+
+	    var top_up_virtual = function top_up_virtual() {
+	        var data = {
+	            topup_virtual: '1'
+	        };
+	        ChampionSocket.send(data, function (response) {
+	            if (response.error) {
+	                viewError.removeClass('hidden').find('.notice-msg').text(response.error.message);
+	            } else {
+	                viewSuccess.removeClass('hidden').find('.notice-msg').text('[_1] [_2] has been credited to your Virtual money account [_3]', [response.topup_virtual.currency, response.topup_virtual.amount, Client.get_value('loginid')]);
+	            }
+	        });
+	    };
+
+	    return {
+	        load: load,
+	        top_up_virtual: top_up_virtual
+	    };
+	}();
+
+	module.exports = CashierTopUpVirtual;
+
+/***/ },
+/* 438 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(304);
+
+	var CashierPaymentMethods = function () {
+	    'use strict';
+
+	    var paymentMethodsContainer = void 0;
+
+	    var load = function load() {
+	        paymentMethodsContainer = $('.fx-payment-methods');
+
+	        if (Client.is_logged_in() && Client.is_virtual()) {
+	            paymentMethodsContainer.find('.fx-real').hide();
+	            paymentMethodsContainer.find('.fx-logged-out').hide();
+	        } else if (Client.is_logged_in() && !Client.is_virtual()) {
+	            paymentMethodsContainer.find('.fx-real').show();
+	            paymentMethodsContainer.find('.fx-logged-out').hide();
+	        } else {
+	            paymentMethodsContainer.find('.fx-real').hide();
+	            paymentMethodsContainer.find('.fx-logged-out').show();
+	        }
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = CashierPaymentMethods;
+
+/***/ },
+/* 439 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	var ChampionSocket = __webpack_require__(301);
+	var Client = __webpack_require__(304);
+	var Validation = __webpack_require__(313);
+	var Login = __webpack_require__(430);
+
+	var CashierPassword = function () {
+	    'use strict';
+
+	    var btn_submit = void 0,
+	        form_type = void 0;
+
+	    var fields = {
+	        txt_unlock_password: '#txt_unlock_password',
+	        txt_lock_password: '#txt_lock_password',
+	        txt_re_password: '#txt_re_password',
+	        btn_submit: '#btn_submit'
+	    };
+
+	    var views = {
+	        logged_out: 'logged_out',
+	        virtual: 'virtual',
+	        real: 'real',
+	        lock_cashier: 'lock',
+	        unlock_cashier: 'unlock'
+	    };
+
+	    var load = function load() {
+	        if (!Client.is_logged_in()) {
+	            renderView(views.logged_out);
+	        } else {
+	            ChampionSocket.promise.then(function () {
+	                if (Client.is_virtual()) {
+	                    renderView(views.virtual);
+	                } else {
+	                    checkCashierState();
+	                }
+	            });
+	        }
+	    };
+
+	    var checkCashierState = function checkCashierState() {
+	        ChampionSocket.send({ cashier_password: 1 }, function (response) {
+	            if (response.error) return;
+	            if (response.cashier_password === 1) {
+	                form_type = views.unlock_cashier;
+	            } else {
+	                form_type = views.lock_cashier;
+	            }
+	            renderView(views.real, form_type);
+	            initForm(form_type);
+	        });
+	    };
+
+	    var renderView = function renderView(view, form) {
+	        var $form = $('#form_' + form + '_cashier');
+
+	        if (view === views.logged_out) {
+	            $('#client_message').show().find('.notice-msg').html('Please <a href="javascript:;">log in</a> to view this page.').find('a').on('click', function () {
+	                Login.redirect_to_login();
+	            });
+	        } else if (view === views.virtual) {
+	            $('#client_message').show().find('.notice-msg').html('This feature is not relevant to virtual-money accounts.');
+	        } else if (view === views.real) {
+	            $form.show();
+	        }
+	    };
+
+	    var initForm = function initForm(form) {
+	        var form_selector = '#form_' + form_type + '_cashier',
+	            $form = $(form_selector);
+
+	        btn_submit = $form.find(fields.btn_submit);
+	        btn_submit.on('click', submit);
+
+	        if (form === views.lock_cashier) {
+	            Validation.init(form_selector, [{ selector: fields.txt_lock_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_lock_password }]] }]);
+	        } else {
+	            Validation.init(form_selector, [{ selector: fields.txt_unlock_password, validations: ['req', 'password'] }]);
+	        }
+	    };
+
+	    var unload = function unload() {
+	        if (btn_submit) {
+	            btn_submit.off('click', submit);
+	        }
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+
+	        var form_selector = '#form_' + form_type + '_cashier',
+	            $form = $(form_selector);
+
+	        if (Validation.validate(form_selector)) {
+	            var req_key = form_type + '_password',
+	                req_val = $('#txt_' + form_type + '_password').val();
+
+	            var data = _defineProperty({
+	                cashier_password: 1
+	            }, req_key, req_val);
+
+	            ChampionSocket.send(data, function (response) {
+	                if (response.error) {
+	                    $('#error-cashier-password').removeClass('hidden').text(response.error.message);
+	                } else {
+	                    $form.hide();
+	                    $('#client_message').show().find('.notice-msg').text('Your settings have been updated successfully.');
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = CashierPassword;
 
 /***/ }
 /******/ ]);
