@@ -20321,7 +20321,7 @@
 	    // ----- Validate -----
 	    // --------------------
 	    var checkField = function checkField(field) {
-	        if (!field.$.is(':Visible')) return true;
+	        if (!field.$.is(':visible')) return true;
 	        var all_is_ok = true,
 	            message = void 0;
 
@@ -36575,7 +36575,7 @@
 	                arr_validation = [];
 	                var all_ids = $(form_selector).find('.form-input').find('>:first-child');
 	                for (var i = 0; i < all_ids.length; i++) {
-	                    arr_validation.push({ selector: all_ids[i].getAttribute('id'), validations: ['req'] });
+	                    arr_validation.push({ selector: '#' + all_ids[i].getAttribute('id'), validations: ['req'] });
 	                }
 	                Validation.init(form_selector, arr_validation);
 	            });
