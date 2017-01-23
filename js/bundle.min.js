@@ -19632,7 +19632,7 @@
 	            /* eslint-disable newline-per-chained-call */
 	            var $parent_el = $(menu).find('li').removeClass(parent_active).find(tag_to_find).removeClass(child_active);
 	            if (has_subtab) {
-	                $parent_el = $parent_el.end().end().find(hash).find('.tm-ul-2').find(tag_to_find).first().addClass(child_active).end().parent().parent();
+	                $parent_el = $parent_el.end().end().find(hash).find('.tm-ul-2').find(tag_to_find).first().addClass(child_active).end().end().end();
 	            }
 	            $parent_el.addClass(parent_active);
 
