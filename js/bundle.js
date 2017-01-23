@@ -19625,7 +19625,7 @@
 	            /* eslint-disable newline-per-chained-call */
 	            var $parent_el = $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active).end().find(hash);
 	            if ($(hash).find('.tm-li-2').length > 0 || /tm-li-2/.test($parent_el.attr('class'))) {
-	                $parent_el = $parent_el.find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().end();
+	                $parent_el = $parent_el.end().find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().end();
 	            }
 	            $parent_el.addClass(parent_active);
 
