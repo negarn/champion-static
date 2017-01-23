@@ -18463,20 +18463,22 @@
 	var ChampionNewReal = __webpack_require__(315);
 	var ChampionContact = __webpack_require__(299);
 	var ChampionEndpoint = __webpack_require__(428);
-	var ChangePassword = __webpack_require__(429);
-	var TNCApproval = __webpack_require__(431);
-	var LostPassword = __webpack_require__(432);
-	var ResetPassword = __webpack_require__(433);
-	var BinaryOptions = __webpack_require__(434);
+	var ChampionSettings = __webpack_require__(429);
+	var ChangePassword = __webpack_require__(431);
+	var TNCApproval = __webpack_require__(432);
+	var LostPassword = __webpack_require__(433);
+	var ResetPassword = __webpack_require__(434);
+	var BinaryOptions = __webpack_require__(435);
 	var Client = __webpack_require__(304);
-	var LoggedIn = __webpack_require__(435);
+	var LoggedIn = __webpack_require__(436);
 	var Login = __webpack_require__(430);
 	var Utility = __webpack_require__(308);
-	var Cashier = __webpack_require__(436);
-	var CashierTopUpVirtual = __webpack_require__(437);
-	var CashierPaymentMethods = __webpack_require__(438);
-	var CashierPassword = __webpack_require__(439);
-	var FinancialAssessment = __webpack_require__(440);
+	var Cashier = __webpack_require__(437);
+	var CashierTopUpVirtual = __webpack_require__(438);
+	var CashierPaymentMethods = __webpack_require__(439);
+	var CashierPassword = __webpack_require__(440);
+	var FinancialAssessment = __webpack_require__(441);
+	var checkRiskClassification = __webpack_require__(443);
 
 	var Champion = function () {
 	    'use strict';
@@ -18514,6 +18516,7 @@
 	            real: ChampionNewReal,
 	            contact: ChampionContact,
 	            endpoint: ChampionEndpoint,
+	            settings: ChampionSettings,
 	            logged_inws: LoggedIn,
 	            'binary-options': BinaryOptions,
 	            'change-password': ChangePassword,
@@ -18534,6 +18537,7 @@
 	        if (!_active_script) _active_script = ChampionSignup;
 	        ChampionSignup.load();
 	        Utility.handleActive();
+	        checkRiskClassification();
 	    };
 
 	    return {
@@ -18567,7 +18571,13 @@
 
 	    var buffered = [],
 	        registered_callbacks = {},
-	        priority_requests = { authorize: false, balance: false, get_settings: false, website_status: false };
+	        priority_requests = {
+	        authorize: false,
+	        balance: false,
+	        get_settings: false,
+	        website_status: false,
+	        get_account_status: false
+	    };
 
 	    var promise = new Promise(function (resolve, reject) {
 	        socketResolve = resolve;
@@ -18596,6 +18606,7 @@
 	                        Client.response_authorize(message);
 	                        ChampionSocket.send({ balance: 1, subscribe: 1 });
 	                        ChampionSocket.send({ get_settings: 1 });
+	                        ChampionSocket.send({ get_account_status: 1 });
 	                        Header.userMenu();
 	                        $('#btn_logout').click(function () {
 	                            // TODO: to be moved from here
@@ -18625,6 +18636,17 @@
 	                    break;
 	                case 'website_status':
 	                    priority_requests.website_status = true;
+	                    break;
+	                case 'get_account_status':
+	                    priority_requests.get_account_status = true;
+	                    if (message.get_account_status && message.get_account_status.risk_classification === 'high') {
+	                        priority_requests.get_financial_assessment = false;
+	                        ChampionSocket.send({ get_financial_assessment: 1 });
+	                    }
+	                    break;
+	                case 'get_financial_assessment':
+	                    priority_requests.get_financial_assessment = true;
+	                    break;
 	                // no default
 	            }
 	            if (!socket_resolved && Object.keys(priority_requests).every(function (c) {
@@ -35785,6 +35807,84 @@
 
 	'use strict';
 
+	var Client = __webpack_require__(304);
+	var Login = __webpack_require__(430);
+
+	var ChampionSettings = function () {
+	    'use strict';
+
+	    var settingsContainer = void 0;
+
+	    var load = function load() {
+	        settingsContainer = $('.fx-settings');
+
+	        if (!Client.is_logged_in()) {
+	            $('#client_message').show().find('.notice-msg').html('Please <a href="javascript:;">log in</a> to view this page.').find('a').on('click', function () {
+	                Login.redirect_to_login();
+	            });
+	        } else {
+	            if (!Client.is_virtual()) {
+	                settingsContainer.find('#fx-settings-content').show().find('.fx-real').show();
+	                return;
+	            }
+	            settingsContainer.find('#fx-settings-content').show();
+	        }
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = ChampionSettings;
+
+/***/ },
+/* 430 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getAppId = __webpack_require__(301).getAppId;
+	var getLanguage = __webpack_require__(303).getLanguage;
+	var Client = __webpack_require__(304);
+
+	var Login = function () {
+	    'use strict';
+
+	    var redirect_to_login = function redirect_to_login() {
+	        if (!Client.is_logged_in() && !is_login_pages()) {
+	            try {
+	                sessionStorage.setItem('redirect_url', window.location.href);
+	            } catch (e) {
+	                console.error('The website needs features which are not enabled on private mode browsing. Please use normal mode.');
+	            }
+	            window.location.href = login_url();
+	        }
+	    };
+
+	    var login_url = function login_url() {
+	        var server_url = localStorage.getItem('config.server_url');
+	        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage() : 'https://oauth.champion-fx.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage();
+	    };
+
+	    var is_login_pages = function is_login_pages() {
+	        return (/logged_inws|oauth2/.test(document.URL)
+	        );
+	    };
+
+	    return {
+	        redirect_to_login: redirect_to_login
+	    };
+	}();
+
+	module.exports = Login;
+
+/***/ },
+/* 431 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var ChampionSocket = __webpack_require__(301);
 	var Client = __webpack_require__(304);
 	var Validation = __webpack_require__(313);
@@ -35856,48 +35956,7 @@
 	module.exports = ChangePassword;
 
 /***/ },
-/* 430 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getAppId = __webpack_require__(301).getAppId;
-	var getLanguage = __webpack_require__(303).getLanguage;
-	var Client = __webpack_require__(304);
-
-	var Login = function () {
-	    'use strict';
-
-	    var redirect_to_login = function redirect_to_login() {
-	        if (!Client.is_logged_in() && !is_login_pages()) {
-	            try {
-	                sessionStorage.setItem('redirect_url', window.location.href);
-	            } catch (e) {
-	                console.error('The website needs features which are not enabled on private mode browsing. Please use normal mode.');
-	            }
-	            window.location.href = login_url();
-	        }
-	    };
-
-	    var login_url = function login_url() {
-	        var server_url = localStorage.getItem('config.server_url');
-	        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage() : 'https://oauth.champion-fx.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage();
-	    };
-
-	    var is_login_pages = function is_login_pages() {
-	        return (/logged_inws|oauth2/.test(document.URL)
-	        );
-	    };
-
-	    return {
-	        redirect_to_login: redirect_to_login
-	    };
-	}();
-
-	module.exports = Login;
-
-/***/ },
-/* 431 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35978,7 +36037,7 @@
 	module.exports = TNCApproval;
 
 /***/ },
-/* 432 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36040,7 +36099,7 @@
 	module.exports = LostPassword;
 
 /***/ },
-/* 433 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36152,7 +36211,7 @@
 	module.exports = ResetPassword;
 
 /***/ },
-/* 434 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36189,7 +36248,7 @@
 	module.exports = BinaryOptions;
 
 /***/ },
-/* 435 */
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36280,7 +36339,7 @@
 	module.exports = LoggedIn;
 
 /***/ },
-/* 436 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36318,7 +36377,7 @@
 	module.exports = Cashier;
 
 /***/ },
-/* 437 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36372,7 +36431,7 @@
 	module.exports = CashierTopUpVirtual;
 
 /***/ },
-/* 438 */
+/* 439 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36407,7 +36466,7 @@
 	module.exports = CashierPaymentMethods;
 
 /***/ },
-/* 439 */
+/* 440 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36535,7 +36594,7 @@
 	module.exports = CashierPassword;
 
 /***/ },
-/* 440 */
+/* 441 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36546,6 +36605,7 @@
 	var Client = __webpack_require__(304);
 	var ChampionSocket = __webpack_require__(301);
 	var Validation = __webpack_require__(313);
+	var RiskClassification = __webpack_require__(442);
 
 	var FinancialAssessment = function () {
 	    'use strict';
@@ -36615,7 +36675,8 @@
 	                    if ('error' in response) {
 	                        showFormMessage('Sorry, an error occurred while processing your request.', false);
 	                    } else {
-	                        showFormMessage('Your settings have been updated successfully.', true);
+	                        showFormMessage('Your changes have been updated successfully.', true);
+	                        RiskClassification.cleanup();
 	                    }
 	                });
 	            }();
@@ -36658,11 +36719,104 @@
 
 	    return {
 	        load: load,
-	        unload: unload
+	        unload: unload,
+	        submitForm: submitForm
 	    };
 	}();
 
 	module.exports = FinancialAssessment;
+
+/***/ },
+/* 442 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var RiskClassification = function () {
+	    'use strict';
+
+	    var showRiskClassificationPopUp = function showRiskClassificationPopUp(content) {
+	        if ($('#risk_classification').length > 0) {
+	            return;
+	        }
+	        var lightboxDiv = $("<div id='risk_classification' class='lightbox'></div>");
+
+	        var wrapper = $('<div></div>');
+	        wrapper = wrapper.append(content);
+	        wrapper = $('<div></div>').append(wrapper);
+	        wrapper.appendTo(lightboxDiv);
+	        lightboxDiv.appendTo('body');
+	    };
+
+	    var cleanup = function cleanup() {
+	        $('#risk_classification').remove();
+	    };
+
+	    return {
+	        showRiskClassificationPopUp: showRiskClassificationPopUp,
+	        cleanup: cleanup
+	    };
+	}();
+
+	module.exports = RiskClassification;
+
+/***/ },
+/* 443 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var RiskClassification = __webpack_require__(442);
+	var FinancialAssessment = __webpack_require__(441);
+	var Client = __webpack_require__(304);
+	var url_for = __webpack_require__(306).url_for;
+	var ChampionSocket = __webpack_require__(301);
+	var State = __webpack_require__(308);
+
+	var renderRiskClassificationPopUp = function renderRiskClassificationPopUp() {
+	    if (window.location.pathname === '/user/assessment') {
+	        window.location.href = url_for('user/settings');
+	        return;
+	    }
+	    $.ajax({
+	        url: url_for('user/assessment'),
+	        dataType: 'html',
+	        method: 'GET',
+	        success: function success(riskClassificationText) {
+	            if (riskClassificationText.includes('assessment_form')) {
+	                var payload = $(riskClassificationText);
+	                RiskClassification.showRiskClassificationPopUp(payload.find('#assessment_form'));
+	                var $risk_classification = $('#risk_classification');
+	                $risk_classification.find('#assessment_form').removeClass('invisible').attr('style', 'text-align: left;');
+	                $risk_classification.find('#high_risk_classification').removeClass('invisible');
+	                $risk_classification.find('#heading_risk').removeClass('invisible');
+	                $risk_classification.find('#assessment_form').on('submit', function (event) {
+	                    event.preventDefault();
+	                    FinancialAssessment.submitForm();
+	                    return false;
+	                });
+	            }
+	        },
+	        error: function error() {
+	            return false;
+	        }
+	    });
+	    $('#risk_classification').find('#assessment_form').on('submit', function (event) {
+	        event.preventDefault();
+	        FinancialAssessment.submitForm();
+	        return false;
+	    });
+	};
+
+	var checkRiskClassification = function checkRiskClassification() {
+	    ChampionSocket.promise.then(function () {
+	        if (Object.keys(State.get(['response', 'get_financial_assessment', 'get_financial_assessment'])).length === 0 && State.get('response', 'get_account_status', 'get_account_status', 'risk_classification') === 'high' && Client.is_logged_in() && !Client.is_virtual()) {
+	            renderRiskClassificationPopUp();
+	        }
+	    });
+	};
+
+	module.exports = checkRiskClassification;
 
 /***/ }
 /******/ ]);

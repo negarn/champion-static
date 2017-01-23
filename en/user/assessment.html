@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+    <style id="antiClickjack">body{display:none !important;}</style>
+    <script type="text/javascript">
+        if (self === top) {
+            var antiClickjack = document.getElementById("antiClickjack");
+            antiClickjack.parentNode.removeChild(antiClickjack);
+        } else {
+            top.location = self.location;
+        }
+    </script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+    <title>Financial Assessment | Champion-FX.com</title>
+    <meta name="description" content="ChampionFX Static" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
+     <link rel="stylesheet" href="/champion-static/css/flex.min.css?mkrm4i7q" />
+     <link rel="stylesheet" href="/champion-static/css/style.min.css?mkrm4i7q" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?mkrm4i7q" />
+      <script src="/champion-static/js/bundle.js?mkrm4i7q" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?mkrm4i7q" type="text/javascript"></script>
+     
+</head>
+<body>
+    <div class="topbar primary-color-dark">
+    <div class="fx-container">
+        <div class="row">
+            <div class="col-sm-12 topbar-container flex-items-sm-middle">
+                <div class=" col-sm-3 upgrade-message hidden">
+                    <a href="/champion-static/en/new-account/real.html">Upgrade to a Real Account</a>
+                </div>
+                <div class="topbar-contacts">
+                    <ul>
+                        <li class="last"><a href="/champion-static/en/contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="invisible">
+                    <div class="languages">
+                        <ul id="display_language">
+                            <li class="EN"> <span class="world world-white"></span> <span class="language">English</span> <span class="nav-caret"></span> </li>
+                        </ul>
+                        <ul id="select_language">
+                            <li class="EN"> <span class="world world-black"></span> <span class="language">English</span> <span class="nav-caret"></span> </li>
+                            <li class="ID">Indonesia</li>
+                            <li class="DE">Deutsch</li>
+                            <li class="EN invisible">English</li>
+                            <li class="ES">Español</li>
+                            <li class="FR">Français</li>
+                            <li class="IT">Italiano</li>
+                            <li class="PL">Polski</li>
+                            <li class="PT">Português</li>
+                            <li class="RU">Русский</li>
+                            <li class="VI">Tiếng Việt</li>
+                            <li class="ZH_CN">简体中文</li>
+                            <li class="ZH_TW">繁體中文</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="dark-blue header">
+    <div class="fx-container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="logo-wrapper">
+                    <a href="/champion-static/en/home.html" class="logo-parent">
+                        <div class="logo">
+                            <div></div>
+                        </div>
+                        <div class="mobile-hide binary-logo-text ">
+                            <div></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <ul class="top-nav-menu mobile-hide">
+                    <li><a href="/champion-static/en/about-us.html">About</a></li>
+                    <li><a href="/champion-static/en/forex.html">Forex</a></li>
+                    <li><a href="/champion-static/en/binary-options.html">Binary Options</a></li>
+                    <li><a href="/champion-static/en/range-of-markets.html">Markets</a></li>
+                    <li><a href="/champion-static/en/partnerships.html">Partnerships</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2">
+                <div id="main-logout" class="hidden">
+                    <ul id="main-account" class="nav-menu main-nav">
+                        <li class="account">
+                            <a href="javascript:;">
+                                <div class="main-account">
+                                    <div class="account-type"></div>
+                                    <div class="account-id"></div>
+                                    <div class="topMenuBalance"></div>
+                                </div>
+                                <div class="nav-caret"></div>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul id="all-accounts" class="nav-menu main-nav">
+                        <li class="account">
+                            <a href="javascript:;">
+                                <div class="main-account">
+                                    <div class="account-type"></div>
+                                    <div class="account-id"></div>
+                                    <div class="topMenuBalance"></div>
+                                </div>
+                                <div class="nav-caret"></div>
+                            </a>
+                            <ul>
+                                <a class="link" href="/champion-static/en/user/settings.html">
+                                    <li class="topMenuSettings">Settings</li>
+                                </a>
+                                <div class="separator-line-thin-gray"></div>
+                                <a class="link" href="/champion-static/en/cashier.html">
+                                    <li class="topMenuCashier">Cashier</li>
+                                </a>
+                                <div class="separator-line-thin-gray"></div>
+                                <div class="login-id-list"></div>
+                                <a href="javascript:;" id="btn_logout" class="logout">
+                                    <li>Sign out</li>
+                                </a>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div id="main-login" class="FX__Header__cta hidden">
+                    <a class="button-secondary" href="javascript:;"><span>Log In</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="fill-bg-color centered hidden" id="signup">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm flex-sm-middle">
+                    <form id="verify-email-form" class="frm-verify-email">
+    <div class="signup-box border primary-bg-color fx-material">
+        <div class="">
+            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
+        </div>
+        <div class="">
+            <button class="button" id="btn-verify-email" type="submit">Create Free Account</button>
+        </div>
+        <span class="error-msg hint color-white center-text hidden" id="signup_error"></span>
+    </div>
+</form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main class="page-content" aria-label="Content" id="champion-container">
+        <div class="wrapper" id="champion-content">
+            <div class="fx-section container">
+    <h1 id="heading">Financial Assessment</h1>
+    <p class = "invisible" id="response_on_success"></p>
+    <form class="formObject invisible" id="assessment_form" name="assessment_form">
+        <h1 id="heading_risk" class="invisible">Financial Assessment</h1>
+        <p class="invisible" id="high_risk_classification">
+            Due to recent changes in the regulations, we are required to ask our clients to complete the following Financial Assessment. Please note that you will not be able to continue trading until this is completed.
+        </p>
+        <fieldset>
+            <legend>Financial Information</legend>
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="forex_trading_experience">Forex trading experience</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="forex_trading_experience" name="forex_trading_experience">
+                            <option value="">Please select</option>
+                            <option value="0-1 year" >0-1 year</option>
+                            <option value="1-2 years">1-2 years</option>
+                            <option value="Over 3 years">Over 3 years</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="forex_trading_frequency">Forex trading frequency</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="forex_trading_frequency" name="forex_trading_frequency">
+                            <option value="">Please select</option>
+                            <option value="0-5 transactions in the past 12 months" >0-5 transactions in the past 12 months</option>
+                            <option value="6-10 transactions in the past 12 months">6-10 transactions in the past 12 months</option>
+                            <option value="40 transactions or more in the past 12 months">40 transactions or more in the past 12 months</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="indices_trading_experience">Indices trading experience</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="indices_trading_experience" name="indices_trading_experience">
+                            <option value="">Please select</option>
+                            <option value="0-1 year" >0-1 year</option>
+                            <option value="1-2 years">1-2 years</option>
+                            <option value="Over 3 years">Over 3 years</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="indices_trading_frequency">Indices trading frequency</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="indices_trading_frequency" name="indices_trading_frequency">
+                            <option value="">Please select</option>
+                            <option value="0-5 transactions in the past 12 months">0-5 transactions in the past 12 months</option>
+                            <option value="6-10 transactions in the past 12 months" >6-10 transactions in the past 12 months</option>
+                            <option value="40 transactions or more in the past 12 months">40 transactions or more in the past 12 months</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="commodities_trading_experience">Commodities trading experience</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="commodities_trading_experience" name="commodities_trading_experience">
+                            <option value="">Please select</option>
+                            <option value="0-1 year">0-1 year</option>
+                            <option value="1-2 years" >1-2 years</option>
+                            <option value="Over 3 years">Over 3 years</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="commodities_trading_frequency">Commodities trading frequency</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="commodities_trading_frequency" name="commodities_trading_frequency">
+                            <option value="">Please select</option>
+                            <option value="0-5 transactions in the past 12 months">0-5 transactions in the past 12 months</option>
+                            <option value="6-10 transactions in the past 12 months">6-10 transactions in the past 12 months</option>
+                            <option value="40 transactions or more in the past 12 months" >40 transactions or more in the past 12 months</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="stocks_trading_experience">Stocks trading experience</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="stocks_trading_experience" name="stocks_trading_experience">
+                            <option value="">Please select</option>
+                            <option value="0-1 year">0-1 year</option>
+                            <option value="1-2 years" >1-2 years</option>
+                            <option value="Over 3 years">Over 3 years</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="stocks_trading_frequency">Stocks trading frequency</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="stocks_trading_frequency" name="stocks_trading_frequency">
+                            <option value="">Please select</option>
+                            <option value="0-5 transactions in the past 12 months">0-5 transactions in the past 12 months</option>
+                            <option value="6-10 transactions in the past 12 months" >6-10 transactions in the past 12 months</option>
+                            <option value="40 transactions or more in the past 12 months">40 transactions or more in the past 12 months</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="other_derivatives_trading_experience">Binary options or other financial derivatives trading experience</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="other_derivatives_trading_experience" name="other_derivatives_trading_experience">
+                            <option value="">Please select</option>
+                            <option value="0-1 year">0-1 year</option>
+                            <option value="1-2 years" >1-2 years</option>
+                            <option value="Over 3 years">Over 3 years</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="other_derivatives_trading_frequency">Binary options or other financial derivatives trading frequency</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="other_derivatives_trading_frequency" name="other_derivatives_trading_frequency">
+                            <option value="">Please select</option>
+                            <option value="0-5 transactions in the past 12 months">0-5 transactions in the past 12 months</option>
+                            <option value="6-10 transactions in the past 12 months" >6-10 transactions in the past 12 months</option>
+                            <option value="40 transactions or more in the past 12 months">40 transactions or more in the past 12 months</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="other_instruments_trading_experience">Other financial instruments trading experience</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="other_instruments_trading_experience" name="other_instruments_trading_experience">
+                            <option value="">Please select</option>
+                            <option value="0-1 year">0-1 year</option>
+                            <option value="1-2 years" >1-2 years</option>
+                            <option value="Over 3 years">Over 3 years</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="other_instruments_trading_frequency">Other financial instruments trading frequency</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="other_instruments_trading_frequency" name="other_instruments_trading_frequency">
+                            <option value="">Please select</option>
+                            <option value="0-5 transactions in the past 12 months">0-5 transactions in the past 12 months</option>
+                            <option value="6-10 transactions in the past 12 months" >6-10 transactions in the past 12 months</option>
+                            <option value="40 transactions or more in the past 12 months">40 transactions or more in the past 12 months</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="employment_industry">Industry of Employment</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="employment_industry" name="employment_industry">
+                            <option value="">Please select</option>
+                            <option value="Construction">Construction</option>
+                            <option value="Education" >Education</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Health">Health</option>
+                            <option value="Tourism">Tourism</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="education_level">Level of Education</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="education_level" name="education_level">
+                            <option value="">Please select</option>
+                            <option value="Primary">Primary</option>
+                            <option value="Secondary" >Secondary</option>
+                            <option value="Tertiary">Tertiary</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="income_source">Income Source</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="income_source" name="income_source">
+                            <option value="">Please select</option>
+                            <option value="Salaried Employee">Salaried Employee</option>
+                            <option value="Self-Employed" >Self-Employed</option>
+                            <option value="Investments &amp; Dividends">Investments &amp; Dividends</option>
+                            <option value="Pension">Pension</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="net_income">Net Annual Income</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="net_income" name="net_income">
+                            <option value="">Please select</option>
+                            <option value="Less than &#36;25,000">Less than &#36;25,000</option>
+                            <option value="&#36;25,000 - &#36;50,000" >&#36;25,000 - &#36;50,000</option>
+                            <option value="&#36;50,001 - &#36;100,000">&#36;50,001 - &#36;100,000</option>
+                            <option value="&#36;100,001 - &#36;500,000">&#36;100,001 - &#36;500,000</option>
+                            <option value="Over &#36;500,000">Over &#36;500,001</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="form-label">
+                        <label for="estimated_worth">Estimated Net Worth</label>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="form-input">
+                        <select id="estimated_worth" name="estimated_worth">
+                            <option value="">Please select</option>
+                            <option value="Less than &#36;100,000">Less than &#36;100,000</option>
+                            <option value="&#36;100,000 - &#36;250,000" >&#36;100,000 - &#36;250,000</option>
+                            <option value="&#36;250,001 - &#36;500,000">&#36;250,001 - &#36;500,000</option>
+                            <option value="&#36;500,001 - &#36;1,000,000">&#36;500,001 - &#36;1,000,000</option>
+                            <option value="Over &#36;1,000,000">Over &#36;1,000,000</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <p id="warning">The financial trading services contained within this site are only suitable for customers who are able to bear the loss of all the money they invest and who understand and have experience of the risk involved in the acquistion of financial contracts. Transactions in financial contracts carry a high degree of risk. If purchased contracts expire worthless, you will suffer a total loss of your investment, which consists of the contract premium.</p>
+        </fieldset>
+        <div class="center-text">
+            <div id="form_message"></div>
+        </div>
+        <div class="submit-holder">
+            <button class="button" id="submit">Update</button>
+        </div>
+    </form>
+</div>
+        </div>
+    </main>
+    <footer id="footer" class="fx-footer primary-color content-inverse-color">
+    <div id="footer-menu" class="">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                <ul>
+                    <li>
+                        <a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a>
+                    </li>
+                </ul>
+                </div>
+                <div class="col-sm">
+                    <ul>
+                        <li><a class="" href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm">
+                    <ul>
+                        <li><a class="" href=""></a></li>
+                    </ul>
+                </div>
+                <div class="col-sm">
+                    <ul>
+                        <li><a class="" href=""></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer-regulatory" class="primary-color-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    High Risk Investment Warning: Trading foreign exchange and/or contracts for differences on margin carries a very high level of risk, and may not be suitable for all investors. There is a possibility that you could sustain a loss in excess of your deposited funds. Accordingly, you should not speculate with capital that you cannot afford to lose. Before deciding to trade the products offered via this website you should carefully consider your financial objectives, needs and level of trading experience. In particular, you should be aware of all the risks associated with trading on margin. Furthermore, Champion FX does not issue advice, recommendations or opinions in relation to acquiring, holding or disposing of any financial products, and all services are provided on an execution only basis.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer-last" class="">
+        <div class="container centered">
+            <div class="row">
+                <div class="col-sm">
+                    &copy; 2017 Champion FX
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
