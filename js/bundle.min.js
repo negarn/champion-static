@@ -36810,7 +36810,7 @@
 
 	var checkRiskClassification = function checkRiskClassification() {
 	    ChampionSocket.promise.then(function () {
-	        if (!State.get(['response', 'get_financial_assessment', 'get_financial_assessment']) && State.get(['response', 'get_account_status', 'get_account_status', 'risk_classification']) === 'high' && Client.is_logged_in() && !Client.is_virtual()) {
+	        if (State.get(['response', 'get_financial_assessment', 'get_financial_assessment']) && State.get(['response', 'get_account_status', 'get_account_status', 'risk_classification']) === 'high' && Client.is_logged_in() && !Client.is_virtual()) {
 	            renderRiskClassificationPopUp();
 	        }
 	    });
