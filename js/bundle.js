@@ -36605,6 +36605,7 @@
 	var Client = __webpack_require__(304);
 	var ChampionSocket = __webpack_require__(301);
 	var Validation = __webpack_require__(313);
+	var State = __webpack_require__(305).State;
 	var RiskClassification = __webpack_require__(442);
 
 	var FinancialAssessment = function () {
@@ -36626,20 +36627,27 @@
 	        ChampionSocket.promise.then(function () {
 	            if (checkIsVirtual()) return;
 	            ChampionSocket.send({ get_financial_assessment: 1 }, function (response) {
-	                hideLoadingImg();
-	                financial_assessment = response.get_financial_assessment;
-	                Object.keys(response.get_financial_assessment).forEach(function (key) {
-	                    var val = response.get_financial_assessment[key];
-	                    $('#' + key).val(val);
-	                });
-	                arr_validation = [];
-	                var all_ids = $(form_selector).find('.form-input').find('>:first-child');
-	                for (var i = 0; i < all_ids.length; i++) {
-	                    arr_validation.push({ selector: '#' + all_ids[i].getAttribute('id'), validations: ['req'] });
-	                }
-	                Validation.init(form_selector, arr_validation);
+	                handleForm(response);
 	            });
 	        });
+	    };
+
+	    var handleForm = function handleForm(response) {
+	        if (!response) {
+	            response = State.get(['response', 'get_financial_assessment']);
+	        }
+	        hideLoadingImg();
+	        financial_assessment = response.get_financial_assessment;
+	        Object.keys(response.get_financial_assessment).forEach(function (key) {
+	            var val = response.get_financial_assessment[key];
+	            $('#' + key).val(val);
+	        });
+	        arr_validation = [];
+	        var all_ids = $(form_selector).find('.form-input').find('>:first-child');
+	        for (var i = 0; i < all_ids.length; i++) {
+	            arr_validation.push({ selector: '#' + all_ids[i].getAttribute('id'), validations: ['req'] });
+	        }
+	        Validation.init(form_selector, arr_validation);
 	    };
 
 	    var submitForm = function submitForm() {
@@ -36720,6 +36728,7 @@
 	    return {
 	        load: load,
 	        unload: unload,
+	        handleForm: handleForm,
 	        submitForm: submitForm
 	    };
 	}();
@@ -36790,6 +36799,7 @@
 	                $risk_classification.find('#assessment_form').removeClass('invisible').attr('style', 'text-align: left;');
 	                $risk_classification.find('#high_risk_classification').removeClass('invisible');
 	                $risk_classification.find('#heading_risk').removeClass('invisible');
+	                FinancialAssessment.handleForm();
 	                $risk_classification.find('#assessment_form').on('submit', function (event) {
 	                    event.preventDefault();
 	                    FinancialAssessment.submitForm();
@@ -36801,6 +36811,7 @@
 	            return false;
 	        }
 	    });
+	    FinancialAssessment.handleForm();
 	    $('#risk_classification').find('#assessment_form').on('submit', function (event) {
 	        event.preventDefault();
 	        FinancialAssessment.submitForm();
