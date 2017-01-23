@@ -19622,20 +19622,10 @@
 	            var parent_active = 'first active',
 	                child_active = 'first a-active',
 	                hidden_class = 'invisible';
-	            var has_subtab = $(hash).find('.tm-li-2').length > 0;
-	            var tag_to_find = void 0;
-	            if (has_subtab) {
-	                tag_to_find = 'span';
-	            } else {
-	                tag_to_find = 'a';
-	            }
 	            /* eslint-disable newline-per-chained-call */
-	            var $parent_el = $(menu).find('li').removeClass(parent_active).find(tag_to_find).removeClass(child_active).end().find(hash);
-	            if (has_subtab || /tm-li-2/.test($parent_el.attr('class'))) {
-	                if (!has_subtab) {
-	                    $parent_el = $parent_el.end();
-	                }
-	                $parent_el = $parent_el.find('.tm-ul-2').find(tag_to_find).first().addClass(child_active).end().end().end();
+	            var $parent_el = $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active).end().find(hash);
+	            if ($(hash).find('.tm-li-2').length > 0 || /tm-li-2/.test($parent_el.attr('class'))) {
+	                $parent_el = $parent_el.find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().end();
 	            }
 	            $parent_el.addClass(parent_active);
 
