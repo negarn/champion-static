@@ -36771,7 +36771,7 @@
 	var Client = __webpack_require__(304);
 	var url_for = __webpack_require__(306).url_for;
 	var ChampionSocket = __webpack_require__(301);
-	var State = __webpack_require__(308).State;
+	var State = __webpack_require__(305).State;
 
 	var renderRiskClassificationPopUp = function renderRiskClassificationPopUp() {
 	    if (window.location.pathname === '/user/assessment') {
