@@ -19623,11 +19623,14 @@
 	                child_active = 'first a-active',
 	                hidden_class = 'invisible';
 	            /* eslint-disable newline-per-chained-call */
-	            var $parent_el = $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active).end().end().find(hash);
-	            if ($(hash).find('.tm-li-2').length > 0 || /tm-li-2/.test($parent_el.attr('class'))) {
-	                $parent_el = $parent_el.end().find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().end();
+	            $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active);
+	            if ($(hash).find('.tm-li-2').length > 0) {
+	                $(menu).find(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().addClass(parent_active);
+	            } else if (/tm-li-2/.test($(hash).attr('class'))) {
+	                $(menu).find(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().addClass(parent_active);
+	            } else {
+	                $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active).end().end().find(hash).addClass(parent_active);
 	            }
-	            $parent_el.addClass(parent_active);
 
 	            var content_to_show = 'div' + hash + '-content';
 	            if ($(content_to_show).length === 0) {
