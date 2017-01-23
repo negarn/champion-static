@@ -20163,7 +20163,7 @@
 	        $button = void 0;
 
 	    var load = function load() {
-	        if (Client.is_logged_in() || /(new-account|terms-and-conditions)/.test(window.location.pathname)) {
+	        if (Client.is_logged_in() || /(new-account|terms-and-conditions|user|cashier)/.test(window.location.pathname)) {
 	            changeVisibility($(form_selector), 'hide');
 	        } else {
 	            changeVisibility($(form_selector), 'show');
