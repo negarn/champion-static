@@ -19625,12 +19625,12 @@
 	            /* eslint-disable newline-per-chained-call */
 	            var $parent_el = $(menu).find('li').removeClass(parent_active).find('a, span').removeClass(child_active).end().end().find(hash).find('a, span').addClass(child_active).end();
 	            if (/tm-li-2/.test($parent_el.attr('class'))) {
-	                $parent_el = $parent_el.parent().parent().addClass(parent_active);
+	                $parent_el = $parent_el.parent().parent();
 	            }
 	            $parent_el.addClass(parent_active);
 	            var content_to_show = 'div' + hash + '-content';
 	            if ($(content_to_show).length === 0) {
-	                content_to_show = '#' + $(hash).find('.tm-ul-2').find('li').first().attr('id');
+	                content_to_show = 'div#' + $(hash).find('.tm-ul-2').find('li').first().attr('id') + '-content';
 	            }
 	            $(content).find('> div').addClass(hidden_class).end().find(content_to_show).removeClass(hidden_class);
 	            /* eslint-enable newline-per-chained-call */
