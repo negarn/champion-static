@@ -19624,7 +19624,7 @@
 	                hidden_class = 'invisible';
 	            /* eslint-disable newline-per-chained-call */
 	            var $parent_el = $(menu).find('li').removeClass(parent_active).find('a, span').removeClass(child_active).end().end().find(hash).find('a, span').addClass(child_active);
-	            if ($parent_el.attr('class') === 'tm-li') {
+	            if (/tm-li/.test($parent_el.attr('class'))) {
 	                $parent_el.addClass(parent_active).find('a, span').addClass(child_active);
 	            } else {
 	                $parent_el.parent().parent().addClass(parent_active);
