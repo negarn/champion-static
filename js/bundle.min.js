@@ -19613,7 +19613,7 @@
 	    var hash = window.location.hash,
 	        menu = '.tab-menu-wrap',
 	        content = '.tab-content-wrapper';
-	    if (menu && content) {
+	    if ($(menu).length > 0 && $(content).length > 0) {
 	        // tabListener is called from binary-style
 	        // to init when page loaded with pjax
 	        tabListener();
@@ -19623,7 +19623,7 @@
 	                child_active = 'first a-active',
 	                hidden_class = 'invisible';
 	            /* eslint-disable newline-per-chained-call */
-	            $(menu).find('li').removeClass(parent_active).find('a').removeClass(child_active).end().end().find(hash).addClass(parent_active).find('a').addClass(child_active);
+	            $(menu).find('li').removeClass(parent_active).find('a, span').removeClass(child_active).end().end().find(hash).addClass(parent_active).find('a, span').addClass(child_active);
 	            $(content).find('> div').addClass(hidden_class).end().find('div' + hash + '-content').removeClass(hidden_class);
 	            /* eslint-enable newline-per-chained-call */
 	        }
