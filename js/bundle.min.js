@@ -19623,18 +19623,19 @@
 	                child_active = 'first a-active',
 	                hidden_class = 'invisible';
 	            var has_subtab = $(hash).find('.tm-li-2').length > 0;
-	            var el_to_find = void 0;
-	            /* eslint-disable newline-per-chained-call */
+	            var tag_to_find = void 0;
 	            if (has_subtab) {
-	                el_to_find = 'span';
+	                tag_to_find = 'span';
 	            } else {
-	                el_to_find = 'a';
+	                tag_to_find = 'a';
 	            }
-	            var $parent_el = $(menu).find('li').removeClass(parent_active).find(el_to_find).removeClass(child_active).end().end().find(hash).find(el_to_find).first().addClass(child_active).end();
+	            /* eslint-disable newline-per-chained-call */
+	            var $parent_el = $(menu).find('li').removeClass(parent_active).find(tag_to_find).removeClass(child_active);
 	            if (has_subtab) {
-	                $parent_el = $parent_el.parent().parent();
+	                $parent_el = $parent_el.end().end().find(hash).find(tag_to_find).first().addClass(child_active).end().parent().parent();
 	            }
 	            $parent_el.addClass(parent_active);
+
 	            var content_to_show = 'div' + hash + '-content';
 	            if ($(content_to_show).length === 0) {
 	                content_to_show = 'div#' + $(hash).find('.tm-ul-2').find('li').first().attr('id') + '-content';
