@@ -1,0 +1,285 @@
+<div id="page_info" style="display:none;">
+        <title>MetaTrader account management | Champion-FX.com</title>
+    </div>
+    <div class="wrapper" id="champion-content">
+        <div class="fx-section">
+    <div id="mt_account_management" class="container">
+        <div class="row">
+            <h1>MetaTrader account management</h1>
+        </div>
+        <div id="accounts_list" class="row"></div>
+
+        <div class="row">
+            <div class="fst-container">
+                <div id="main_msg" class="notice-msg center-text hidden"></div>
+                <fieldset id="fst_action" class="hidden">
+                    <legend></legend>
+                    <span class="close"></span>
+                    <form id="frm_action"></form>
+                </fieldset>
+            </div>
+        </div>
+
+        <div id="templates" class="hidden">
+            <div class="acc-box col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                <div>
+                    <div class="title"></div>
+                    <div class="loading"><div class="barspinner dark">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div></div>
+                    <div class="center-text no-account hidden">
+                        <div class="info"></div>
+                        <span class="button"><span class="act_new_account">Create Account</span></span>
+                    </div>
+                    <div class="acc-info has-account row hidden">
+                        <div class="col-xs-4">Login ID:</div><div data="login" class="col-xs-8"></div>
+                        <div class="col-xs-4">Name:</div><div data="name" class="col-xs-8"></div>
+                        <div class="col-xs-4">Balance:</div><div data="balance" class="col-xs-8"></div>
+                        <div class="col-xs-4">Leverage:</div><div data="leverage" class="col-xs-8"></div>
+                    </div>
+                    <div class="acc-actions has-account hidden">
+                        <a href="javascript:;" class="act_password_change">Change Password</a><br />
+                        <a href="javascript:;" class="act_deposit">Deposit</a><br />
+                        <a href="javascript:;" class="act_withdrawal">Withdraw</a><br />
+                    </div>
+                </div>
+            </div>
+
+            <div id="no_account_info">
+                <div id="demo">Open a free Demo account.</div>
+                <div id="champion_cent">
+                    The Cent account offers the highest leverage, as well as low margin call and stop out level.
+                    <a href="/champion-static/en/forex.html#forex-accounts-cent" target="_blank">Read more</a>
+                </div>
+                <div id="champion_standard">
+                    The Standard account is suitable for a wide range of traders, both new and experienced.
+                    <a href="/champion-static/en/forex.html#forex-accounts-standard" target="_blank">Read more</a>
+                </div>
+                <div id="champion_stp">
+                    The STP account provides you with the tightest spreads and connects you directly to the market.
+                    <a href="/champion-static/en/forex.html#forex-accounts-stp" target="_blank">Read more</a>
+                </div>
+            </div>
+
+            <form id="frm_new_account">
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label>Account type</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <span id="lbl_account_type"></span> <span id="lbl_sub_account_type"></span>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label>Email</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <span id="lbl_email"></span>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_name">Name</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input id="txt_name" type="text" maxlength="30" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="ddl_leverage">Leverage</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <select id="ddl_leverage">
+                            <option value="1">1:1</option>
+                            <option value="50">1:50</option>
+                            <option value="100" selected="selected">1:100</option>
+                            <option value="200">1:200</option>
+                            <option value="200">1:300</option>
+                            <option value="500">1:500</option>
+                            <option value="1000">1:1000</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_main_pass">Main password (trading access)</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input id="txt_main_pass" type="password" maxlength="25" />
+                        <div class="hint">Minimum eight characters. Must contain numbers, and mix of upper and lower case letters.</div>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_re_main_pass">Verify main password</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input id="txt_re_main_pass" type="password" maxlength="25" />
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_investor_pass">Investor password (read-only access)</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input id="txt_investor_pass" type="password" maxlength="25" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 center-text">
+                        <p>
+                            <input id="chk_tnc" type="checkbox" />
+                            <label for="chk_tnc">I have read and agree to the <a target="_blank" href="/champion-static/en/terms-and-conditions.html">terms and conditions</a> of the site.</label>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-8 offset-md-4">
+                        <p id="msg_form" class="error-msg hidden"></p>
+                        <button id="btn_submit" type="submit">Create Account</button>
+                    </div>
+                </div>
+            </form>
+
+            <form id="frm_password_change">
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label>Login ID</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <span id="lbl_login"></span>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_old_password">Current password</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input id="txt_old_password" type="password" maxlength="25" />
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_new_password">New password</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input id="txt_new_password" type="password" maxlength="25" />
+                        <div class="hint">Minimum eight characters. Must contain numbers, and mix of upper and lower case letters.</div>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_re_new_password">Verify new password</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input id="txt_re_new_password" type="password" maxlength="25" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-8 offset-md-4">
+                        <p id="msg_form" class="error-msg hidden"></p>
+                        <button id="btn_submit" type="submit">Change Password</button>
+                    </div>
+                </div>
+            </form>
+
+            <form id="frm_deposit">
+                <p class="col-sm">Transfer funds from Champion-FX.com account into your MT5 account:</p>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label>Transfer from</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <span id="lbl_from"></span>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label>Deposit into</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <span id="lbl_to"></span>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_amount">Amount</label>
+                    </div>
+                    <div class="col-xs-8">
+                        &#36; <input id="txt_amount" type="text" maxlength="10" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-8 offset-md-4">
+                        <p id="msg_form" class="error-msg hidden"></p>
+                        <button id="btn_submit" type="submit">Deposit</button>
+                    </div>
+                </div>
+            </form>
+
+            <form id="frm_withdrawal">
+                <p class="col-sm">Transfer funds from your MT5 account into your Champion-FX.com account:</p>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label>Withdraw from</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <span id="lbl_from"></span>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label>Transfer into</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <span id="lbl_to"></span>
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_main_pass">MT5 main password</label>
+                    </div>
+                    <div class="col-xs-8">
+                        <input id="txt_main_pass" type="password" maxlength="25" />
+                    </div>
+                </div>
+                <div class="row form-row">
+                    <div class="col-xs-4">
+                        <label for="txt_amount">Amount</label>
+                    </div>
+                    <div class="col-xs-8">
+                        &#36; <input id="txt_amount" type="text" maxlength="10" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-8 offset-md-4">
+                        <p id="msg_form" class="error-msg hidden"></p>
+                        <button id="btn_submit" type="submit">Withdraw</button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="msg_authenticate">
+                <div class="txt-left">
+                    <p>Authenticate your Champion-FX.com account to create an MT5 Financial Account.</p>
+                    <p>Kindly email the following documents to <a href="mailto:support@champion-fx.com">support@champion-fx.com</a> to authenticate your account:</p>
+                    <ul class="bullet">
+                        <li>A scanned copy of your passport, driving licence (provisional or full), or identity card that shows your full name and date of birth.</li>
+                        <li>A scanned copy of a utility bill or bank statement that is no more than three months old.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>

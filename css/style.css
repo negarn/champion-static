@@ -1,4 +1,27 @@
 /* GLOBAL RULES */
+/*
+ * To replace characters in a string
+ */
+/*
+ * To create an optimized svg url
+ */
+html {
+  height: 100%;
+}
+html body {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+html body #champion-container {
+  -webkit-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+          flex: 1 1 auto;
+}
+
 .topbar-container div {
   display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
@@ -286,10 +309,6 @@
     margin-top: 50px;
   }
 }
-.centered {
-  text-align: center;
-}
-
 .space-sm {
   width: 130px;
   display: inline;
@@ -374,19 +393,13 @@ fieldset {
   padding: 5px;
   margin-bottom: 10px;
 }
-fieldset .form-label {
-  text-align: right;
-  margin: 10px 0;
-}
-fieldset .form-input {
-  margin: 10px 0;
-}
 
-.submit-holder {
-  text-align: center;
+.form-row {
+  padding: 10px 0;
 }
-.submit-holder p {
+.form-row label {
   display: block;
+  text-align: right;
 }
 
 .hidden {
@@ -879,6 +892,89 @@ body .top-nav-menu li a {
 
 #okpay {
   background-position: -285px -426px;
+}
+
+#mt_account_management #accounts_list .acc-box {
+  padding: 0 10px 0 0;
+  margin-bottom: 10px;
+}
+#mt_account_management #accounts_list .acc-box > div {
+  height: 100%;
+  border: 1px solid #DEDEDE;
+}
+#mt_account_management #accounts_list .acc-box > div:hover, #mt_account_management #accounts_list .acc-box > div.active {
+  border-color: #C2C2C2;
+  background: #F2F2F2;
+}
+#mt_account_management #accounts_list .acc-box > div .title {
+  line-height: 40px;
+  text-align: center;
+  background: #004385;
+  color: #fff;
+  margin-bottom: 10px;
+}
+#mt_account_management #accounts_list .acc-box > div .no-account {
+  margin-bottom: 20px;
+}
+#mt_account_management #accounts_list .acc-box > div .no-account .info {
+  padding: 10px;
+  font-size: 0.9rem;
+  height: 120px;
+}
+#mt_account_management #accounts_list .acc-box > div .no-account .info a:before {
+  content: ' ';
+  display: block;
+  margin-top: 5px;
+}
+#mt_account_management #accounts_list .acc-box > div .loading {
+  margin: 75px 0;
+}
+#mt_account_management #accounts_list .acc-box > div .acc-info div {
+  font-size: 0.9rem;
+  padding: 0 0 0 25px;
+  line-height: 1.6em;
+}
+#mt_account_management #accounts_list .acc-box > div .acc-actions {
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid #DEDEDE;
+  font-size: 0.9rem;
+}
+#mt_account_management .fst-container {
+  width: 100%;
+  padding-right: 10px;
+}
+#mt_account_management .fst-container #fst_action {
+  border: 1px solid #F2F2F2;
+  margin: 0;
+  padding-bottom: 30px;
+  position: relative;
+}
+#mt_account_management .fst-container #fst_action legend {
+  background: #004385;
+  color: #fff;
+  padding: 5px 10px;
+  margin-left: 15px;
+}
+#mt_account_management .fst-container #fst_action .close {
+  cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: -1px;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  background: #004385 url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50' width='14' height='14'%3E%3Cpath fill='white' d='M50,5,45,0,25,20,5,0,0,5,20,25,0,45l5,5L25,30,45,50l5-5L30,25Z'/%3E%3C/svg%3E") no-repeat center;
+}
+#mt_account_management .fst-container #fst_action .close:hover {
+  background-color: #013365;
+}
+#mt_account_management .fst-container #fst_action button .barspinner.white {
+  height: 13px;
+  margin: 3px;
+}
+#mt_account_management .txt-left {
+  text-align: left;
 }
 
 .app-store-badge, .google-play-badge {
