@@ -18573,7 +18573,6 @@
 	        registered_callbacks = {},
 	        priority_requests = {
 	        authorize: false,
-	        balance: false,
 	        get_settings: false,
 	        website_status: false,
 	        get_account_status: false
@@ -18595,7 +18594,6 @@
 	            }
 	            ChampionSocket.send({ website_status: 1 });
 	        } else {
-	            var country_code = void 0;
 	            State.set(['response', message.msg_type], message);
 	            switch (message.msg_type) {
 	                case 'authorize':
@@ -18607,6 +18605,11 @@
 	                        ChampionSocket.send({ balance: 1, subscribe: 1 });
 	                        ChampionSocket.send({ get_settings: 1 });
 	                        ChampionSocket.send({ get_account_status: 1 });
+	                        var country_code = message.authorize.country;
+	                        if (country_code) {
+	                            Client.set_value('residence', country_code);
+	                            ChampionSocket.send({ landing_company: country_code });
+	                        }
 	                        Header.userMenu();
 	                        $('#btn_logout').click(function () {
 	                            // TODO: to be moved from here
@@ -18620,17 +18623,11 @@
 	                    break;
 	                case 'balance':
 	                    Header.updateBalance(message);
-	                    priority_requests.balance = true;
 	                    break;
 	                case 'get_settings':
 	                    if (message.error) {
 	                        socketReject();
 	                        return;
-	                    }
-	                    country_code = message.get_settings.country_code;
-	                    if (country_code) {
-	                        Client.set_value('residence', country_code);
-	                        ChampionSocket.send({ landing_company: country_code });
 	                    }
 	                    priority_requests.get_settings = true;
 	                    break;
@@ -36799,20 +36796,19 @@
 	                $risk_classification.find('#assessment_form').removeClass('invisible').attr('style', 'text-align: left;');
 	                $risk_classification.find('#high_risk_classification').removeClass('invisible');
 	                $risk_classification.find('#heading_risk').removeClass('invisible');
-	                FinancialAssessment.handleForm();
-	                $risk_classification.find('#assessment_form').on('submit', function (event) {
-	                    event.preventDefault();
-	                    FinancialAssessment.submitForm();
-	                    return false;
-	                });
+	                handleForm($risk_classification);
 	            }
 	        },
 	        error: function error() {
 	            return false;
 	        }
 	    });
+	    handleForm($('#risk_classification'));
+	};
+
+	var handleForm = function handleForm($risk_classification) {
 	    FinancialAssessment.handleForm();
-	    $('#risk_classification').find('#assessment_form').on('submit', function (event) {
+	    $risk_classification.find('#assessment_form').on('submit', function (event) {
 	        event.preventDefault();
 	        FinancialAssessment.submitForm();
 	        return false;
@@ -36821,7 +36817,7 @@
 
 	var checkRiskClassification = function checkRiskClassification() {
 	    ChampionSocket.promise.then(function () {
-	        if (State.get(['response', 'get_financial_assessment', 'get_financial_assessment']) && State.get(['response', 'get_account_status', 'get_account_status', 'risk_classification']) === 'high' && Client.is_logged_in() && !Client.is_virtual()) {
+	        if (!State.get(['response', 'get_financial_assessment', 'get_financial_assessment']) && State.get(['response', 'get_account_status', 'get_account_status', 'risk_classification']) === 'high' && Client.is_logged_in() && !Client.is_virtual()) {
 	            renderRiskClassificationPopUp();
 	        }
 	    });
