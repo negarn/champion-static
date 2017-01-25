@@ -19633,7 +19633,7 @@
 
 	            var content_to_show = 'div' + hash + '-content';
 	            if ($(content_to_show).length === 0) {
-	                content_to_show = 'div#' + $(hash).closest('li.tm-li-2').attr('id') + '-content';
+	                content_to_show = 'div#' + $(hash).find('li.tm-li-2').first().attr('id') + '-content';
 	            }
 	            $(content).find('> div').addClass(hidden_class).end().find(content_to_show).removeClass(hidden_class);
 
