@@ -402,6 +402,11 @@ fieldset {
   text-align: right;
 }
 
+.left-label .form-row label {
+  text-align: left;
+  margin-left: 30px;
+}
+
 .hidden {
   display: none !important;
 }
