@@ -19624,20 +19624,19 @@
 
 	            $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active);
 
-	            // menu has subtabs
-	            if ($(hash).find('.tm-li-2').length > 0) {
-	                $(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).closest('li.tm-li').addClass(parent_active);
-	            } else if (/tm-li-2/.test($(hash).attr('class'))) {
-	                // menu is a subtab
-	                $(hash).find('span, a').addClass(child_active).closest('li.tm-li').addClass(parent_active);
-	            } else {
-	                // menu has no subtabs and is not a subtab
-	                $(menu).find(hash).addClass(parent_active);
+	            var $tab_to_show = $(hash);
+	            var has_subtab = $tab_to_show.find('.tm-li-2').length > 0;
+	            if (has_subtab || /tm-li-2/.test($(hash).attr('class'))) {
+	                if (has_subtab) {
+	                    $tab_to_show = $tab_to_show.find('.tm-ul-2');
+	                }
+	                $tab_to_show = $tab_to_show.find('span, a').first().addClass(child_active).closest('li.tm-li');
 	            }
+	            $tab_to_show.addClass(parent_active);
 
 	            var content_to_show = 'div' + hash + '-content';
 	            if ($(content_to_show).length === 0) {
-	                content_to_show = 'div#' + $(hash).find('.tm-ul-2').find('li').first().attr('id') + '-content';
+	                content_to_show = 'div#' + $(hash).closest('li.tm-li-2').attr('id') + '-content';
 	            }
 	            $(content).find('> div').addClass(hidden_class).end().find(content_to_show).removeClass(hidden_class);
 
