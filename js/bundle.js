@@ -19618,21 +19618,21 @@
 	        // to init when page loaded with pjax
 	        tabListener();
 	        if (hash) {
-	            $.scrollTo($(hash), 500, { offset: -5 });
-	            var parent_active = 'first active',
-	                child_active = 'first a-active',
-	                hidden_class = 'invisible';
-	            /* eslint-disable newline-per-chained-call */
+	            var parent_active = 'first active';
+	            var child_active = 'first a-active';
+	            var hidden_class = 'invisible';
+
 	            $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active);
+
 	            // menu has subtabs
 	            if ($(hash).find('.tm-li-2').length > 0) {
-	                $(menu).find(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().end().addClass(parent_active);
+	                $(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().end().addClass(parent_active);
 	            } else if (/tm-li-2/.test($(hash).attr('class'))) {
 	                // menu is a subtab
-	                $(menu).find(hash).find('span, a').addClass(child_active).end().parent().parent().addClass(parent_active);
+	                $(hash).find('span, a').addClass(child_active).end().parent().parent().addClass(parent_active);
 	            } else {
 	                // menu has no subtabs and is not a subtab
-	                $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active).end().end().find(hash).addClass(parent_active);
+	                $(menu).find(hash).addClass(parent_active);
 	            }
 
 	            var content_to_show = 'div' + hash + '-content';
@@ -19640,7 +19640,8 @@
 	                content_to_show = 'div#' + $(hash).find('.tm-ul-2').find('li').first().attr('id') + '-content';
 	            }
 	            $(content).find('> div').addClass(hidden_class).end().find(content_to_show).removeClass(hidden_class);
-	            /* eslint-enable newline-per-chained-call */
+
+	            $.scrollTo($(hash), 500, { offset: -5 });
 	        }
 	    }
 	}
