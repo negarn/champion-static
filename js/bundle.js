@@ -19629,7 +19629,7 @@
 	                $(menu).find(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().end().addClass(parent_active);
 	            } else if (/tm-li-2/.test($(hash).attr('class'))) {
 	                // menu is a subtab
-	                $(menu).find(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().addClass(parent_active);
+	                $(menu).find(hash).find('span, a').first().addClass(child_active).end().end().parent().parent().addClass(parent_active);
 	            } else {
 	                // menu has no subtabs and is not a subtab
 	                $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active).end().end().find(hash).addClass(parent_active);
