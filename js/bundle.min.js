@@ -19626,10 +19626,10 @@
 
 	            // menu has subtabs
 	            if ($(hash).find('.tm-li-2').length > 0) {
-	                $(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).end().end().end().addClass(parent_active);
+	                $(hash).find('.tm-ul-2').find('span, a').first().addClass(child_active).closest('li.tm-li').addClass(parent_active);
 	            } else if (/tm-li-2/.test($(hash).attr('class'))) {
 	                // menu is a subtab
-	                $(hash).find('span, a').addClass(child_active).end().parent().parent().addClass(parent_active);
+	                $(hash).find('span, a').addClass(child_active).closest('li.tm-li').addClass(parent_active);
 	            } else {
 	                // menu has no subtabs and is not a subtab
 	                $(menu).find(hash).addClass(parent_active);
