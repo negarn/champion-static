@@ -19622,7 +19622,7 @@
 	            var child_active = 'first a-active';
 	            var hidden_class = 'invisible';
 
-	            $(menu).find('li').removeClass(parent_active).find('span, a').removeClass(child_active);
+	            $(menu).find('li').removeClass(parent_active).find('span').removeClass(child_active);
 
 	            var $tab_to_show = $(hash);
 	            var has_subtab = $tab_to_show.find('.tm-li-2').length > 0;
@@ -19630,7 +19630,7 @@
 	                if (has_subtab) {
 	                    $tab_to_show = $tab_to_show.find('.tm-ul-2');
 	                }
-	                $tab_to_show = $tab_to_show.find('span, a').first().addClass(child_active).closest('li.tm-li');
+	                $tab_to_show = $tab_to_show.find('span').first().addClass(child_active).closest('li.tm-li');
 	            }
 	            $tab_to_show.addClass(parent_active);
 
