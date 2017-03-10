@@ -112,11 +112,10 @@ button {
   margin: 0;
 }
 
-.main-signup {
+#main-signup {
   margin-left: auto;
 }
-
-.signup-button {
+#main-signup .signup-button {
   margin: auto;
 }
 
