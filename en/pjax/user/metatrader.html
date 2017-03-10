@@ -7,6 +7,13 @@
         <div class="row">
             <h1>MetaTrader account management</h1>
         </div>
+        <div id="mt_loading"><div class="barspinner dark">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div></div>
         <div id="accounts_list" class="row"></div>
 
         <div class="row">
@@ -37,14 +44,23 @@
                     </div>
                     <div class="acc-info has-account row hidden">
                         <div class="col-xs-4">Login ID:</div><div data="login" class="col-xs-8"></div>
-                        <div class="col-xs-4">Name:</div><div data="name" class="col-xs-8"></div>
+                        <div class="col-xs-4">Name:</div><div data="name" class="col-xs-7"></div>
                         <div class="col-xs-4">Balance:</div><div data="balance" class="col-xs-8"></div>
                         <div class="col-xs-4">Leverage:</div><div data="leverage" class="col-xs-8"></div>
                     </div>
-                    <div class="acc-actions has-account hidden">
-                        <a href="javascript:;" class="act_password_change">Change Password</a><br />
-                        <a href="javascript:;" class="act_deposit">Deposit</a><br />
-                        <a href="javascript:;" class="act_withdrawal">Withdraw</a><br />
+                    <div class="acc-actions has-account center-text hidden">
+                        <a href="javascript:;" class="act_deposit">
+                            <img src="/champion-static/images/metatrader/deposit.svg" alt="" />
+                            Deposit
+                        </a>
+                        <a href="javascript:;" class="act_withdrawal">
+                            <img src="/champion-static/images/metatrader/withdraw.svg" alt="" />
+                            Withdraw
+                        </a>
+                        <a href="javascript:;" class="act_password_change">
+                            <img src="/champion-static/images/metatrader/password.svg" alt="" />
+                            Password
+                        </a>
                     </div>
                 </div>
             </div>
@@ -71,7 +87,7 @@
                         <label>Account type</label>
                     </div>
                     <div class="col-xs-8">
-                        <span id="lbl_account_type"></span> <span id="lbl_sub_account_type"></span>
+                        <span id="lbl_account_type"></span>
                     </div>
                 </div>
                 <div class="row form-row">
@@ -90,7 +106,7 @@
                         <input id="txt_name" type="text" maxlength="30" autocomplete="off" />
                     </div>
                 </div>
-                <div class="row form-row">
+                <div class="row form-row hidden">
                     <div class="col-xs-4">
                         <label for="ddl_leverage">Leverage</label>
                     </div>
@@ -100,7 +116,7 @@
                             <option value="50">1:50</option>
                             <option value="100" selected="selected">1:100</option>
                             <option value="200">1:200</option>
-                            <option value="200">1:300</option>
+                            <option value="300">1:300</option>
                             <option value="500">1:500</option>
                             <option value="1000">1:1000</option>
                         </select>
@@ -269,14 +285,21 @@
                 </div>
             </form>
 
-            <div id="msg_authenticate">
-                <div class="txt-left">
-                    <p>Authenticate your Champion-FX.com account to create an MT5 Financial Account.</p>
-                    <p>Kindly email the following documents to <a href="mailto:support@champion-fx.com">support@champion-fx.com</a> to authenticate your account:</p>
-                    <ul class="bullet">
-                        <li>A scanned copy of your passport, driving licence (provisional or full), or identity card that shows your full name and date of birth.</li>
-                        <li>A scanned copy of a utility bill or bank statement that is no more than three months old.</li>
-                    </ul>
+            <div id="messages">
+                <div id="msg_switch">To perform this action, please switch to your Champion-FX.com Real Account.</div>
+                <div id="msg_upgrade">To perform this action, please <a href="/champion-static/en/new-account/real.html">upgrade to Champion-FX.com Real Account</a>.</div>
+                <div id="msg_assessment">To create an MT5 Financial Account please complete the <a href="/champion-static/en/user/assessment.html">Financial Assessment</a>.</div>
+                <div id="msg_authenticate">
+                    <div class="txt-left">
+                        <p>To withdraw from MT5 Financial Account please Authenticate your Champion-FX.com account.</p>
+                        <p>Please send us the following documents in order to verify your identity and authenticate your account:</p>
+<ul class="bullet">
+    <li>Proof of identity - A scanned copy of your passport, driving license (either provisional or full), or identity card that shows your full name and date of birth.</li>
+    <li>Proof of address - A scanned copy of a utility bill or bank statement that's not more than three months old.</li>
+</ul>
+<p class="show_for_mt5 invisible">Kindly send us these documents within 5 days to keep your account active.</p>
+<p>If you have any questions, kindly contact our Customer Support team at <a href="mailto:support@champion-fx.com">support@champion-fx.com</a>.</p>
+                    </div>
                 </div>
             </div>
         </div>

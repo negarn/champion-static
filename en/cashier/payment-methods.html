@@ -18,16 +18,16 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/css/flex.min.css?2tpn26m4" />
-     <link rel="stylesheet" href="/champion-static/css/style.min.css?2tpn26m4" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?2tpn26m4" />
-      <script src="/champion-static/js/bundle.js?2tpn26m4" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?2tpn26m4" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/css/flex.min.css?s90fgmu2" />
+     <link rel="stylesheet" href="/champion-static/css/style.min.css?s90fgmu2" />
+     <link rel="stylesheet" href="https://negar-champion.github.io/binary-style   /binary.css?s90fgmu2" />
+      <script src="/champion-static/js/bundle.js?s90fgmu2" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?s90fgmu2" type="text/javascript"></script>
      
 </head>
 <body>
     <div class="topbar primary-color-dark">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
             <div class="col-sm-12 topbar-container flex-items-sm-middle">
                 <div class=" col-sm-3 upgrade-message hidden">
@@ -36,6 +36,7 @@
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/en/contact.html">Contact Us</a></li>
+                        <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
                 </div>
                 <div class="invisible">
@@ -65,30 +66,21 @@
     </div>
 </div>
     <div class="dark-blue header">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-3 col-sm-6 col-xs-6 vertical-center">
                 <div class="logo-wrapper">
                     <a href="/champion-static/en/home.html" class="logo-parent">
                         <div class="logo">
                             <div></div>
                         </div>
-                        <div class="mobile-hide binary-logo-text ">
+                        <div class="mobile-hide binary-logo-text">
                             <div></div>
                         </div>
                     </a>
                 </div>
             </div>
-            <div class="col-lg-7">
-                <ul class="top-nav-menu mobile-hide">
-                    <li><a href="/champion-static/en/about-us.html">About</a></li>
-                    <li><a href="/champion-static/en/forex.html">Forex</a></li>
-                    <li><a href="/champion-static/en/binary-options.html">Binary Options</a></li>
-                    <li><a href="/champion-static/en/range-of-markets.html">Markets</a></li>
-                    <li><a href="/champion-static/en/partnerships.html">Partnerships</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2">
+            <div class="col-lg-2 push-lg-7 col-sm-6 col-xs-6">
                 <div id="main-logout" class="hidden">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
@@ -129,33 +121,130 @@
                         </li>
                     </ul>
                 </div>
-                <div id="main-login" class="FX__Header__cta hidden">
-                    <a class="button-secondary" href="javascript:;"><span>Log In</span></a>
+                <div id="main-signup" class="hidden">
+                    <ul class="signup-button">
+                        <li class="">
+                            <button class="button-secondary" href="javascript:;">Sign Up</button>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+            <div class="col-lg-7 pull-lg-2">
+                <ul class="top-nav-menu">
+                    <li>
+                        <a href="javascript:;" class="nav-dropdown-toggle">
+                            About
+                            <span class="nav-caret"></span>
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="javascript:;">
+                                  Menu Item
+                                  <span class="nav-submenu-caret"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="javascript:;">
+                                            Menu Item
+                                            <span class="nav-submenu-caret"></span>
+                                        </a>
+                                        <ul>
+                                            <li>
+                                                <a href="javascript:;">Menu Item</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="nav-dropdown-toggle">
+                            MT5
+                            <span class="nav-caret"></span>
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="javascript:;">
+                                    Menu Item
+                                    <span class="nav-submenu-caret"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="javascript:;">
+                                            Menu Item
+                                            <span class="nav-submenu-caret"></span>
+                                        </a>
+                                        <ul>
+                                            <li>
+                                                <a href="javascript:;">Menu Item</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="nav-dropdown-toggle">
+                            Binary Options
+                            <span class="nav-caret"></span>
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="javascript:;">
+                                    Menu Item
+                                    <span class="nav-submenu-caret"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="javascript:;">
+                                            Menu Item
+                                            <span class="nav-submenu-caret"></span>
+                                        </a>
+                                        <ul>
+                                            <li>
+                                                <a href="javascript:;">Menu Item</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:;" class="nav-dropdown-toggle">
+                            Partnerships
+                            <span class="nav-caret"></span>
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="javascript:;">
+                                    Menu Item
+                                    <span class="nav-submenu-caret"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="javascript:;">
+                                            Menu Item
+                                            <span class="nav-submenu-caret"></span>
+                                        </a>
+                                        <ul>
+                                            <li>
+                                                <a href="javascript:;">Menu Item</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 
-    <div class="fill-bg-color center-text hidden" id="signup">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm flex-sm-middle">
-                    <form id="verify-email-form" class="frm-verify-email">
-    <div class="signup-box border primary-bg-color fx-material">
-        <div class="">
-            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
-        </div>
-        <div>
-            <button class="button" id="btn-verify-email" type="submit">Create Free Account</button>
-        </div>
-        <span class="error-msg hint color-white center-text hidden" id="signup_error"></span>
-    </div>
-</form>
-                </div>
-            </div>
-        </div>
-    </div>
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
             <div class="fx-section">
@@ -169,19 +258,15 @@
 
         <div class="row center-text">
             <div class="col-sm">
-                <div class="fx-logged-out">
-                    <a href="/champion-static/en/home.html" class="button button_large">
-                        <span>Open an account now</span>
-                    </a>
-                </div>
-                <div class="fx-real">
-                    <a href="/champion-static/en/home.html" class="button button_large">
-                        <span>Deposit</span>
-                    </a>
-                    <a href="/champion-static/en/home.html" class="button button_large">
-                        <span class="withdraw">Withdraw</span>
-                    </a>
-                </div>
+                <a class="button button_large hidden" href="/champion-static/en/home.html" id="btn-open-account">
+                    <span>Open an account now</span>
+                </a>
+                <a class="button button_large hidden" href="/champion-static/en/cashier/forward.html#deposit" id="btn-deposit">
+                    <span>Deposit</span>
+                </a>
+                <a class="button button_large hidden" href="/champion-static/en/cashier/forward.html#withdraw" id="btn-withdraw">
+                    <span>Withdraw</span>
+                </a>
             </div>
         </div>
 
@@ -339,26 +424,40 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle">
                 <ul>
                     <li>
                         <a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a>
                     </li>
                 </ul>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle">
                     <ul>
                         <li><a class="" href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
                     </ul>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle">
                     <ul>
                         <li><a class="" href=""></a></li>
                     </ul>
                 </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
+                <div class="col-sm flex-sm-middle">
+                    <ul class="social-network">
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/images/symbols/fb.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/images/symbols/t.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/images/symbols/yt.svg" alt="">
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -373,8 +472,8 @@
             </div>
         </div>
     </div>
-    <div id="footer-last" class="">
-        <div class="container center-text">
+    <div id="footer-last" class="primary-color-dark">
+        <div class="container">
             <div class="row">
                 <div class="col-sm">
                     &copy; 2017 Champion FX
@@ -382,6 +481,7 @@
             </div>
         </div>
     </div>
+    <div id="end_note" class="invisible"></div>
 </footer>
 </body>
 </html>

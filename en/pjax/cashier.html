@@ -11,7 +11,7 @@
             </div>
         </div>
 
-        <div class="fx-virtual row">
+        <div id="fx-virtual" class="row hidden">
             <div class="col-md-12">
                 <h2>Get more virtual money</h2>
             </div>
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div id="fx-real" class="row">
             <div class="col-md-12">
                 <h2>Bank-wire, credit card, e-cash wallet</h2>
             </div>
@@ -39,9 +39,13 @@
                 <div>Deposit or withdraw to your account via bank-wire, credit card, or e-cash wallet.</div>
                 <a href="/champion-static/en/cashier/payment-methods.html">View available payment methods</a>
             </div>
-            <div class="fx-real col-md-4">
-                <button id="deposit-btn">Deposit</button>
-                <button id="withdraw-btn">Withdraw</button>
+            <div class="col-md-4">
+                <a class="button button_large hidden" href="/champion-static/en/cashier/forward.html#deposit" id="deposit-btn">
+                    <span>Deposit</span>
+                </a>
+                <a class="button button_large hidden" href="/champion-static/en/cashier/forward.html#withdraw" id="withdraw-btn">
+                    <span>Withdraw</span>
+                </a>
             </div>
         </div>
 

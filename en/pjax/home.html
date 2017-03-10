@@ -2,48 +2,79 @@
         <title>Champion FX | Champion-FX.com</title>
     </div>
     <div class="wrapper" id="champion-content">
-        <div class="fill-bg-color center-text">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <h1 class="fx-title">Champion FX: Where the Client is King</h1>
+        <div class="slider">
+    <div id="slide-1">
+        <div class="fx-section center-text slider-text">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm col-md-10 offset-md-1 col-lg-8 offset-lg-2 flex-md-middle flex-sm-middle flex-lg-middle flex-xs-middle">
+                        <h3 class="white">
+                            <strong>ChampionFX: Where the Client is King</strong>
+                        </h3>
+                        <p class="white">
+                            Trade in the financial markets with a multi-asset trading platform: Meta trader 5. The choise of the modern trader. One platform, many markets.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="fx-home-header content-inverse-color">
-    <div class="">
-        <p>Trade in the financial markets with a multi-asset trading platform: Meta Trader 5.<br>The choice of the modern trader. One platform, many markets.</p>
+		<div class="row">
+        <div class="col">
+            <ul class="row">
+                <li class="col-md-6 col-sm-6 slider-text center-text flex-sm-middle">
+                    <h3 class="blue">No funds, no problem.</h3>
+                    <h3 class="blue">Your first trade is on us.</h3>
+                    <p>Sign up now and get a free welcome bonus worth $10.<br>No deposit required.</p>
+                    <a href="#">Learn more
+                        <img src="/champion-static/images/symbols/next.svg" alt="">
+                    </a>
+                </li>
+                <li class="col-md-6 col-sm-6 flex-md-middle" id="slide-2"></li>
+            </ul>
+        </div>
     </div>
-    <form id="verify-email-form" class="frm-verify-email">
-    <div class="signup-box border primary-bg-color fx-material">
-        <div class="">
-            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
-        </div>
-        <div>
+</div>
+
+<div id="slider-dots">
+</div>
+
+<div class="slider-footer">
+    <div class="fx-container">
+        <div class="row align-items-center">
+            <div class="col-md">
+                <form id="verify-email-form" class="frm-verify-email">
+    <div class="row signup-box align-items-center">
+        <div class="col d-flex align-self-center">
+            <input class="clean-input secondary-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
             <button class="button" id="btn-verify-email" type="submit">Create Free Account</button>
+            <span class="error-msg hint color-white center-text hidden" id="signup_error"></span>
         </div>
-        <span class="error-msg hint color-white center-text hidden" id="signup_error"></span>
     </div>
 </form>
-</div>
-<div class="fx-section fx-home-intro">
-    <div class="container">
-        <div class="row">
-            <div class="col-md flex-md-middle">
-                <p>Join a licensed broker with a clear vision and unwavering commitment to treating all its clients like champions.</p>
             </div>
-            <div class="col-md flex-md-middle center-text">
-                <img class="w-300" src="/champion-static/images/license.svg" alt="">
+            <div class="col-md" id="license-box-container">
+                <div class="row align-items-center">
+                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-3">
+                        <div class="license-box license-box-icon">
+                        </div>
+                    </div>
+                    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-9">
+                        <div class="license-box">
+                            Join a licensed broker with a clear vision and an unwavering commitment to treating all its clients like champions.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<div class="fx-section fill-bg-color center-text">
+<div class="fx-section center-text">
     <div class="container">
         <div class="row">
             <div class="col-sm flex-md-middle">
-                <p class="p-title">Gain access to our multi-asset trading platform and you can trade Forex, stocks, futures, and CFDs<br>all through one platform. We provide you with all the necessary tools for financial trading, including:</p>
+                <h2 class="p-title">Gain access to our multi-asset trading platform and you can trade Forex, stocks, futures, and CFDs all through one platform.</h2>
+                <p>We provide you with all the necessary tools for financial trading, including:</p>
             </div>
         </div>
     </div>
@@ -70,85 +101,93 @@
         </div>
     </div>
 </div>
-<div class="fx-section">
+<div class="fx-section fill-bg-color">
     <div class="container">
         <div class="row">
             <div class="col-sm center-text">
                 <h2 class="fx-features-title">Why Choose Champion FX</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-king"></div>
-                        <div>The Client is always King</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customer-service"></div>
-                        <div>Personalised Customer Service</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-type-accounts"></div>
-                        <div>Trade a Wide Range of Markets</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-rebate"></div>
-                        <div>Low Latency & Fast Execution</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-cent"></div>
-                        <div>Gold Spreads Fixed at 10 Cents</div>
-                    </div>
-                </div>
+        <div class="row fx-panel-container">
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-king"></div>
+                      <div>The Client is always King</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-no-commission"></div>
+                      <div>Low-Cost Trading</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-licensed-broker"></div>
+                      <div>Licensed Broker</div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-customer-service"></div>
+                      <div>Personalised Customer Service</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-customised-trade"></div>
+                      <div>Tight Spreads with No Commission</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-fast-execution"></div>
+                      <div>Access to the Largest Market of Expert Advisors</div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-type-accounts"></div>
+                      <div>Trade a Wide Range of Markets</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-no-deal"></div>
+                      <div>No Dealing Desk (NDD) Execution</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-customise"></div>
+                      <div>Customised Trading Conditions</div>
+                  </div>
+              </div>
             </div>
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-no-commission"></div>
-                        <div>Low-Cost Trading</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customised-trade"></div>
-                        <div>Tight Spreads with No Commission</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-no-deal"></div>
-                        <div>No Dealing Desk (NDD) Execution</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-deposit-withdrawal"></div>
-                        <div>Lightning Fast deposits & Withdrawals </div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-devices"></div>
-                        <div>Wide Choice of Platforms - Desktop, Web & Mobile</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-licensed-broker"></div>
-                        <div>Licensed Broker</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-fast-execution"></div>
-                        <div>Access to the Largest Market of Expert Advisors</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customise"></div>
-                        <div>Customised Trading Conditions</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-hassle-free"></div>
-                        <div>Fast & Hassle-Free Account Opening</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-unbeatable"></div>
-                        <div>Unbeatable Leverage Up to 1,000</div>
-                    </div>
-                </div>
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-rebate"></div>
+                      <div>Low Latency & Fast Execution</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-deposit-withdrawal"></div>
+                      <div>Lightning Fast deposits & Withdrawals </div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-hassle-free"></div>
+                      <div>Fast & Hassle-Free Account Opening</div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-cent"></div>
+                      <div>Gold Spreads Fixed at 10 Cents</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-devices"></div>
+                      <div>Wide Choice of Platforms - Desktop, Web & Mobile</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-unbeatable"></div>
+                      <div>Unbeatable Leverage Up to 1,000</div>
+                  </div>
+              </div>
             </div>
         </div>
     </div>

@@ -4,13 +4,28 @@
     <div class="wrapper" id="champion-content">
         <div class="fx-section container">
     <h1 id="heading">Financial Assessment</h1>
-    <p class = "invisible" id="response_on_success"></p>
+    <div id="msg_success" class="invisible">
+        <p>Thank you for completing the Financial Assessment and registering your Financial Account. You can now deposit funds and trade Forex with real money on MT5.</p>
+        <div id="msg_authenticate" class="invisible">
+            <div><strong>Important</strong></div>
+            <p>Please send us the following documents in order to verify your identity and authenticate your account:</p>
+<ul class="bullet">
+    <li>Proof of identity - A scanned copy of your passport, driving license (either provisional or full), or identity card that shows your full name and date of birth.</li>
+    <li>Proof of address - A scanned copy of a utility bill or bank statement that's not more than three months old.</li>
+</ul>
+<p class="show_for_mt5 invisible">Kindly send us these documents within 5 days to keep your account active.</p>
+<p>If you have any questions, kindly contact our Customer Support team at <a href="mailto:support@champion-fx.com">support@champion-fx.com</a>.</p>
+        </div>
+        <div class="center-text">
+            <a class="button" href="/champion-static/en/user/metatrader.html"><span>MetaTrader account management</span></a>
+        </div>
+    </div>
     <form class="formObject invisible" id="assessment_form" name="assessment_form">
         <h1 id="heading_risk" class="invisible">Financial Assessment</h1>
         <p class="invisible" id="high_risk_classification">
             Due to recent changes in the regulations, we are required to ask our clients to complete the following Financial Assessment. Please note that you will not be able to continue trading until this is completed.
         </p>
-        <fieldset>
+        <fieldset class="left-label">
             <legend>Financial Information</legend>
 
             <div class="row form-row">
@@ -111,7 +126,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row form-row">
                 <div class="col-xs-4">
                     <label for="stocks_trading_frequency">Stocks trading frequency</label>
                 </div>
@@ -200,6 +215,30 @@
 
             <div class="row form-row">
                 <div class="col-xs-4">
+                    <label for="occupation">Occupation</label>
+                </div>
+                <div class="col-xs-8">
+                    <select id="occupation">
+                        <option value="">Please select</option>
+                        <option value="Chief Executives, Senior Officials and Legislators">Chief Executives, Senior Officials and Legislators</option>
+                        <option value="Managers">Managers</option>
+                        <option value="Professionals">Professionals</option>
+                        <option value="Clerks">Clerks</option>
+                        <option value="Personal Care, Sales and Service Workers">Personal Care, Sales and Service Workers</option>
+                        <option value="Agricultural, Forestry and Fishery Workers">Agricultural, Forestry and Fishery Workers</option>
+                        <option value="Craft, Metal, Electrical and Electronics Workers">Craft, Metal, Electrical and Electronics Workers</option>
+                        <option value="Plant and Machine Operators and Assemblers">Plant and Machine Operators and Assemblers</option>
+                        <option value="Cleaners and Helpers">Cleaners and Helpers</option>
+                        <option value="Mining, Construction, Manufacturing and Transport Workers">Mining, Construction, Manufacturing and Transport Workers</option>
+                        <option value="Armed Forces">Armed Forces</option>
+                        <option value="Government Officers">Government Officers</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row form-row">
+                <div class="col-xs-4">
                     <label for="education_level">Level of Education</label>
                 </div>
                 <div class="col-xs-8">
@@ -264,7 +303,7 @@
             <p id="warning">The financial trading services contained within this site are only suitable for customers who are able to bear the loss of all the money they invest and who understand and have experience of the risk involved in the acquistion of financial contracts. Transactions in financial contracts carry a high degree of risk. If purchased contracts expire worthless, you will suffer a total loss of your investment, which consists of the contract premium.</p>
         </fieldset>
         <div class="center-text">
-            <div id="form_message"></div>
+            <p id="form_message" class="error-msg"></p>
         </div>
         <div class="center-text">
             <button class="button" id="submit">Update</button>

@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-    <title>Endpoint | Champion-FX.com</title>
+    <title>Cashier | Champion-FX.com</title>
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
@@ -248,39 +248,45 @@
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
             <div class="fx-section">
-    <div class="container">
-        <h1>Change API Endpoint</h1>
-        <form id="frm_endpoint">
+    <div id="cashier_deposit" class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h1 id="cashier_title" style="text-transform: capitalize"></h1>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="error_msg" class="col-xs-12 notice-msg center-text hidden"></div>
+        </div>
+
+        <div id="form_withdraw" class="hidden">
             <fieldset>
-                <legend>Details</legend>
                 <div class="row form-row">
                     <div class="col-xs-4">
-                        <label for="txt_server_url">Server</label>
+                        <label for="verification-token">Verification token</label>
                     </div>
                     <div class="col-xs-8">
-                        <input type="text" class="form-control" id="txt_server_url" maxlength="30" />
-                        <div class="hint">e.g. ws.binaryws.com</div>
-                        <p class="errorfield" id="error-server_url" style="display:none"></p>
+                        <input id="verification_token" type="text" maxlength="48" autocomplete="off" />
+                        <div class="hint">Please check your email for the value of this token</div>
+                        <p class="hint" id="verification_error"></p>
                     </div>
-                </div>
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_app_id">OAuth App ID (Optional)</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input type="text" class="form-control" id="txt_app_id" maxlength="5" />
-                        <p class="errorfield" id="error-app_id" style="display:none"></p>
+                    <div class="col-xs-12 center-text">
+                        <span class="button">
+                            <button class="button" id="btn_submit" type="button">Submit</button>
+                        </span>
                     </div>
                 </div>
             </fieldset>
+        </div>
 
-            <div class="row">
-                <div class="col-xs-8 offset-md-4">
-                    <button id="btn_set_endpoint" type="submit">Submit</button>
-                    <button class="button-secondary" id="btn_reset_endpoint">Reset to Original Settings</button>
-                </div>
+        <div class="row">
+            <div id="deposit_iframe_container" class="hidden">
+                <iframe src="" frameborder="0" width="100%" height="1500" scrolling="auto" style="padding:0;margin:0;"></iframe>
             </div>
-        </form>
+            <div id="withdraw_iframe_container" class="hidden">
+                <iframe src="" frameborder="0" width="100%" height="1500" scrolling="auto" style="padding:0;margin:0;"></iframe>
+            </div>
+        </div>
     </div>
 </div>
         </div>

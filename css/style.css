@@ -7,6 +7,7 @@
  */
 html {
   height: 100%;
+  overflow-x: hidden;
 }
 html body {
   display: -webkit-flex;
@@ -15,11 +16,20 @@ html body {
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
+  overflow-x: hidden;
 }
 html body #champion-container {
   -webkit-flex: 1 1 auto;
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
+}
+
+button {
+  white-space: nowrap;
+}
+
+.white {
+  color: #fff;
 }
 
 .topbar-container div {
@@ -53,13 +63,32 @@ html body #champion-container {
   margin-top: 20px;
 }
 
+.menu-container {
+  margin: 0 15px;
+}
+
 #verify-email-form {
   margin: 0;
   padding: 0;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  height: 100%;
 }
 
 .signup-box {
-  display: inline-block;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   margin: 20px 0;
   padding: 10px;
 }
@@ -69,11 +98,13 @@ html body #champion-container {
   padding: 0;
 }
 .signup-box input {
-  padding: 5px;
+  padding: 5px 15px;
   margin-right: 5px;
+  margin-bottom: 5px;
 }
 .signup-box span {
   display: block;
+  text-align: left;
   margin: 0;
   padding: 0;
 }
@@ -81,40 +112,94 @@ html body #champion-container {
   margin: 0;
 }
 
+.signup-button {
+  text-align: right;
+}
+
+.license-box {
+  display: inline-block;
+  margin: 20px 0;
+  padding: 10px;
+}
+.license-box div {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+.license-box img {
+  width: 65px;
+}
+
 @media (max-width: 480px) {
   .signup-box input {
     margin: 15px 0;
   }
+
+  #end_note, #license-box-container {
+    display: none;
+  }
 }
-.fx-footer {
+#footer .fx-footer {
   display: table;
   width: 100%;
   padding: 10px 0;
   font-size: 13px;
 }
-
-#footer-menu {
+#footer #footer-menu {
   padding: 10px 0;
 }
-#footer-menu ul {
+#footer #footer-menu ul {
   margin-bottom: 10px;
   padding: 0;
 }
-
-#footer-regulatory {
-  padding: 10px 0;
+#footer #footer-menu ul.social-network {
+  text-align: right;
+  width: 100%;
+  margin: 0;
+}
+#footer #footer-menu ul.social-network li {
+  display: inline-block;
+  margin-left: 5px;
+  margin-top: 0;
+}
+#footer #footer-menu ul.social-network li img {
+  width: 30px;
+}
+#footer #footer-regulatory {
+  padding: 25px 0 0;
   font-size: 10px;
   text-align: justify;
 }
+#footer #footer-regulatory .container {
+  border-bottom: 1px solid #DEDEDE;
+  padding-bottom: 25px;
+}
+#footer #footer-last {
+  padding: 10px 0;
+  font-size: 13px;
+}
+#footer #end_note {
+  line-height: 25px;
+  text-align: center;
+  background: #C2C2C2;
+  position: fixed;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+}
+#footer #end_note, #footer #end_note a {
+  color: #000;
+  font-size: 11px;
+}
 
-#footer-last {
-  padding-top: 10px;
+.fx-panel-container {
+  background: #fff;
+  border: 1px solid #DEDEDE;
 }
 
 .fx-panel {
-  padding-top: 10px;
+  padding-top: 20px;
   padding-bottom: 20px;
-  margin-bottom: 20px;
   min-height: 320px;
 }
 .fx-panel p {
@@ -137,12 +222,11 @@ html body #champion-container {
 .fx-panel-item {
   padding: 15px 10px 15px 15px;
   display: block;
-  height: 70px;
+  height: 150px;
 }
 .fx-panel-item div {
-  display: table-cell;
-  text-align: left;
-  padding: 0 0 0 15px;
+  text-align: center;
+  padding: 10px 12px 0;
   vertical-align: top;
 }
 
@@ -488,16 +572,8 @@ fieldset {
 }
 
 .logo-parent {
-  padding: 11px 0;
-  margin: 0;
-}
-
-.binary-logo-text {
   padding: 0;
-}
-.binary-logo-text div {
-  width: 150px !important;
-  margin-top: 8px;
+  margin: 0;
 }
 
 .test {
@@ -560,6 +636,57 @@ a:hover {
   border-radius: 2px;
   max-height: 80vh;
   overflow: auto;
+}
+
+.small-spinner .barspinner {
+  height: 15px;
+  margin: 7px;
+}
+
+/* Multi-level numbered list */
+ol {
+  counter-reset: item1;
+}
+
+ol li {
+  display: block;
+  position: relative;
+}
+
+ol li:before {
+  content: counter(item1) ".";
+  counter-increment: item1;
+  position: absolute;
+  margin-right: 100%;
+  right: 10px;
+  /* space between number and text */
+}
+
+ol ol {
+  counter-reset: item2;
+}
+
+ol ol li:before {
+  content: counter(item1) "." counter(item2) ".";
+  counter-increment: item2;
+}
+
+ol ol ol {
+  counter-reset: item3;
+}
+
+ol ol ol li:before {
+  content: counter(item1) "." counter(item2) "." counter(item3) ".";
+  counter-increment: item3;
+}
+
+ol ol ol ol {
+  counter-reset: item4;
+}
+
+ol ol ol ol li:before {
+  content: counter(item1) "." counter(item2) "." counter(item3) "." counter(item4) ".";
+  counter-increment: item4;
 }
 
 .fx-advisors {
@@ -809,13 +936,35 @@ a:hover {
 }
 
 body .top-nav-menu li a {
-  padding: 30px;
+  height: auto;
+  padding: 25px 15px;
 }
 
 .main-nav > li > ul {
   box-sizing: content-box;
 }
 
+.top-nav-menu > li > ul {
+  z-index: 10;
+}
+
+.top-nav-menu {
+  float: right;
+}
+
+.logo > div {
+  height: 45px;
+}
+
+.logo, .logo-dark {
+  height: 45px;
+}
+
+@media screen and (max-width: 796px) {
+  .top-nav-menu {
+    float: left;
+  }
+}
 /* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
 #int_bank_wire, #local_bank_transfer, #western_union, #citadel, #visa,
 #mastercard, #cuo-credit-card, #moneybrokers, #neteller, #moneta,
@@ -906,6 +1055,12 @@ body .top-nav-menu li a {
 #mt_account_management #accounts_list .acc-box > div {
   height: 100%;
   border: 1px solid #DEDEDE;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 #mt_account_management #accounts_list .acc-box > div:hover, #mt_account_management #accounts_list .acc-box > div.active {
   border-color: #C2C2C2;
@@ -938,12 +1093,23 @@ body .top-nav-menu li a {
   font-size: 0.9rem;
   padding: 0 0 0 25px;
   line-height: 1.6em;
+  word-break: break-all;
 }
 #mt_account_management #accounts_list .acc-box > div .acc-actions {
-  margin-top: 10px;
+  margin-top: auto;
   padding: 10px;
   border-top: 1px solid #DEDEDE;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+}
+#mt_account_management #accounts_list .acc-box > div .acc-actions a {
+  display: inline-block;
+  width: 64px;
+  text-align: center;
+  margin: 0 3px;
+}
+#mt_account_management #accounts_list .acc-box > div .acc-actions a img {
+  height: 32px;
+  margin-bottom: 7px;
 }
 #mt_account_management .fst-container {
   width: 100%;
@@ -995,4 +1161,214 @@ body .top-nav-menu li a {
 
 .google-play-badge {
   background-image: url("../images/buttons/googleplay.svg");
+}
+
+.slick-slider {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -ms-touch-action: pan-y;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.slick-list {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+.slick-list:focus {
+  outline: none;
+}
+.slick-list.dragging {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.slick-slider .slick-list, .slick-slider .slick-track {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+.slick-track {
+  position: relative;
+  left: 0;
+  top: 0;
+  display: block;
+}
+.slick-track:after, .slick-track:before {
+  content: '';
+  display: table;
+}
+.slick-track:after {
+  clear: both;
+}
+.slick-loading .slick-track {
+  visibility: hidden;
+}
+
+.slick-slide {
+  float: left;
+  height: 100%;
+  min-height: 1px;
+  display: none;
+}
+[dir='rtl'] .slick-slide {
+  float: right;
+}
+.slick-slide img {
+  display: block;
+  width: 100%;
+}
+.slick-slide.slick-loading img {
+  display: none;
+}
+.slick-slide.dragging img {
+  pointer-events: none;
+}
+.slick-initialized .slick-slide {
+  display: block;
+}
+.slick-loading .slick-slide {
+  visibility: hidden;
+}
+.slick-vertical .slick-slide {
+  display: block;
+  height: auto;
+  border: 1px solid transparent;
+}
+
+.slick-arrow.slick-hidden {
+  display: none;
+}
+
+.slick-slide {
+  height: 500px;
+  margin: 0;
+  width: 100%;
+}
+.slick-slide div {
+  width: 100%;
+}
+.slick-slide ul {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+.slick-slide ul li {
+  width: 100%;
+  margin: 0;
+  height: 100%;
+}
+.slick-slide ul li h2 {
+  line-height: 1.9rem;
+}
+.slick-slide ul li a img {
+  width: 12px;
+  display: inline;
+  margin-left: 5px;
+}
+
+.slick-dots {
+  right: 15px;
+  position: relative;
+  float: right;
+  margin: 0;
+}
+.slick-dots li {
+  display: inline-block;
+  padding: 0 5px;
+  line-height: 0;
+  margin: 0;
+}
+.slick-dots li button {
+  padding: 0;
+  width: 10px;
+  height: 10px;
+  font-size: 0;
+  border-radius: 100%;
+  background: #F2F2F2;
+}
+
+.slider-footer {
+  position: absolute;
+  width: 100%;
+  padding: 10px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.65);
+}
+.slider-footer .row {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.slider-text {
+  padding: 30px;
+}
+.slider-text .container, .slider-text .container .row {
+  height: 100%;
+}
+
+.license-box-icon {
+  background: url("../images/symbols/cfx_l.svg") center center no-repeat;
+  text-align: center;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  height: 100%;
+  margin: 0;
+  background-position: center center;
+}
+
+#slide-1 {
+  background: url("../images/img_fx_2@2x.jpg") no-repeat center center;
+  background-size: cover;
+  height: 500px;
+  width: 100%;
+}
+#slide-1 .row {
+  margin: 0 auto;
+}
+
+#slide-2 {
+  background: url("../images/about-2.jpg") no-repeat center center;
+  background-size: cover;
+  height: 500px;
+  width: 100%;
+}
+
+@media screen and (max-width: 796px) {
+  .slider-footer {
+    position: relative;
+    background: #F2F2F2;
+  }
+
+  .license-box {
+    color: #000;
+  }
+}
+@media screen and (max-width: 480px) {
+  .slider-footer {
+    position: relative;
+    background: #F2F2F2;
+  }
+
+  .license-box {
+    color: #000;
+  }
+
+  .signup-box div {
+    text-align: center;
+  }
+
+  .signup-box button {
+    margin: 0 0 15px;
+  }
 }
