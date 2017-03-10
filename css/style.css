@@ -112,8 +112,12 @@ button {
   margin: 0;
 }
 
+.main-signup {
+  margin-left: auto;
+}
+
 .signup-button {
-  text-align: right;
+  margin: auto;
 }
 
 .license-box {
