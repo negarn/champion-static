@@ -745,6 +745,11 @@ img.float-right {
   padding: 10px 0;
 }
 
+.separator-vertical {
+  height: 10px;
+  width: 2px;
+}
+
 .fx-advisors {
   background: url("../images/symbols/advisors.svg");
 }
