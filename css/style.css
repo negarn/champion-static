@@ -720,9 +720,11 @@ ol ol ol ol li:before {
 .has-tabs .col-sm {
   text-align: center;
   width: 100%;
-  white-space: normal;
   min-width: 1vw;
   padding-bottom: 10px;
+}
+.has-tabs .col-sm a {
+  white-space: normal;
 }
 
 .fx-advisors {
