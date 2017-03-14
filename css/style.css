@@ -737,6 +737,14 @@ ol ol ol ol li:before {
   width: 100%;
 }
 
+img.float-right {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-left: auto;
+  padding: 10px 0;
+}
+
 .fx-advisors {
   background: url("../images/symbols/advisors.svg");
 }
@@ -1414,4 +1422,28 @@ body .top-nav-menu li a {
   .signup-box button {
     margin: 0 0 15px;
   }
+}
+.background {
+  width: 100px;
+  height: 50px;
+  padding: 0;
+  margin: 0;
+}
+
+.line1 {
+  width: 112px;
+  height: 47px;
+  border-bottom: 1px solid #C2C2C2;
+  -webkit-transform: translateY(10px) translateX(20px) rotate(60deg);
+  position: absolute;
+}
+
+.line2 {
+  width: 112px;
+  height: 47px;
+  border-bottom: 1px solid #C2C2C2;
+  -webkit-transform: translateY(148px) translateX(0px) rotate(-60deg);
+  position: absolute;
+  top: -33px;
+  left: -13px;
 }
