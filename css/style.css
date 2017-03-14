@@ -1430,20 +1430,19 @@ body .top-nav-menu li a {
   margin: 0;
 }
 
-.line1 {
-  width: 112px;
+.line1, .line2 {
+  width: 160px;
   height: 47px;
   border-bottom: 1px solid #C2C2C2;
-  -webkit-transform: translateY(10px) translateX(20px) rotate(60deg);
   position: absolute;
 }
 
+.line1 {
+  -webkit-transform: translateY(10px) translateX(20px) rotate(60deg);
+  transform: translateY(10px) translateX(20px) rotate(60deg);
+}
+
 .line2 {
-  width: 112px;
-  height: 47px;
-  border-bottom: 1px solid #C2C2C2;
-  -webkit-transform: translateY(148px) translateX(0px) rotate(-60deg);
-  position: absolute;
-  top: -33px;
-  left: -13px;
+  -webkit-transform: translateY(148px) translateX(-20px) rotate(-60deg);
+  transform: translateY(148px) translateX(-20px) rotate(-60deg);
 }
