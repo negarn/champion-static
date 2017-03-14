@@ -717,6 +717,13 @@ ol ol ol ol li:before {
   margin-top: 0;
 }
 
+.has-tabs .col-sm {
+  text-align: center;
+  width: 100%;
+  white-space: normal;
+  min-width: 1vw;
+}
+
 .fx-advisors {
   background: url("../images/symbols/advisors.svg");
 }
