@@ -18484,6 +18484,7 @@
 	var ChampionSettings = __webpack_require__(447);
 	var TNCApproval = __webpack_require__(448);
 	var CashierDepositWithdraw = __webpack_require__(449);
+	var ChampionSecurity = __webpack_require__(450);
 
 	var Champion = function () {
 	    'use strict';
@@ -18539,6 +18540,7 @@
 	            metatrader: { module: MetaTrader, is_authenticated: true },
 	            real: { module: ChampionNewReal, is_authenticated: true, only_virtual: true },
 	            settings: { module: ChampionSettings, is_authenticated: true },
+	            security: { module: ChampionSecurity, is_authenticated: true },
 	            virtual: { module: ChampionNewVirtual, not_authenticated: true },
 	            'binary-options': { module: BinaryOptions },
 	            'cashier-password': { module: CashierPassword, is_authenticated: true, only_real: true },
@@ -20824,7 +20826,7 @@
 	            if (!checkField(field)) {
 	                if (form.is_ok) {
 	                    // first error
-	                    $.scrollTo(field.$, 500, { offset: -10 });
+	                    $.scrollTo(field.$.parent('div'), 500, { offset: -10 });
 	                }
 	                form.is_ok = false;
 	            }
@@ -38820,7 +38822,7 @@
 	            }
 	            ChampionSocket.send(data).then(function (response) {
 	                if (response.error) {
-	                    $('#error-create-account').removeClass('hidden').text(response.error.message);
+	                    $('#msg_form').removeClass('hidden').text(response.error.message);
 	                    btn_submit.removeAttr('disabled');
 	                } else {
 	                    var acc_info = response.new_account_virtual;
@@ -39476,7 +39478,7 @@
 	                }
 
 	                var data = { set_financial_assessment: 1 };
-	                showLoadingImage($('#form_message'));
+	                showLoadingImage($('#msg_form'));
 	                $('#assessment_form').find('select').each(function () {
 	                    financial_assessment[$(this).attr('id')] = data[$(this).attr('id')] = $(this).val();
 	                });
@@ -39520,7 +39522,7 @@
 	                }
 	            });
 	        } else {
-	            $('#form_message').html(msg).delay(5000).fadeOut(1000);
+	            $('#msg_form').html(msg).delay(5000).fadeOut(1000);
 	        }
 	    };
 
@@ -39978,8 +39980,8 @@
 	            if (formValues) formValues(_$form, acc_type, action);
 	            _$form.find('#btn_submit').attr({ acc_type: acc_type, action: action }).on('click dblclick', submit);
 
-	            // update legend, append form
-	            $action.find('legend').text(types_info[acc_type].title + ': ' + actions_info[action].title).end().find('#frm_action').html(_$form).end().removeClass(hidden_class);
+	            // update title, append form
+	            $action.find('h4').text(types_info[acc_type].title + ': ' + actions_info[action].title).end().find('#frm_action').html(_$form).end().removeClass(hidden_class);
 	            $.scrollTo($action, 500, { offset: -7 });
 	            Validation.init('#frm_' + action, validations[action]);
 	        });
@@ -40282,6 +40284,34 @@
 	}();
 
 	module.exports = CashierDepositWithdraw;
+
+/***/ },
+/* 450 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(301);
+
+	var ChampionSettings = function () {
+	    'use strict';
+
+	    var securityContainer = void 0;
+
+	    var load = function load() {
+	        securityContainer = $('.fx-security');
+	        securityContainer.find('#fx-security-content').show();
+	        if (!Client.is_virtual()) {
+	            securityContainer.find('.fx-real').show();
+	        }
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = ChampionSettings;
 
 /***/ }
 /******/ ]);
