@@ -772,6 +772,11 @@ img.float-right {
   height: 210px;
 }
 
+.center-align {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .fx-advisors {
   background: url("../images/symbols/advisors.svg");
 }
