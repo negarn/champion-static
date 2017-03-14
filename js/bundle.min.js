@@ -20545,7 +20545,7 @@
 	    'use strict';
 
 	    var load = function load() {
-	        $('.has-tabs').tabs();
+	        $('.has-tabs').tabs().removeClass('invisible');
 	    };
 
 	    return {
