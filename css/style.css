@@ -720,7 +720,7 @@ ol ol ol ol li:before {
 .has-tabs * {
   outline: none;
 }
-.has-tabs .col-sm {
+.has-tabs li.col-sm {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -731,7 +731,7 @@ ol ol ol ol li:before {
   padding-bottom: 10px !important;
   padding-top: 10px !important;
 }
-.has-tabs .col-sm a {
+.has-tabs li.col-sm a {
   white-space: normal;
   text-align: center;
   width: 100%;
