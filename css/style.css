@@ -718,13 +718,13 @@ ol ol ol ol li:before {
 }
 
 .has-tabs .col-sm {
-  text-align: center;
-  width: 100%;
   min-width: 1vw;
   padding-bottom: 10px;
 }
 .has-tabs .col-sm a {
   white-space: normal;
+  text-align: center;
+  width: 100%;
 }
 
 .fx-advisors {
