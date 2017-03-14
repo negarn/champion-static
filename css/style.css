@@ -713,6 +713,10 @@ ol ol ol ol li:before {
   border-radius: 5px;
 }
 
+.no-margin-top {
+  margin-top: 0;
+}
+
 .fx-advisors {
   background: url("../images/symbols/advisors.svg");
 }
