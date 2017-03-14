@@ -717,7 +717,16 @@ ol ol ol ol li:before {
   margin-top: 0;
 }
 
+.has-tabs * {
+  outline: none;
+}
 .has-tabs .col-sm {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   min-width: 1vw;
   padding-bottom: 10px !important;
   padding-top: 10px !important;
