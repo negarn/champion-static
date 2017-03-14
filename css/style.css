@@ -720,6 +720,7 @@ ol ol ol ol li:before {
 .has-tabs .col-sm {
   min-width: 1vw;
   padding-bottom: 10px !important;
+  padding-top: 10px !important;
 }
 .has-tabs .col-sm a {
   white-space: normal;
