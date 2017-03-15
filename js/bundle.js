@@ -20058,7 +20058,7 @@
 	                    return template('Please [_1]authenticate your account[_2] to lift your withdrawal and trading limits.', ['<a href="' + url_for('user/authenticate') + '">', '</a>']);
 	                },
 	                risk: function risk() {
-	                    return template('Please complete the [_1]financial assessment form[_2] to lift your withdrawal and trading limits.', ['<a href="' + url_for('user/assessment') + '">', '</a>']);
+	                    return template('Please complete the [_1]financial assessment form[_2] to lift your withdrawal and trading limits.', ['<a href="' + url_for('user/profile') + '#assessment">', '</a>']);
 	                },
 	                tnc: function tnc() {
 	                    return template('Please [_1]accept the updated Terms and Conditions[_2] to lift your withdrawal and trading limits.', ['<a href="' + url_for('user/tnc-approval') + '">', '</a>']);
