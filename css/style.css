@@ -745,8 +745,6 @@ ul.no-padding, ul.no-padding li {
       -ms-flex-align: center;
           align-items: center;
   min-width: 1vw;
-  padding-bottom: 10px !important;
-  padding-top: 10px !important;
 }
 .has-tabs li.col-sm a {
   white-space: normal;
