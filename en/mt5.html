@@ -30,14 +30,14 @@
     <div class="menu-container">
         <div class="row">
             <div class="col-sm-12 topbar-container flex-items-sm-middle">
-                <div class=" col-sm-3 upgrade-message hidden">
-                    <a href="/champion-static/en/new-account/real.html">Upgrade to a Real Account</a>
-                </div>
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/en/contact.html">Contact Us</a></li>
                         <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
+                </div>
+                <div class="upgrade-message hidden">
+                    <a href="/champion-static/en/new-account/real.html">Upgrade to a Real Account</a>
                 </div>
                 <div class="invisible">
                     <div class="languages">
@@ -68,19 +68,19 @@
     <div class="dark-blue header">
     <div class="menu-container">
         <div class="row">
-            <div class="col-lg-3 col-sm-6 col-xs-6 vertical-center">
+            <div class="col-md-3 col-sm-6 col-xs-6 vertical-center">
                 <div class="logo-wrapper">
                     <a href="/champion-static/en/home.html" class="logo-parent">
                         <div class="logo">
                             <div></div>
                         </div>
-                        <div class="mobile-hide binary-logo-text">
+                        <div class="binary-logo-text hidden-xs-down">
                             <div></div>
                         </div>
                     </a>
                 </div>
             </div>
-            <div class="col-lg-2 push-lg-7 col-sm-6 col-xs-6 vertical-center">
+            <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
                 <div id="main-logout" class="hidden">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
@@ -100,7 +100,7 @@
                                 <div class="main-account">
                                     <div class="account-type"></div>
                                     <div class="account-id"></div>
-                                    <div class="topMenuBalance"></div>
+                                    <div class="topMenuBalance">&nbsp;</div>
                                 </div>
                                 <div class="nav-caret"></div>
                             </a>
@@ -113,6 +113,19 @@
                                     <li class="topMenuCashier">Cashier</li>
                                 </a>
                                 <div class="separator-line-thin-gray"></div>
+                                <a href="/champion-static/en/about-us.html" class="hidden-sm-up">
+                                    <li>About</li>
+                                </a>
+                                <a href="/champion-static/en/mt5.html" class="hidden-sm-up">
+                                    <li>MT5</li>
+                                </a>
+                                <a href="/champion-static/en/binary-options.html" class="hidden-sm-up">
+                                    <li>Binary Options</li>
+                                </a>
+                                <a href="/champion-static/en/partnerships.html" class="hidden-sm-up">
+                                    <li>Partnerships</li>
+                                </a>
+                                <div class="separator-line-thin-gray hidden-sm-up"></div>
                                 <div class="login-id-list"></div>
                                 <a href="javascript:;" id="btn_logout" class="logout">
                                     <li>Sign out</li>
@@ -129,7 +142,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-7 pull-lg-2">
+            <div class="col-md-7 pull-md-2 hidden-sm-down">
                 <ul class="top-nav-menu">
                     <li>
                         <a href="/champion-static/en/about-us.html" class="nav-dropdown-toggle">About</a>
@@ -528,7 +541,7 @@
                     </div>
 
                     <div id="contract-spec">
-                        <div class="lg-padding">
+                        <div class="lg-padding no-gutters">
                             <h2>Forex contract specifications</h2>
                             <p>We explain our margin policy to give you a better understanding of how Forex trading works.</p>
                         </div>
@@ -711,11 +724,10 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                     <div id="forex-accounts">
-                        <div class="lg-padding">
+                        <div class="lg-padding no-gutters">
                             <h2>Types of accounts</h2>
                             <p>ChampionFX offers a variety of account types to cater to the diverse needs of traders everywhere, whether you’re an experienced trader or just starting out. Each account has been tailored to provide you with a unique opportunity in the world of Forex trading.</p>
                             <p>Best of all, there’s no minimum deposit requirement and no commission per trade.</p>
@@ -790,9 +802,9 @@
 
                                         <tr>
                                             <td></td>
-                                            <td><a class="button" href="/champion-static/en/user/metatrader.html"><span>Sign up</span></a></td>
-                                            <td><a class="button" href="/champion-static/en/user/metatrader.html"><span>Sign up</span></a></td>
-                                            <td><a class="button" href="/champion-static/en/user/metatrader.html"><span>Sign up</span></a></td>
+                                            <td><a class="button" href="/champion-static/en/user/metatrader.html"><span>Create account</span></a></td>
+                                            <td><a class="button" href="/champion-static/en/user/metatrader.html"><span>Create account</span></a></td>
+                                            <td><a class="button" href="/champion-static/en/user/metatrader.html"><span>Create account</span></a></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -801,19 +813,21 @@
                         </div>
                         <div class="row">
                             <div class="col-sm">
-                                <p><strong>1. Account currency</strong> is the currency of the funds accepted in your trading account.</p>
-                                <p><strong>2. Leverage</strong> is the ability to control a large amount of money using a minimal capital from yourself. Where does the rest of the money come from? Your trusted broker provides the rest.</p>
-                                <p>Let’s say you fork out a capital of USD 50 and we’re offering a leverage of 1:1,000. How much money, or margin, is available to you when you start trading?</p>
-                                <p class="center-text fill-bg-color lg-padding">USD 50 x 1,000 = <strong>USD 50,000 (is the margin available)</strong></p>
-                                <p><strong>3. Order execution</strong> typically comes in two varieties: market execution and instant execution. With market execution, you place an order at the broker’s price. You agree on the price in advance. There are no requotes with market execution.</p>
-                                <p>What about instant execution? In this case, your order is place at the price that’s available at that time. Requotes are possible if the price fluctuates a great deal before the order execution is complete.</p>
-                                <p><strong>4. Spread</strong> is the difference between the buy price and sell price. When you enter into a trade, you are buying an asset that you will be selling at a later time or date for a profit or loss. The difference in price is called a spread. A fixed spread means that the spread will remain as it is no matter the market condition. A variable spread means that the spread may increase depending on market conditions, as it is subject to market volatility caused by news events.</p>
-                                <p><strong>5. Commission</strong> refers to the commission fees that we charge for each trade you place with us. Champion FX currently charges no commission for all accounts.</p>
-                                <p><strong>6. Margin call</strong> refers to the state where the remaining funds in your account is unable to cover the leverage or margin requirement. You can deposit additional funds to prevent a margin call escalating to a stop out level.</p>
-                                <p><strong>7. Stop out level</strong> is the level where your margin ratio has become unsustainable, and we issue a forced closure of pending orders, and any open positions. A stop out level usually results from a high negative balance in your trading account.</p>
-                                <p><strong>8. Hedged margin</strong> refers to the funds required to open and maintain a position on the same asset, but in opposite directions.</p>
-                                <p><strong>9. A swap-free option</strong> is an account that incurs no interest or swap charges on overnight positions. This option is ideal for those with certain religious restrictions when it comes to paying interest.</p>
+                                <h4>1. Account currency </h4>
+                                <div class="separator primary-color"></div>
+                                <p>is the currency of the funds accepted in your trading account.</p>
                             </div>
+                            <p><strong>2. Leverage</strong> is the ability to control a large amount of money using a minimal capital from yourself. Where does the rest of the money come from? Your trusted broker provides the rest.</p>
+                            <p>Let’s say you fork out a capital of USD 50 and we’re offering a leverage of 1:1,000. How much money, or margin, is available to you when you start trading?</p>
+                            <p class="center-text fill-bg-color lg-padding">USD 50 x 1,000 = <strong>USD 50,000 (is the margin available)</strong></p>
+                            <p><strong>3. Order execution</strong> typically comes in two varieties: market execution and instant execution. With market execution, you place an order at the broker’s price. You agree on the price in advance. There are no requotes with market execution.</p>
+                            <p>What about instant execution? In this case, your order is place at the price that’s available at that time. Requotes are possible if the price fluctuates a great deal before the order execution is complete.</p>
+                            <p><strong>4. Spread</strong> is the difference between the buy price and sell price. When you enter into a trade, you are buying an asset that you will be selling at a later time or date for a profit or loss. The difference in price is called a spread. A fixed spread means that the spread will remain as it is no matter the market condition. A variable spread means that the spread may increase depending on market conditions, as it is subject to market volatility caused by news events.</p>
+                            <p><strong>5. Commission</strong> refers to the commission fees that we charge for each trade you place with us. Champion FX currently charges no commission for all accounts.</p>
+                            <p><strong>6. Margin call</strong> refers to the state where the remaining funds in your account is unable to cover the leverage or margin requirement. You can deposit additional funds to prevent a margin call escalating to a stop out level.</p>
+                            <p><strong>7. Stop out level</strong> is the level where your margin ratio has become unsustainable, and we issue a forced closure of pending orders, and any open positions. A stop out level usually results from a high negative balance in your trading account.</p>
+                            <p><strong>8. Hedged margin</strong> refers to the funds required to open and maintain a position on the same asset, but in opposite directions.</p>
+                            <p><strong>9. A swap-free option</strong> is an account that incurs no interest or swap charges on overnight positions. This option is ideal for those with certain religious restrictions when it comes to paying interest.</p>
                         </div>
                     </div>
 
@@ -831,24 +845,19 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm flex-sm-middle">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                 <ul>
                     <li>
                         <a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a>
                     </li>
                 </ul>
                 </div>
-                <div class="col-sm flex-sm-middle">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                     <ul>
                         <li><a class="" href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
                     </ul>
                 </div>
-                <div class="col-sm flex-sm-middle">
-                    <ul>
-                        <li><a class="" href=""></a></li>
-                    </ul>
-                </div>
-                <div class="col-sm flex-sm-middle">
+                <div class="col-sm flex-sm-middle col-md-6 col-lg-6">
                     <ul class="social-network">
                         <li>
                             <a href="">
