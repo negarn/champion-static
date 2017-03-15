@@ -36789,7 +36789,7 @@
 	            return false;
 	        });
 
-	        ChampionSocket.wait({ get_financial_assessment: 1 }).then(function (response) {
+	        ChampionSocket.wait('get_financial_assessment').then(function (response) {
 	            handleForm(response);
 	        });
 	    };
