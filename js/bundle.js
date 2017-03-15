@@ -19985,7 +19985,9 @@
 	            $('#main-login, #main-signup').removeClass('hidden');
 	            return;
 	        }
-	        displayAccountStatus();
+	        if (!Client.is_virtual()) {
+	            displayAccountStatus();
+	        }
 	        $('#main-logout').removeClass('hidden');
 	        $('#main-signup').addClass('hidden');
 	        var all_accounts = $('#all-accounts');
