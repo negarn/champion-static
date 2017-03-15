@@ -4,196 +4,145 @@
     <div class="wrapper" id="champion-content">
         <div class="fx-section">
     <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <h1>Real Money Account Opening</h1>
-            </div>
-        </div>
+        <h1 class="main-title" >Create a ChampionFX real account</h1>
 
         <form id="frm_new_account_real">
-            <fieldset>
-                <legend>Details</legend>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="ddl_title">Title</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <select id="ddl_title">
-                            <option value="Mr">Mr</option>
-                            <option value="Mrs">Mrs</option>
-                            <option value="Ms">Ms</option>
-                            <option value="Miss">Miss</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_fname">First name</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_fname" type="text" class="text" maxlength="30" />
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_lname">Family name</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_lname" type="text" class="text" maxlength="30" />
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="ddl_day">Date of birth</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_birth_date" type="text" class="text" size="12" readonly="readonly" />
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="ddl_residence">Country of residence</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <div id="residence_loading" class="small-spinner"><div class="barspinner dark">
-    <div class="rect1"></div>
-    <div class="rect2"></div>
-    <div class="rect3"></div>
-    <div class="rect4"></div>
-    <div class="rect5"></div>
-</div></div>
-                        <select id="ddl_residence" class="hidden" disabled="disabled"></select>
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend id="address">Address</legend>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_address1">First line of home address</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_address1" type="text" class="text" maxlength="70" />
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_address2">Second line of home address</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_address2" type="text" class="text" maxlength="70" />
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_city">Town/City</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_city" type="text" class="text" maxlength="35" />
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="ddl_state">State/Province</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <div id="state_loading" class="small-spinner"><div class="barspinner dark">
-    <div class="rect1"></div>
-    <div class="rect2"></div>
-    <div class="rect3"></div>
-    <div class="rect4"></div>
-    <div class="rect5"></div>
-</div></div>
-                        <select id="ddl_state" class="hidden"></select>
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_postcode">Postal code/ZIP</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_postcode" type="text" class="text" maxlength="20" />
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_phone">Telephone</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_phone" type="text" class="text" maxlength="35" />
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend id="security">Security</legend>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="ddl_secret_question">Secret question</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <select id="ddl_secret_question">
-                            <option value="Favourite dish">Favourite dish</option>
-                            <option value="Mother's maiden name">Mother's maiden name</option>
-                            <option value="Name of your pet">Name of your pet</option>
-                            <option value="Name of first love">Name of first love</option>
-                            <option value="Memorable town/city">Memorable town/city</option>
-                            <option value="Memorable date">Memorable date</option>
-                            <option value="Brand of first car">Brand of first car</option>
-                            <option value="Favourite artist">Favourite artist</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_secret_answer">Answer to secret question</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input id="txt_secret_answer" type="text" class="text" maxlength="50" autocomplete="off" />
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="center-text">
-                <div class="row">
-                    <div class="col-xs-12 center-text">
-                        <p>
-                            <input id="chk_tnc" type="checkbox" />
-                            <label for="chk_tnc">I have read and agree to the <a target="_blank" href="/champion-static/en/terms-and-conditions.html">terms and conditions</a> of the site.</label>
-                        </p>
-                    </div>
-                </div>
-            </fieldset>
-
             <div class="row">
-                <div class="col-xs-8 offset-md-4">
-                    <p class="error-msg hidden" id="error-create-account"></p>
-                    <button id="btn_submit" type="submit">Open Account</button>
+                <div class="col-md-4">
+                    <h4>Details</h4>
+    <div class="separator primary-color"></div>
+    <div class="fx-divider"></div>
+                    <div class="form-row ">
+    <label for="ddl_title">Title</label>
+    
+                <select id="ddl_title" > 
+                        <option value="Mr">Mr</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Miss">Miss</option>
+                                </select>
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_fname">First name</label>
+    
+                <input type="text" id="txt_fname" maxlength="30" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_lname">Family name</label>
+    
+                <input type="text" id="txt_lname" maxlength="30" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_birth_date">Date of birth</label>
+    
+                <input type="text" id="txt_birth_date" size="12" readonly="readonly" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="ddl_residence">Country of residence</label>
+    <div id="residence_loading" class="small-spinner"><div class="barspinner dark">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div></div>
+                <select id="ddl_residence" class="hidden">             </select>
+    
+</div>
                 </div>
+
+                <div class="col-md-4">
+                    <h4>Address</h4>
+    <div class="separator primary-color"></div>
+    <div class="fx-divider"></div>
+                    <div class="form-row ">
+    <label for="txt_address1">First line of home address</label>
+    
+                <input type="text" id="txt_address1" maxlength="70" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_address2">Second line of home address</label>
+    
+                <input type="text" id="txt_address2" maxlength="70" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_city">Town/City</label>
+    
+                <input type="text" id="txt_city" maxlength="35" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="ddl_state">State/Province</label>
+    <div id="state_loading" class="small-spinner"><div class="barspinner dark">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div></div>
+                <select id="ddl_state" class="hidden">             </select>
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_postcode">Postal code/ZIP</label>
+    
+                <input type="text" id="txt_postcode" maxlength="20" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_phone">Telephone</label>
+    
+                <input type="text" id="txt_phone" maxlength="35" />
+    
+</div>
+                </div>
+
+                <div class="col-md-4">
+                    <h4>Security</h4>
+    <div class="separator primary-color"></div>
+    <div class="fx-divider"></div>
+                    <div class="form-row ">
+    <label for="ddl_secret_question">Secret question</label>
+    
+                <select id="ddl_secret_question" > 
+                        <option value="Favourite dish">Favourite dish</option>
+                        <option value="Mother's maiden name">Mother's maiden name</option>
+                        <option value="Name of your pet">Name of your pet</option>
+                        <option value="Name of first love">Name of first love</option>
+                        <option value="Memorable town/city">Memorable town/city</option>
+                        <option value="Memorable date">Memorable date</option>
+                        <option value="Brand of first car">Brand of first car</option>
+                        <option value="Favourite artist">Favourite artist</option>
+                                </select>
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_secret_answer">Answer to secret question</label>
+    
+                <input type="text" id="txt_secret_answer" maxlength="50" autocomplete="off" />
+    
+</div>
+                </div>
+            </div>
+
+            <div class="center-text">
+                <div class="fx-divider"></div>
+                <div class="form-row checkbox">
+    <input id="chk_tnc" type="checkbox" />
+    <label for="chk_tnc">I have read and agree to the <a target="_blank" href="/champion-static/en/terms-and-conditions.html">terms and conditions</a> of the site.</label>
+</div>
+                <div class="submit-row ">
+    <p id="msg_form" class="error-msg invisible"></p>
+    <button id="btn_submit" type="submit">Create account</button>
+</div>
             </div>
         </form>
-
-        <div class="errorbox rbox" id="client_message" style="display:none">
-            <div class="rbox-wrap">
-                <div class="gr-12 rbox-content" id="client_message_content">
-                    <p class="center notice-msg"></p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
     </div>
