@@ -36657,7 +36657,9 @@
 	var ChampionSocket = __webpack_require__(308);
 
 	var Authenticate = function () {
-	    var onLoad = function onLoad() {
+	    'use strict';
+
+	    var load = function load() {
 	        ChampionSocket.send({ get_account_status: 1 }).then(function (response) {
 	            if (response.error) {
 	                $('#error_message').removeClass('invisible').text(response.error.message);
@@ -36677,7 +36679,7 @@
 	    };
 
 	    return {
-	        onLoad: onLoad
+	        load: load
 	    };
 	}();
 
