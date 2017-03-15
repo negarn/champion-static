@@ -1995,7 +1995,7 @@ body .top-nav-menu li a {
 }
 
 #slide-1 {
-  background: url("../images/img_fx_2@2x.jpg") no-repeat center center;
+  background: url("../images/slider/banner1.jpg") no-repeat center center;
   background-size: cover;
   height: 500px;
   width: 100%;
@@ -2005,42 +2005,42 @@ body .top-nav-menu li a {
 }
 
 #slide-2 {
-  background: url("../images/about-2.jpg") no-repeat center center;
+  background: url("../images/slider/banner2.png") no-repeat center center;
   background-size: cover;
   height: 500px;
   width: 100%;
 }
 
 #slide-3 {
-  background: url("../images/about-2.jpg") no-repeat center center;
+  background: url("../images/slider/banner3.png") no-repeat center center;
   background-size: cover;
   height: 500px;
   width: 100%;
 }
 
 #slide-4 {
-  background: url("../images/about-2.jpg") no-repeat center center;
+  background: url("../images/slider/banner4.png") no-repeat center center;
   background-size: cover;
   height: 500px;
   width: 100%;
 }
 
 #slide-5 {
-  background: url("../images/image1.jpg") no-repeat center center;
+  background: url("../images/slider/banner5.png") no-repeat center center;
   background-size: cover;
   height: 500px;
   width: 100%;
 }
 
 #slide-6 {
-  background: url("../images/about-2.jpg") no-repeat center center;
+  background: url("../images/slider/banner6.jpg") no-repeat center center;
   background-size: cover;
   height: 500px;
   width: 100%;
 }
 
 #slide-7 {
-  background: url("../images/about-2.jpg") no-repeat center center;
+  background: url("../images/slider/banner7.jpg") no-repeat center center;
   background-size: cover;
   height: 500px;
   width: 100%;
