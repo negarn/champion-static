@@ -18479,13 +18479,12 @@
 	var CashierTopUpVirtual = __webpack_require__(438);
 	var Authenticate = __webpack_require__(439);
 	var ChangePassword = __webpack_require__(440);
-	var FinancialAssessment = __webpack_require__(441);
-	var MetaTrader = __webpack_require__(442);
-	var ChampionSettings = __webpack_require__(445);
-	var TNCApproval = __webpack_require__(446);
-	var CashierDepositWithdraw = __webpack_require__(447);
-	var Home = __webpack_require__(448);
-	var ChampionProfile = __webpack_require__(451);
+	var MetaTrader = __webpack_require__(441);
+	var ChampionSettings = __webpack_require__(444);
+	var TNCApproval = __webpack_require__(445);
+	var CashierDepositWithdraw = __webpack_require__(446);
+	var Home = __webpack_require__(447);
+	var ChampionProfile = __webpack_require__(450);
 	var ChampionSecurity = __webpack_require__(454);
 
 	var Champion = function () {
@@ -18533,7 +18532,6 @@
 	    var afterContentChange = function afterContentChange(e, content) {
 	        var page = content.getAttribute('data-page');
 	        var pages_map = {
-	            assessment: { module: FinancialAssessment, is_authenticated: true, only_real: true },
 	            authenticate: { module: Authenticate, is_authenticated: true, only_real: true },
 	            cashier: { module: Cashier },
 	            contact: { module: ChampionContact },
@@ -36763,161 +36761,10 @@
 
 	'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-	var Header = __webpack_require__(309);
-	var ChampionSocket = __webpack_require__(308);
-	var State = __webpack_require__(302).State;
-	var isEmptyObject = __webpack_require__(306).isEmptyObject;
-	var showLoadingImage = __webpack_require__(306).showLoadingImage;
-	var Validation = __webpack_require__(318);
-
-	var FinancialAssessment = function () {
-	    'use strict';
-
-	    var form_selector = '#assessment_form';
-	    var hidden_class = 'invisible';
-
-	    var financial_assessment = {},
-	        arr_validation = [];
-
-	    var load = function load() {
-	        showLoadingImage($('<div/>', { id: 'loading', class: 'center-text' }).insertAfter('#heading'));
-	        $(form_selector).on('submit', function (event) {
-	            event.preventDefault();
-	            submitForm();
-	            return false;
-	        });
-
-	        ChampionSocket.wait('get_financial_assessment').then(function (response) {
-	            handleForm(response);
-	        });
-	    };
-
-	    var handleForm = function handleForm(response) {
-	        if (!response) {
-	            response = State.get(['response', 'get_financial_assessment']);
-	        }
-	        hideLoadingImg();
-	        financial_assessment = $.extend({}, response.get_financial_assessment);
-
-	        if (isEmptyObject(financial_assessment)) {
-	            ChampionSocket.wait('get_account_status').then(function (data) {
-	                if (data.get_account_status.risk_classification === 'high') {
-	                    $('#high_risk_classification').removeClass(hidden_class);
-	                }
-	            });
-	        }
-
-	        Object.keys(financial_assessment).forEach(function (key) {
-	            var val = financial_assessment[key];
-	            $('#' + key).val(val);
-	        });
-	        arr_validation = [];
-	        $(form_selector).find('select').map(function () {
-	            arr_validation.push({ selector: '#' + $(this).attr('id'), validations: ['req'] });
-	        });
-	        Validation.init(form_selector, arr_validation);
-	    };
-
-	    var submitForm = function submitForm() {
-	        $('#submit').attr('disabled', 'disabled');
-
-	        if (Validation.validate(form_selector)) {
-	            var _ret = function () {
-	                var hasChanged = false;
-	                Object.keys(financial_assessment).forEach(function (key) {
-	                    var $key = $('#' + key);
-	                    if ($key.length && $key.val() !== financial_assessment[key]) {
-	                        hasChanged = true;
-	                    }
-	                });
-	                if (Object.keys(financial_assessment).length === 0) hasChanged = true;
-	                if (!hasChanged) {
-	                    showFormMessage('You did not change anything.', false);
-	                    setTimeout(function () {
-	                        $('#submit').removeAttr('disabled');
-	                    }, 1000);
-	                    return {
-	                        v: void 0
-	                    };
-	                }
-
-	                var data = { set_financial_assessment: 1 };
-	                showLoadingImage($('#msg_form'));
-	                $('#assessment_form').find('select').each(function () {
-	                    financial_assessment[$(this).attr('id')] = data[$(this).attr('id')] = $(this).val();
-	                });
-	                ChampionSocket.send(data).then(function (response) {
-	                    $('#submit').removeAttr('disabled');
-	                    if ('error' in response) {
-	                        showFormMessage('Sorry, an error occurred while processing your request.', false);
-	                    } else {
-	                        showFormMessage('Your changes have been updated successfully.', true);
-	                        ChampionSocket.send({ get_financial_assessment: 1 }, true).then(function () {
-	                            Header.displayAccountStatus();
-	                        });
-	                    }
-	                });
-	            }();
-
-	            if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-	        } else {
-	            setTimeout(function () {
-	                $('#submit').removeAttr('disabled');
-	            }, 1000);
-	        }
-	    };
-
-	    var hideLoadingImg = function hideLoadingImg(show_form) {
-	        $('#loading').remove();
-	        if (typeof show_form === 'undefined') {
-	            show_form = true;
-	        }
-	        if (show_form) {
-	            $('#assessment_form').removeClass(hidden_class);
-	        }
-	    };
-
-	    var showFormMessage = function showFormMessage(msg, isSuccess) {
-	        if (isSuccess) {
-	            $.scrollTo($('h1#heading'), 500, { offset: -10 });
-	            $('#assessment_form').addClass(hidden_class);
-	            $('#msg_success').removeClass(hidden_class);
-	            ChampionSocket.send({ get_account_status: 1 }).then(function (response_status) {
-	                if ($.inArray('authenticated', response_status.get_account_status.status) === -1) {
-	                    $('#msg_authenticate').removeClass(hidden_class);
-	                }
-	            });
-	        } else {
-	            $('#msg_form').html(msg).delay(5000).fadeOut(1000);
-	        }
-	    };
-
-	    var unload = function unload() {
-	        $(form_selector).off('submit');
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload,
-	        handleForm: handleForm,
-	        submitForm: submitForm
-	    };
-	}();
-
-	module.exports = FinancialAssessment;
-
-/***/ },
-/* 442 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
 	var ChampionSocket = __webpack_require__(308);
 	var Validation = __webpack_require__(318);
-	var MetaTraderConfig = __webpack_require__(443);
-	var MetaTraderUI = __webpack_require__(444);
+	var MetaTraderConfig = __webpack_require__(442);
+	var MetaTraderUI = __webpack_require__(443);
 
 	var MetaTrader = function () {
 	    'use strict';
@@ -37026,7 +36873,7 @@
 	module.exports = MetaTrader;
 
 /***/ },
-/* 443 */
+/* 442 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37238,7 +37085,7 @@
 	module.exports = MetaTraderConfig;
 
 /***/ },
-/* 444 */
+/* 443 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37246,7 +37093,7 @@
 	var Validation = __webpack_require__(318);
 	var formatMoney = __webpack_require__(310).formatMoney;
 	var showLoadingImage = __webpack_require__(306).showLoadingImage;
-	var MetaTraderConfig = __webpack_require__(443);
+	var MetaTraderConfig = __webpack_require__(442);
 
 	var MetaTraderUI = function () {
 	    'use strict';
@@ -37426,7 +37273,7 @@
 	module.exports = MetaTraderUI;
 
 /***/ },
-/* 445 */
+/* 444 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37456,7 +37303,7 @@
 	module.exports = ChampionSettings;
 
 /***/ },
-/* 446 */
+/* 445 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37518,7 +37365,7 @@
 	module.exports = TNCApproval;
 
 /***/ },
-/* 447 */
+/* 446 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37648,12 +37495,12 @@
 	module.exports = CashierDepositWithdraw;
 
 /***/ },
-/* 448 */
+/* 447 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Slider = __webpack_require__(449);
+	var Slider = __webpack_require__(448);
 
 	var Home = function () {
 	    'use strict';
@@ -37675,12 +37522,12 @@
 	module.exports = Home;
 
 /***/ },
-/* 449 */
+/* 448 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	__webpack_require__(450);
+	__webpack_require__(449);
 
 	var Slider = function () {
 	    var init = function init() {
@@ -37746,7 +37593,7 @@
 	module.exports = Slider;
 
 /***/ },
-/* 450 */
+/* 449 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
@@ -40384,14 +40231,14 @@
 	});
 
 /***/ },
-/* 451 */
+/* 450 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Client = __webpack_require__(301);
 	var showLoadingImage = __webpack_require__(306).showLoadingImage;
-	var FinancialAssessment = __webpack_require__(441);
+	var FinancialAssessment = __webpack_require__(451);
 	var PersonalDetails = __webpack_require__(452);
 
 	var Profile = function () {
@@ -40442,6 +40289,157 @@
 	}();
 
 	module.exports = Profile;
+
+/***/ },
+/* 451 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	var Header = __webpack_require__(309);
+	var ChampionSocket = __webpack_require__(308);
+	var State = __webpack_require__(302).State;
+	var isEmptyObject = __webpack_require__(306).isEmptyObject;
+	var showLoadingImage = __webpack_require__(306).showLoadingImage;
+	var Validation = __webpack_require__(318);
+
+	var FinancialAssessment = function () {
+	    'use strict';
+
+	    var form_selector = '#assessment_form';
+	    var hidden_class = 'invisible';
+
+	    var financial_assessment = {},
+	        arr_validation = [];
+
+	    var load = function load() {
+	        showLoadingImage($('<div/>', { id: 'loading', class: 'center-text' }).insertAfter('#heading'));
+	        $(form_selector).on('submit', function (event) {
+	            event.preventDefault();
+	            submitForm();
+	            return false;
+	        });
+
+	        ChampionSocket.wait('get_financial_assessment').then(function (response) {
+	            handleForm(response);
+	        });
+	    };
+
+	    var handleForm = function handleForm(response) {
+	        if (!response) {
+	            response = State.get(['response', 'get_financial_assessment']);
+	        }
+	        hideLoadingImg();
+	        financial_assessment = $.extend({}, response.get_financial_assessment);
+
+	        if (isEmptyObject(financial_assessment)) {
+	            ChampionSocket.wait('get_account_status').then(function (data) {
+	                if (data.get_account_status.risk_classification === 'high') {
+	                    $('#high_risk_classification').removeClass(hidden_class);
+	                }
+	            });
+	        }
+
+	        Object.keys(financial_assessment).forEach(function (key) {
+	            var val = financial_assessment[key];
+	            $('#' + key).val(val);
+	        });
+	        arr_validation = [];
+	        $(form_selector).find('select').map(function () {
+	            arr_validation.push({ selector: '#' + $(this).attr('id'), validations: ['req'] });
+	        });
+	        Validation.init(form_selector, arr_validation);
+	    };
+
+	    var submitForm = function submitForm() {
+	        $('#submit').attr('disabled', 'disabled');
+
+	        if (Validation.validate(form_selector)) {
+	            var _ret = function () {
+	                var hasChanged = false;
+	                Object.keys(financial_assessment).forEach(function (key) {
+	                    var $key = $('#' + key);
+	                    if ($key.length && $key.val() !== financial_assessment[key]) {
+	                        hasChanged = true;
+	                    }
+	                });
+	                if (Object.keys(financial_assessment).length === 0) hasChanged = true;
+	                if (!hasChanged) {
+	                    showFormMessage('You did not change anything.', false);
+	                    setTimeout(function () {
+	                        $('#submit').removeAttr('disabled');
+	                    }, 1000);
+	                    return {
+	                        v: void 0
+	                    };
+	                }
+
+	                var data = { set_financial_assessment: 1 };
+	                showLoadingImage($('#msg_form'));
+	                $('#assessment_form').find('select').each(function () {
+	                    financial_assessment[$(this).attr('id')] = data[$(this).attr('id')] = $(this).val();
+	                });
+	                ChampionSocket.send(data).then(function (response) {
+	                    $('#submit').removeAttr('disabled');
+	                    if ('error' in response) {
+	                        showFormMessage('Sorry, an error occurred while processing your request.', false);
+	                    } else {
+	                        showFormMessage('Your changes have been updated successfully.', true);
+	                        ChampionSocket.send({ get_financial_assessment: 1 }, true).then(function () {
+	                            Header.displayAccountStatus();
+	                        });
+	                    }
+	                });
+	            }();
+
+	            if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	        } else {
+	            setTimeout(function () {
+	                $('#submit').removeAttr('disabled');
+	            }, 1000);
+	        }
+	    };
+
+	    var hideLoadingImg = function hideLoadingImg(show_form) {
+	        $('#loading').remove();
+	        if (typeof show_form === 'undefined') {
+	            show_form = true;
+	        }
+	        if (show_form) {
+	            $('#assessment_form').removeClass(hidden_class);
+	        }
+	    };
+
+	    var showFormMessage = function showFormMessage(msg, isSuccess) {
+	        if (isSuccess) {
+	            $.scrollTo($('h1#heading'), 500, { offset: -10 });
+	            $('#assessment_form').addClass(hidden_class);
+	            $('#msg_success').removeClass(hidden_class);
+	            ChampionSocket.send({ get_account_status: 1 }).then(function (response_status) {
+	                if ($.inArray('authenticated', response_status.get_account_status.status) === -1) {
+	                    $('#msg_authenticate').removeClass(hidden_class);
+	                }
+	            });
+	        } else {
+	            $('#msg_form').html(msg).delay(5000).fadeOut(1000);
+	        }
+	    };
+
+	    var unload = function unload() {
+	        $(form_selector).off('submit');
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload,
+	        handleForm: handleForm,
+	        submitForm: submitForm
+	    };
+	}();
+
+	module.exports = FinancialAssessment;
 
 /***/ },
 /* 452 */
