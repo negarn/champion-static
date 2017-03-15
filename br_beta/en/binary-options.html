@@ -18,22 +18,26 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/br_beta/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/br_beta/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/br_beta/css/flex.min.css?sgg1ycfi" />
-     <link rel="stylesheet" href="/champion-static/br_beta/css/style.min.css?sgg1ycfi" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sgg1ycfi" />
-      <script src="/champion-static/br_beta/js/bundle.js?sgg1ycfi" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?sgg1ycfi" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/br_beta/css/flex.min.css?cb6ac48t" />
+     <link rel="stylesheet" href="/champion-static/br_beta/css/style.min.css?cb6ac48t" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?cb6ac48t" />
+      <script src="/champion-static/br_beta/js/bundle.js?cb6ac48t" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?cb6ac48t" type="text/javascript"></script>
      
 </head>
 <body>
     <div class="topbar primary-color-dark">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
             <div class="col-sm-12 topbar-container flex-items-sm-middle">
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/br_beta/en/contact.html">Contact Us</a></li>
+                        <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
+                </div>
+                <div class="upgrade-message hidden">
+                    <a href="/champion-static/br_beta/en/new-account/real.html">Upgrade to a Real Account</a>
                 </div>
                 <div class="invisible">
                     <div class="languages">
@@ -62,30 +66,21 @@
     </div>
 </div>
     <div class="dark-blue header">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-md-3 col-sm-6 col-xs-6 vertical-center">
                 <div class="logo-wrapper">
                     <a href="/champion-static/br_beta/en/home.html" class="logo-parent">
                         <div class="logo">
                             <div></div>
                         </div>
-                        <div class="mobile-hide binary-logo-text ">
+                        <div class="binary-logo-text hidden-xs-down">
                             <div></div>
                         </div>
                     </a>
                 </div>
             </div>
-            <div class="col-lg-7">
-                <ul class="top-nav-menu mobile-hide">
-                    <li><a href="/champion-static/br_beta/en/about-us.html">About</a></li>
-                    <li><a href="/champion-static/br_beta/en/forex.html">Forex</a></li>
-                    <li><a href="/champion-static/br_beta/en/binary-options.html">Binary Options</a></li>
-                    <li><a href="/champion-static/br_beta/en/range-of-markets.html">Markets</a></li>
-                    <li><a href="/champion-static/br_beta/en/partnerships.html">Partnerships</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2">
+            <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
                 <div id="main-logout" class="hidden">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
@@ -105,15 +100,32 @@
                                 <div class="main-account">
                                     <div class="account-type"></div>
                                     <div class="account-id"></div>
-                                    <div class="topMenuBalance"></div>
+                                    <div class="topMenuBalance">&nbsp;</div>
                                 </div>
                                 <div class="nav-caret"></div>
                             </a>
                             <ul>
+                                <a class="link" href="/champion-static/br_beta/en/user/settings.html">
+                                    <li class="topMenuSettings">Settings</li>
+                                </a>
+                                <div class="separator-line-thin-gray"></div>
                                 <a class="link" href="/champion-static/br_beta/en/cashier.html">
                                     <li class="topMenuCashier">Cashier</li>
                                 </a>
                                 <div class="separator-line-thin-gray"></div>
+                                <a href="/champion-static/br_beta/en/about-us.html" class="hidden-sm-up">
+                                    <li>About</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/mt5.html" class="hidden-sm-up">
+                                    <li>MT5</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/binary-options.html" class="hidden-sm-up">
+                                    <li>Binary Options</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/partnerships.html" class="hidden-sm-up">
+                                    <li>Partnerships</li>
+                                </a>
+                                <div class="separator-line-thin-gray hidden-sm-up"></div>
                                 <div class="login-id-list"></div>
                                 <a href="javascript:;" id="btn_logout" class="logout">
                                     <li>Sign out</li>
@@ -122,328 +134,129 @@
                         </li>
                     </ul>
                 </div>
-                <div id="main-login" class="FX__Header__cta hidden">
-                    <a class="button-secondary" href="javascript:;"><span>Log In</span></a>
+                <div id="main-signup" class="hidden">
+                    <ul class="signup-button">
+                        <li class="">
+                            <button class="button-secondary" href="javascript:;">Sign Up</button>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+            <div class="col-md-7 pull-md-2 hidden-sm-down">
+                <ul class="top-nav-menu">
+                    <li>
+                        <a href="/champion-static/br_beta/en/about-us.html" class="nav-dropdown-toggle">About</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/mt5.html" class="nav-dropdown-toggle">MT5</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/binary-options.html" class="nav-dropdown-toggle">Binary Options</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/partnerships.html" class="nav-dropdown-toggle">Partnerships</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 
-    <div class="fill-bg-color centered hidden" id="signup">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm flex-sm-middle">
-                    <form id="verify-email-form">
-    <div class="signup-box border primary-bg-color fx-material">
-        <div class="">
-            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
-        </div>
-        <div class="">
-            <button class="button-secondary" id="btn-verify-email" type="submit">Create Free Account</button>
-        </div>
-        <span class="error-msg hint color-white center-text" id="signup_error" style="display:none"></span>
-    </div>
-</form>
-                </div>
-            </div>
-        </div>
-    </div>
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
             <div class="fx-section">
     <div class="container">
+        <h1 class="main-title" >Binary Options</h1>
+        <p>Champion FX knows our traders love options. That's why we've provided them with access to a different kind of trading: binary options.</p>
+        <div class="fx-divider-xl"></div>
         <div class="row">
-            <div class="col-sm" id="content">
-                <h1>Binary Options</h1>
-                <div class="content-tab-container tab-with-subsection">
-                    <div class="tab-menu">
-                        <div class="tab-menu-wrap">
-                            <ul class="tm-ul">
-                                <li id="first-tab" class="tm-li active first">
-                                    <span class="menu-wrap-a">
-                                        <span class="menu-wrap-b">
-                                            <a class="tm-a first a-active">Overview</a>
-                                        </span>
-                                    </span>
-                                </li>
-                                <li id="second-tab" class="tm-li">
-                                    <span class="menu-wrap-a">
-                                        <span class="menu-wrap-b">
-                                            <a class="tm-a">What is binary options trading?</a>
-                                        </span>
-                                    </span>
-                                </li>
-                                <li id="third-tab" class="tm-li">
-                                    <span class="menu-wrap-a">
-                                        <span class="menu-wrap-b">
-                                            <a class="tm-a">How to trade</a>
-                                        </span>
-                                    </span>
-                                </li>
-                                <li id="fourth-tab" class="tm-li">
-                                    <span class="menu-wrap-a">
-                                        <span class="menu-wrap-b">
-                                            <a class="tm-a">Binary options trading accounts</a>
-                                        </span>
-                                    </span>
-                                </li>
-                                <li id="fifth-tab" class="tm-li">
-                                    <span class="menu-wrap-a">
-                                        <span class="menu-wrap-b">
-                                            <a class="tm-a">Champion FX Webtrader</a>
-                                        </span>
-                                    </span>
-                                </li>
-
-                            </ul>
-                        </div>
+            <div class="col-sm">
+                <div class="center-text">
+                    <h2>What is binary options trading</h2>
+                    <div class="fx-divider"></div>
+                    <p>Understand the simple idea behind binary options, how they work and their advantages over other financial instruments.</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <h3>Simplicity</h3>
+                        <div class="separator primary-color"></div>
+                        <p>Predict the outcome from two possible results. That's why it is called binary - you'll either win or lose.</p>
                     </div>
-                    <div class="tab-content">
-                        <div class="tab-content-wrapper menu-has-sub-item">
-                            <div id="first-tab-content" class="toggle-content">
-                                <div class="row">
-                                    <div class="col-sm">
-                                        <div class="fx-feature-box">
-                                            <div class="fx-lg fx-trader"></div>
-                                            <p>Binary options trading platforms for champions</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm">
-                                        <div class="fx-feature-box">
-                                            <div class="fx-lg fx-worldwide"></div>
-                                            <p>Enter a whole new world of trading by joining today</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm">
-                                        <p>Champion FX knows our traders love options. That's why we've provided them with access to a different kind of trading: binary options.</p>
-                                    </div>
-                                </div>
-                                <div class="centered">
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <h2>What is binary options trading</h2>
-                                            <p>Understand the simple idea behind binary options, how they work, and their advantages over other financial instruments.</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <h4>Simplicity</h4>
-                                            <p>Predict the outcome from two possible results. That's why it's called binary - you'll either win or lose.</p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>Flexibility</h4>
-                                            <p>Choose from a wide range of markets, timescales, and conditions.</p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>Limited risk</h4>
-                                            <p>Know exactly what you stand to win or lose. Never worry about slippages, margin calls, or stops.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <h2>How to trade binary options</h2>
-                                            <p>With binary options, you're not buying or selling actual assets, only a contract that determines how that asset performs. Learn about the trade types available, as well as the parameters you need to consider such as the underlying market, duration, barrier, and payout.</p>
-                                        </div>
-                                    </div>
-                                    <div class="fx-divider"></div>
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <h2>Types of accounts</h2>
-                                            <p>Champion FX offers two types of accounts for binary options trading. Trade risk-free with a virtual account before you upgrade to a real account.</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <h4>Virtual account</h4>
-                                            <p>Trade with USD 10,000 worth of virtual currency without any risks.</p>
-                                            <p>
-                                                <a class="button" id="virtual-signup-button">
-                                                    <span>Sign up</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>Real account</h4>
-                                            <p>Upgrade to a real account to trade binary options with real money.</p>
-                                            <p>
-                                                <a class="button" id="real-signup-button" href="/champion-static/br_beta/en/new-account/real.html">
-                                                    <span>Upgrade</span>
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="second-tab-content" class="toggle-content invisible">
-                                <h2>What is binary options trading?</h2>
-                                <p>A binary option is a type of option with a fixed payout. The payout is determined at the start before you purchase the trade. If your prediction is correct, you receive the fixed (and stated) payout. If not, you will lose your initial stake and nothing more. It is called a 'binary' option because there can only be two outcomes: you either win or lose.</p>
-                                <p>Whatever market you trade in, always remember that you're not purchasing the asset itself, but a contract (or "option") that determines how the asset performs over a period of time. This limits your risk and makes it easy for anyone to start trading.</p>
-                                <div class="centered">
-                                    <div class="fx-divider"></div>
-                                    <h2>Benefits of binary options trading with Champion FX</h2>
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <h4>Easy to trade</h4>
-                                            <p>Predict the market condition from two possible outcomes.</p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>Controlled risk</h4>
-                                            <p>Know from the start exactly what you stand to win or lose.</p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>No surprises</h4>
-                                            <p>Never worry about slippages, margin calls, or stops.</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <h4>Low stakes</h4>
-                                            <p>Deposit as little as USD 5 to start trading.</p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>Competitive payouts</h4>
-                                            <p>Enjoy payouts of up to USD 50,000 with a winning trade.</p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>Sharp prices</h4>
-                                            <p>Benefit from similar rates of return as interbank traders.</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md">
-                                            <h4>Wide product range</h4>
-                                            <p>Trade over 100 types of assets across four markets.</p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>Simple and intuitive</h4>
-                                            <p>Enjoy a trading platform that's easy to navigate and use.</p>
-                                        </div>
-                                        <div class="col-md">
-                                            <h4>Trade the world's markets</h4>
-                                            <p>Diversify your investment portfolio through one platform.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="third-tab-content" class="toggle-content invisible">
-                                <h2>How to trade binary options</h2>
-                                <p>Trading binary options is relatively easy, and you can purchase a trade in only three simple steps.</p>
-                                <div class="row centered">
-                                    <div class="col-md">
-                                        <div class="fx-lg">
-                                            <img src="/champion-static/br_beta/images/binary-options-1.png" />
-                                        </div>
-                                        <p><strong>Define your position</strong></p>
-                                        <p>Consider the market, duration, barrier, and payout.</p>
-                                    </div>
-                                    <div class="col-md">
-                                        <div class="fx-lg">
-                                            <img src="/champion-static/br_beta/images/binary-options-2.png" />
-                                        </div>
-                                        <p><strong>Get your price</strong></p>
-                                        <p>Receive instant prices based on your position.</p>
-                                    </div>
-                                    <div class="col-md">
-                                        <div class="fx-lg">
-                                            <img src="/champion-static/br_beta/images/binary-options-3.png" />
-                                        </div>
-                                        <p><strong>Make your trade</strong></p>
-                                        <p>Choose to buy, or redefine your position.</p>
-                                    </div>
-                                </div>
-                                <h4>Step 1: Define your position</h4>
-                                <div><img src="/champion-static/br_beta/images/binary-options-4.png" /></div>
-                                <p>First, you need to set the parameters of your trade. Here's what you need to consider.</p>
-                                <ul class="bullet">
-                                    <li>
-                                        Underlying market
-                                        <p>Choose the asset you wish to trade, such as gold, oil, stocks, or currency pairs. The value of a binary option is derived from the price of the underlying asset. One advantage of trading binary options is that you are not buying or selling the actual asset, only a contract that determines how that asset performs.</p>
-                                        <p>Choose from five types of markets and their respective assets:</p>
-                                        <ul class="bullet">
-                                            <li>Currencies – All major Forex pairs</li>
-                                            <li>Stock indices – All major worldwide stock indices sourced from the over-the-counter market</li>
-                                            <li>Commodities – Major commodities such as gold and oil</li>
-                                            <li>OTC stocks – Blue-chip stock contracts sourced from the over-the-counter market</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        Trade type
-                                        <p>There are four trade types for you to choose from:</p>
-                                        <ul class="bullet">
-                                            <li>Rise/Fall – Predict if the market will rise or fall from its current level</li>
-                                            <li>Higher/Lower – Predict if the market will end higher or lower than a target price</li>
-                                            <li>Touch/No Touch – Predict if the market will touch or not touch a target price</li>
-                                            <li>In/Out – Predict if the market will stay between or outside two target prices</li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        Duration
-                                        <p>Set the length of your trade, from 10 seconds to 365 days. You don’t even need to wait until expiry. Sell back any long-term trades that you purchased at any time to profit from favourable market conditions.</p>
-                                    </li>
-                                    <li>
-                                        Barrier(s)
-                                        <p>Set barrier(s) to define your position and trigger the payout you will receive.</p>
-                                    </li>
-                                    <li>
-                                        Trade type
-                                        <p>Each trade comes with a pre-determined payout that you will see after adjusting each parameter. You’ll win the payout if your prediction is correct.</p>
-                                    </li>
-                                </ul>
-                                <h4>Step 2: Get your price</h4>
-                                <p>Our prices are benchmarked against the interbank options market, so you always get the best prices. You’ll always receive fair and transparent pricing, whatever your position.</p>
-                                <h4>Step 3: Make your trade</h4>
-                                <p>When you are satisfied with the price that you receive, execute your trade immediately. With our unique platform, there’s no risk of ‘slippage’ or gapping markets. And most importantly, there are no hidden fees. You can also sell back any long-term trades at any time to profit from favourable market conditions.</p>
-                            </div>
-                            <div id="fourth-tab-content" class="toggle-content invisible">
-                                <h2>Binary options trading accounts</h2>
-                                <p>Ready to start trading binary options? Every client starts with a risk-free virtual account before upgrading to a real account.</p>
-                                <div class="fill-bg-color lg-padding">
-                                    <div class="row">
-                                        <div class="col-sm">
-                                            <h4>Virtual account</h4>
-                                            <ul class="bullet">
-                                                <li>Learn the ins and outs of binary options trading, risk-free</li>
-                                                <li>Practice your trading strategy with USD 10,000 worth of virtual funds</li>
-                                                <li>Replenish your virtual funds when your balance dips below USD 1,000</li>
-                                            </ul>
-                                            <div class="centered">
-                                                <a class="button" href=""><span>Create account</span></a>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm">
-                                            <h4>Real account</h4>
-                                            <ul class="bullet">
-                                                <li>Deposit as little as USD 5 to fund your account</li>
-                                                <li>Start trading from as little as USD 5 per contract</li>
-                                                <li>Win up to USD 50,000 with each correct prediction</li>
-                                            </ul>
-                                            <div class="centered">
-                                                <a class="button" href=""><span>Upgrade</span></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="fifth-tab-content" class="toggle-content invisible">
-                                <h2>Champion FX Webtrader</h2>
-                                <p>Introducing the world’s most versatile binary options trading platform.</p>
-                                <p>Enjoy a rich user experience on a full-screen trading interface that can be customised according to your personal preferences.</p>
-                                <p>Webtrader lets you monitor all your favourite assets and markets at the same time, as well as charts, the asset index, trading times, and historical data. Most importantly, you get to choose what you want to see on your screen.</p>
-                                <div class="centered">
-                                    <a class="button" href="https://webtrader.champion-fx.com" target="_blank">
-                                        <span>Lauch Webtrader</span>
-                                    </a>
-                                </div>
-                            </div>
-
-                        </div>
+                    <div class="col-md-3 offset-md-1">
+                        <h3>Flexibility</h3>
+                        <div class="separator primary-color"></div>
+                        <p>Choose from a wide range of markets, timescales, and conditions.</p>
+                    </div>
+                    <div class="col-md-3 offset-md-1">
+                        <h3>Limited risk</h3>
+                        <div class="separator primary-color"></div>
+                        <p>Know exactly what you stand to win or lose. Never worry about slippages, margin calls, or stops.</p>
+                    </div>
+                </div>
+                <div class="fx-divider"></div>
+                <div class="center-text">
+                    <p>
+                        <a class="button" href="/champion-static/br_beta/en/what-is-binary-options.html">
+                            <span>Learn more</span>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="separator fill-bg-color"></div>
+        <div class="center-text">
+            <h2>How to trade binary options</h2>
+            <div class="fx-divider"></div>
+            <p>With binary options, you're not buying or selling actual assets, only a contract that determines how that asset performs. And you will always know how much you stand to earn or lose before you purchase a contract. Learn about trade types available, as well as the parameters you need to consider such as the underlying market, duration, barrier, and payout.</p>
+            <div class="fx-divider"></div>
+            <p>
+                <a class="button" href="/champion-static/br_beta/en/how-to-trade-binary-options.html">
+                    <span>Learn more</span>
+                </a>
+            </p>
+        </div>
+        <div class="separator fill-bg-color"></div>
+        <div class="center-text">
+            <h2>Types of accounts</h2>
+            <div class="fx-divider"></div>
+            <p>
+                ChampionFX offers two accounts for binary options. Trade risk-free with a virtual account before you upgrade to a real account. 
+                <a href="/champion-static/br_beta/en/types-of-accounts.html">Learn more</a>
+            </p>
+            <div class="fx-divider"></div>
+            <div class="row">
+                <div class="col-md-5 push-md-1">
+                    <div class="box bordered">
+                        <h4>Virtual account</h4>
+                        <p>Trade with USD 10,000 worth of virtual currency without any risks.</p>
+                    </div>
+                </div>
+                <div class="col-md-5 push-md-1">
+                    <div class="box bordered">
+                        <h4>Real account</h4>
+                        <p>Upgrade* to a real account to trade binary options with real money.</p>
                     </div>
                 </div>
             </div>
+            <div class="fx-divider"></div>
+            <p>
+                <a class="button" href="/champion-static/br_beta/en/types-of-accounts.html">
+                    <span>Learn more</span>
+                </a>
+            </p>
+        </div>
+        <div class="separator fill-bg-color"></div>
+        <div class="center-text">
+            <h2>Champion Trader - The world's most versatile binary options trading platform.</h2>
+            <div class="fx-divider"></div>
+            <p>The Champion Trader is designed to be the most versatile binary options trading platform available, with a rich user experience that can be customised according to your personal preference.</p>
+            <p>Monitor all your favorite assets and markets at the same time, as well as charts, the asset index, trading times and historical data.</p>
+            <div class="fx-divider"></div>
+            <p>
+                <a class="button" href="https://webtrader.champion-fx.com/">
+                    <span>Learn more</span>
+                </a>
+            </p>
         </div>
     </div>
 </div>
@@ -453,24 +266,35 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                 <ul>
-                    <li><a class="" href=""></a></li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/terms-and-conditions.html">Terms and Conditions</a>
+                    </li>
                 </ul>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                     <ul>
-                        <li><a class="" href=""></a></li>
+                        <li><a class="" href="/champion-static/br_beta/en/cashier/payment-methods.html">Payment Methods</a></li>
                     </ul>
                 </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
-                    </ul>
-                </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
+                <div class="col-sm flex-sm-middle col-md-6 col-lg-6">
+                    <ul class="social-network">
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/fb.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/t.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/yt.svg" alt="">
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -485,15 +309,16 @@
             </div>
         </div>
     </div>
-    <div id="footer-last" class="">
-        <div class="container centered">
+    <div id="footer-last" class="primary-color-dark">
+        <div class="container">
             <div class="row">
                 <div class="col-sm">
-                    &copy; 2016 Champion FX
+                    &copy; 2017 Champion FX
                 </div>
             </div>
         </div>
     </div>
+    <div id="end_note" class="invisible"></div>
 </footer>
 </body>
 </html>

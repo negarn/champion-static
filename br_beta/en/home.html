@@ -18,22 +18,26 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/br_beta/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/br_beta/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/br_beta/css/flex.min.css?sgg1ycfi" />
-     <link rel="stylesheet" href="/champion-static/br_beta/css/style.min.css?sgg1ycfi" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sgg1ycfi" />
-      <script src="/champion-static/br_beta/js/bundle.js?sgg1ycfi" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?sgg1ycfi" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/br_beta/css/flex.min.css?cb6ac48t" />
+     <link rel="stylesheet" href="/champion-static/br_beta/css/style.min.css?cb6ac48t" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?cb6ac48t" />
+      <script src="/champion-static/br_beta/js/bundle.js?cb6ac48t" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?cb6ac48t" type="text/javascript"></script>
      
 </head>
 <body>
     <div class="topbar primary-color-dark">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
             <div class="col-sm-12 topbar-container flex-items-sm-middle">
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/br_beta/en/contact.html">Contact Us</a></li>
+                        <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
+                </div>
+                <div class="upgrade-message hidden">
+                    <a href="/champion-static/br_beta/en/new-account/real.html">Upgrade to a Real Account</a>
                 </div>
                 <div class="invisible">
                     <div class="languages">
@@ -62,30 +66,21 @@
     </div>
 </div>
     <div class="dark-blue header">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-md-3 col-sm-6 col-xs-6 vertical-center">
                 <div class="logo-wrapper">
                     <a href="/champion-static/br_beta/en/home.html" class="logo-parent">
                         <div class="logo">
                             <div></div>
                         </div>
-                        <div class="mobile-hide binary-logo-text ">
+                        <div class="binary-logo-text hidden-xs-down">
                             <div></div>
                         </div>
                     </a>
                 </div>
             </div>
-            <div class="col-lg-7">
-                <ul class="top-nav-menu mobile-hide">
-                    <li><a href="/champion-static/br_beta/en/about-us.html">About</a></li>
-                    <li><a href="/champion-static/br_beta/en/forex.html">Forex</a></li>
-                    <li><a href="/champion-static/br_beta/en/binary-options.html">Binary Options</a></li>
-                    <li><a href="/champion-static/br_beta/en/range-of-markets.html">Markets</a></li>
-                    <li><a href="/champion-static/br_beta/en/partnerships.html">Partnerships</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2">
+            <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
                 <div id="main-logout" class="hidden">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
@@ -105,15 +100,32 @@
                                 <div class="main-account">
                                     <div class="account-type"></div>
                                     <div class="account-id"></div>
-                                    <div class="topMenuBalance"></div>
+                                    <div class="topMenuBalance">&nbsp;</div>
                                 </div>
                                 <div class="nav-caret"></div>
                             </a>
                             <ul>
+                                <a class="link" href="/champion-static/br_beta/en/user/settings.html">
+                                    <li class="topMenuSettings">Settings</li>
+                                </a>
+                                <div class="separator-line-thin-gray"></div>
                                 <a class="link" href="/champion-static/br_beta/en/cashier.html">
                                     <li class="topMenuCashier">Cashier</li>
                                 </a>
                                 <div class="separator-line-thin-gray"></div>
+                                <a href="/champion-static/br_beta/en/about-us.html" class="hidden-sm-up">
+                                    <li>About</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/mt5.html" class="hidden-sm-up">
+                                    <li>MT5</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/binary-options.html" class="hidden-sm-up">
+                                    <li>Binary Options</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/partnerships.html" class="hidden-sm-up">
+                                    <li>Partnerships</li>
+                                </a>
+                                <div class="separator-line-thin-gray hidden-sm-up"></div>
                                 <div class="login-id-list"></div>
                                 <a href="javascript:;" id="btn_logout" class="logout">
                                     <li>Sign out</li>
@@ -122,81 +134,204 @@
                         </li>
                     </ul>
                 </div>
-                <div id="main-login" class="FX__Header__cta hidden">
-                    <a class="button-secondary" href="javascript:;"><span>Log In</span></a>
+                <div id="main-signup" class="hidden">
+                    <ul class="signup-button">
+                        <li class="">
+                            <button class="button-secondary" href="javascript:;">Sign Up</button>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+            <div class="col-md-7 pull-md-2 hidden-sm-down">
+                <ul class="top-nav-menu">
+                    <li>
+                        <a href="/champion-static/br_beta/en/about-us.html" class="nav-dropdown-toggle">About</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/mt5.html" class="nav-dropdown-toggle">MT5</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/binary-options.html" class="nav-dropdown-toggle">Binary Options</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/partnerships.html" class="nav-dropdown-toggle">Partnerships</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 
-    <div class="fill-bg-color centered hidden" id="signup">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm flex-sm-middle">
-                    <form id="verify-email-form">
-    <div class="signup-box border primary-bg-color fx-material">
-        <div class="">
-            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
-        </div>
-        <div class="">
-            <button class="button-secondary" id="btn-verify-email" type="submit">Create Free Account</button>
-        </div>
-        <span class="error-msg hint color-white center-text" id="signup_error" style="display:none"></span>
-    </div>
-</form>
+    <main class="page-content" aria-label="Content" id="champion-container">
+        <div class="wrapper" id="champion-content">
+            <div class="slider">
+    <div id="slide-1">
+        <div class="fx-section center-text large-slider-text">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm col-md-10 offset-md-1 col-lg-8 offset-lg-2 flex-md-middle flex-sm-middle flex-lg-middle flex-xs-middle">
+                        <h3 class="white">
+                            <strong>ChampionFX: Where the Client is King</strong>
+                        </h3>
+                        <p class="white">
+                            Trade in the financial markets with a multi-asset trading platform: Meta trader 5. The choise of the modern trader. One platform, many markets.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <main class="page-content" aria-label="Content" id="champion-container">
-        <div class="wrapper" id="champion-content">
-            <div class="fill-bg-color centered">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <h1 class="fx-title">Champion FX: Where the Client is King</h1>
-            </div>
+    <div class="row">
+        <div class="col">
+            <ul class="row">
+                <li class="col-md-6 col-sm-6 slider-text center-text">
+                    <div class="center-items">
+                        <h3 class="blue">Refer a friend.</h3>
+                        <h3 class="blue">We'll make it worth your time</h3>
+                        <p>Earn $25 for each new client that you introduce to ChampionFX.</p>
+                        <a href="#">Learn more
+                            <img src="/champion-static/br_beta/images/symbols/next.svg" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li class="col-md-6 col-sm-6 flex-md-middle" id="slide-2"></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul class="row">
+                <li class="col-md-6 col-sm-6 slider-text center-text">
+                    <div class="center-items">
+                        <h3 class="blue">No funds, no problem.</h3>
+                        <h3 class="blue">Your first trade is on us.</h3>
+                        <p>Sign up now and get a free welcome bonus worth $10.<br>No deposit required.</p>
+                        <a href="#">Learn more
+                            <img src="/champion-static/br_beta/images/symbols/next.svg" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li class="col-md-6 col-sm-6 flex-md-middle" id="slide-3"></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul class="row">
+                <li class="col-md-6 col-sm-6 slider-text center-text">
+                    <div class="center-items">
+                        <h3 class="blue">Trade gold with a fixed spread.</h3>
+                        <h3 class="blue">100% commission-free.</h3>
+                        <p>Don't miss out on this golden opportunity. Our gold spread is fixed at 10 cents. And it's absolutely commission-free.</p>
+                        <a href="#">Learn more
+                            <img src="/champion-static/br_beta/images/symbols/next.svg" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li class="col-md-6 col-sm-6 flex-md-middle" id="slide-4"></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul class="row">
+                <li class="col-md-6 col-sm-6 slider-text center-text">
+                    <div class="center-items">
+                        <h3 class="blue">ChampionFX is the world's first dedicated MT5 broker</h3>
+                        <p>Trade with ChampionFX and access:</p>
+                        <div class="row">
+                            <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 text-center">
+                                <ul class="bullet slide-list">
+                                    <li>The most popular and the most advanced multi-asset trading platform in the world</li>
+                                    <li>News feeds and macroeconomic indicators for comprehensive fundamental analysis</li>
+                                    <li>Automated trading, copy trading, hedging, netting and a lot more - all on one platform</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <a href="#">Learn more
+                            <img src="/champion-static/br_beta/images/symbols/next.svg" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li class="col-md-6 col-sm-6 flex-md-middle" id="slide-5"></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul class="row">
+                <li class="col-md-6 col-sm-6 slider-text center-text">
+                    <div class="center-items">
+                        <h3 class="blue">Follow the leader</h3>
+                        <p>Want to copy the best deals? Trade with ChampionFX and subscribe to the trading signals of more experienced and successful traders. You can even share your own signal with others.</p>
+                        <a href="#">Learn more
+                            <img src="/champion-static/br_beta/images/symbols/next.svg" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li class="col-md-6 col-sm-6 flex-md-middle" id="slide-6"></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul class="row">
+                <li class="col-md-6 col-sm-6 slider-text center-text">
+                    <div class="center-items">
+                        <h3 class="blue">Trade even while you sleep with algorithmic trading</h3>
+                        <p>Let trading robots analyse the market and execute your trades automatically.</p>
+                        <a href="#">Learn more
+                            <img src="/champion-static/br_beta/images/symbols/next.svg" alt="">
+                        </a>
+                    </div>
+                </li>
+                <li class="col-md-6 col-sm-6 flex-md-middle" id="slide-7"></li>
+            </ul>
         </div>
     </div>
 </div>
-<div class="fx-home-header content-inverse-color">
-    <div class="">
-        <p>Trade in the financial markets with a multi-asset trading platform: Meta Trader 5.<br>The choice of the modern trader. One platform, many markets.</p>
-    </div>
-    <form id="verify-email-form">
-    <div class="signup-box border primary-bg-color fx-material">
-        <div class="">
-            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
+<div id="slider-dots">
+</div>
+<div class="slider-footer">
+    <div class="fx-container">
+        <div class="row align-items-center">
+            <div class="col-md" id="license-box-container">
+                <div class="row align-items-center">
+                    <div class="col-md-2 col-sm-3 col-xs-3">
+                        <div class="license-box license-box-icon">
+                        </div>
+                    </div>
+                    <div class="col-md-10 col-sm-9 col-xs-9">
+                        <div class="license-box">
+                            Join a licensed broker with a clear vision and an unwavering commitment to treating all its clients like champions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <form id="verify-email-form" class="frm-verify-email">
+    <div class="row signup-box align-items-center">
+        <div class="col d-flex align-self-center">
+            <input class="clean-input secondary-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
+            <button class="button" id="btn-verify-email" type="submit">Create Free Account</button>
+            <span class="error-msg hint color-white center-text hidden" id="signup_error"></span>
         </div>
-        <div class="">
-            <button class="button-secondary" id="btn-verify-email" type="submit">Create Free Account</button>
-        </div>
-        <span class="error-msg hint color-white center-text" id="signup_error" style="display:none"></span>
     </div>
 </form>
-</div>
-<div class="fx-section fx-home-intro">
-    <div class="container">
-        <div class="row">
-            <div class="col-md flex-md-middle">
-                <p>Join a licensed broker with a clear vision and un wavering commitment to treating all its clients like champions.</p>
-            </div>
-            <div class="col-md flex-md-middle centered">
-                <img class="w-300" src="/champion-static/br_beta/images/license.svg" alt="">
             </div>
         </div>
     </div>
 </div>
-<div class="fx-section fill-bg-color centered">
+<div class="fx-section center-text">
     <div class="container">
         <div class="row">
             <div class="col-sm flex-md-middle">
-                <p class="p-title">Gain access to our multi-asset trading platform and you can trade Forex, stocks, futures, and CFDs<br>all trough one platform. We provide you with all the necessary tools for financial trading, including:</p>
+                <h2>Gain access to our multi-asset trading platform and you can trade Forex, stocks, futures, and CFDs all through one platform.</h2>
+                <p>We provide you with all the necessary tools for financial trading, including:</p>
             </div>
         </div>
     </div>
-    <div class="container centered">
+    <div class="container center-text">
         <div class="row">
             <div class="col-md flex-md-middle">
                 <div class="fx-feature-box">
@@ -219,85 +354,93 @@
         </div>
     </div>
 </div>
-<div class="fx-section">
+<div class="fx-section fill-bg-color">
     <div class="container">
         <div class="row">
-            <div class="col-sm centered">
+            <div class="col-sm center-text">
                 <h2 class="fx-features-title">Why Choose Champion FX</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-king"></div>
-                        <div>The Client is always King</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customer-service"></div>
-                        <div>Personalised Customer Service</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-type-accounts"></div>
-                        <div>Trade a Wide Range of Markets</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-rebate"></div>
-                        <div>Low Latency & Fast Execution</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-cent"></div>
-                        <div>Gold Spreads Fixed at 10 Cents</div>
-                    </div>
-                </div>
+        <div class="row fx-panel-container box bordered">
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-king"></div>
+                      <div>The Client is always King</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-no-commission"></div>
+                      <div>Low-Cost Trading</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-licensed-broker"></div>
+                      <div>Licensed Broker</div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-customer-service"></div>
+                      <div>Personalised Customer Service</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-customised-trade"></div>
+                      <div>Tight Spreads with No Commission</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-fast-execution"></div>
+                      <div>Access to the Largest Market of Expert Advisors</div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-type-accounts"></div>
+                      <div>Trade a Wide Range of Markets</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-no-deal"></div>
+                      <div>No Dealing Desk (NDD) Execution</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-customise"></div>
+                      <div>Customised Trading Conditions</div>
+                  </div>
+              </div>
             </div>
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-no-commission"></div>
-                        <div>Low-Cost Trading</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customised-trade"></div>
-                        <div>Tight Spreads with No Commission</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-no-deal"></div>
-                        <div>No Dealing Desk (NDD) Execution</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-deposit-withdrawal"></div>
-                        <div>Lightning Fast deposits & Withdrawals </div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-devices"></div>
-                        <div>Wide Choice of Platforms - Desktop, Web & Mobile</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md">
-                <div class="fx-panel fill-bg-color">
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-licensed-broker"></div>
-                        <div>Licensed Broker</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-fast-execution"></div>
-                        <div>Access to the Largest Market of Expert Advisors</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-customise"></div>
-                        <div>Customised Trading Conditions</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-hassle-free"></div>
-                        <div>Fast & Hassle-Free Account Opening</div>
-                    </div>
-                    <div class="fx-panel-item">
-                        <div class="fx-xxs fx-unbeatable"></div>
-                        <div>Unbeatable Leverage Up to 1,000</div>
-                    </div>
-                </div>
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-rebate"></div>
+                      <div>Low Latency & Fast Execution</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-deposit-withdrawal"></div>
+                      <div>Lightning Fast deposits & Withdrawals </div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-hassle-free"></div>
+                      <div>Fast & Hassle-Free Account Opening</div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-md">
+              <div class="fx-panel">
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-cent"></div>
+                      <div>Gold Spreads Fixed at 10 Cents</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-devices"></div>
+                      <div>Wide Choice of Platforms - Desktop, Web & Mobile</div>
+                  </div>
+                  <div class="fx-panel-item">
+                      <div class="fx-xxs fx-unbeatable"></div>
+                      <div>Unbeatable Leverage Up to 1,000</div>
+                  </div>
+              </div>
             </div>
         </div>
     </div>
@@ -308,24 +451,35 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                 <ul>
-                    <li><a class="" href=""></a></li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/terms-and-conditions.html">Terms and Conditions</a>
+                    </li>
                 </ul>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                     <ul>
-                        <li><a class="" href=""></a></li>
+                        <li><a class="" href="/champion-static/br_beta/en/cashier/payment-methods.html">Payment Methods</a></li>
                     </ul>
                 </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
-                    </ul>
-                </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
+                <div class="col-sm flex-sm-middle col-md-6 col-lg-6">
+                    <ul class="social-network">
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/fb.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/t.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/yt.svg" alt="">
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -340,15 +494,16 @@
             </div>
         </div>
     </div>
-    <div id="footer-last" class="">
-        <div class="container centered">
+    <div id="footer-last" class="primary-color-dark">
+        <div class="container">
             <div class="row">
                 <div class="col-sm">
-                    &copy; 2016 Champion FX
+                    &copy; 2017 Champion FX
                 </div>
             </div>
         </div>
     </div>
+    <div id="end_note" class="invisible"></div>
 </footer>
 </body>
 </html>

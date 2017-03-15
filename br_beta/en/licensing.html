@@ -18,22 +18,26 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/br_beta/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/br_beta/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/br_beta/css/flex.min.css?sgg1ycfi" />
-     <link rel="stylesheet" href="/champion-static/br_beta/css/style.min.css?sgg1ycfi" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sgg1ycfi" />
-      <script src="/champion-static/br_beta/js/bundle.js?sgg1ycfi" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?sgg1ycfi" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/br_beta/css/flex.min.css?cb6ac48t" />
+     <link rel="stylesheet" href="/champion-static/br_beta/css/style.min.css?cb6ac48t" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?cb6ac48t" />
+      <script src="/champion-static/br_beta/js/bundle.js?cb6ac48t" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?cb6ac48t" type="text/javascript"></script>
      
 </head>
 <body>
     <div class="topbar primary-color-dark">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
             <div class="col-sm-12 topbar-container flex-items-sm-middle">
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/br_beta/en/contact.html">Contact Us</a></li>
+                        <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
+                </div>
+                <div class="upgrade-message hidden">
+                    <a href="/champion-static/br_beta/en/new-account/real.html">Upgrade to a Real Account</a>
                 </div>
                 <div class="invisible">
                     <div class="languages">
@@ -62,30 +66,21 @@
     </div>
 </div>
     <div class="dark-blue header">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-md-3 col-sm-6 col-xs-6 vertical-center">
                 <div class="logo-wrapper">
                     <a href="/champion-static/br_beta/en/home.html" class="logo-parent">
                         <div class="logo">
                             <div></div>
                         </div>
-                        <div class="mobile-hide binary-logo-text ">
+                        <div class="binary-logo-text hidden-xs-down">
                             <div></div>
                         </div>
                     </a>
                 </div>
             </div>
-            <div class="col-lg-7">
-                <ul class="top-nav-menu mobile-hide">
-                    <li><a href="/champion-static/br_beta/en/about-us.html">About</a></li>
-                    <li><a href="/champion-static/br_beta/en/forex.html">Forex</a></li>
-                    <li><a href="/champion-static/br_beta/en/binary-options.html">Binary Options</a></li>
-                    <li><a href="/champion-static/br_beta/en/range-of-markets.html">Markets</a></li>
-                    <li><a href="/champion-static/br_beta/en/partnerships.html">Partnerships</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2">
+            <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
                 <div id="main-logout" class="hidden">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
@@ -105,15 +100,32 @@
                                 <div class="main-account">
                                     <div class="account-type"></div>
                                     <div class="account-id"></div>
-                                    <div class="topMenuBalance"></div>
+                                    <div class="topMenuBalance">&nbsp;</div>
                                 </div>
                                 <div class="nav-caret"></div>
                             </a>
                             <ul>
+                                <a class="link" href="/champion-static/br_beta/en/user/settings.html">
+                                    <li class="topMenuSettings">Settings</li>
+                                </a>
+                                <div class="separator-line-thin-gray"></div>
                                 <a class="link" href="/champion-static/br_beta/en/cashier.html">
                                     <li class="topMenuCashier">Cashier</li>
                                 </a>
                                 <div class="separator-line-thin-gray"></div>
+                                <a href="/champion-static/br_beta/en/about-us.html" class="hidden-sm-up">
+                                    <li>About</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/mt5.html" class="hidden-sm-up">
+                                    <li>MT5</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/binary-options.html" class="hidden-sm-up">
+                                    <li>Binary Options</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/partnerships.html" class="hidden-sm-up">
+                                    <li>Partnerships</li>
+                                </a>
+                                <div class="separator-line-thin-gray hidden-sm-up"></div>
                                 <div class="login-id-list"></div>
                                 <a href="javascript:;" id="btn_logout" class="logout">
                                     <li>Sign out</li>
@@ -122,33 +134,34 @@
                         </li>
                     </ul>
                 </div>
-                <div id="main-login" class="FX__Header__cta hidden">
-                    <a class="button-secondary" href="javascript:;"><span>Log In</span></a>
+                <div id="main-signup" class="hidden">
+                    <ul class="signup-button">
+                        <li class="">
+                            <button class="button-secondary" href="javascript:;">Sign Up</button>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+            <div class="col-md-7 pull-md-2 hidden-sm-down">
+                <ul class="top-nav-menu">
+                    <li>
+                        <a href="/champion-static/br_beta/en/about-us.html" class="nav-dropdown-toggle">About</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/mt5.html" class="nav-dropdown-toggle">MT5</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/binary-options.html" class="nav-dropdown-toggle">Binary Options</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/partnerships.html" class="nav-dropdown-toggle">Partnerships</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 
-    <div class="fill-bg-color centered hidden" id="signup">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm flex-sm-middle">
-                    <form id="verify-email-form">
-    <div class="signup-box border primary-bg-color fx-material">
-        <div class="">
-            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
-        </div>
-        <div class="">
-            <button class="button-secondary" id="btn-verify-email" type="submit">Create Free Account</button>
-        </div>
-        <span class="error-msg hint color-white center-text" id="signup_error" style="display:none"></span>
-    </div>
-</form>
-                </div>
-            </div>
-        </div>
-    </div>
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
             <div class="fx-section">
@@ -159,7 +172,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm centered">
+            <div class="col-sm center-text">
                 <img class="img-lg" src="/champion-static/br_beta/images/vfsc.jpg" alt="VFSC">
                 <p>Champion Group Ltd. is fully regulated by Vanuatu Financial Services Commission (VFSC) bearing license number 14660. Champion Group Ltd. is also registered with the Financial Intelligence unit (FIU) of Vanuatu for compliance with the Anti-Money Laundering rules of the VFSC</p>
             </div>
@@ -172,24 +185,35 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                 <ul>
-                    <li><a class="" href=""></a></li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/terms-and-conditions.html">Terms and Conditions</a>
+                    </li>
                 </ul>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                     <ul>
-                        <li><a class="" href=""></a></li>
+                        <li><a class="" href="/champion-static/br_beta/en/cashier/payment-methods.html">Payment Methods</a></li>
                     </ul>
                 </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
-                    </ul>
-                </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
+                <div class="col-sm flex-sm-middle col-md-6 col-lg-6">
+                    <ul class="social-network">
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/fb.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/t.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/yt.svg" alt="">
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -204,15 +228,16 @@
             </div>
         </div>
     </div>
-    <div id="footer-last" class="">
-        <div class="container centered">
+    <div id="footer-last" class="primary-color-dark">
+        <div class="container">
             <div class="row">
                 <div class="col-sm">
-                    &copy; 2016 Champion FX
+                    &copy; 2017 Champion FX
                 </div>
             </div>
         </div>
     </div>
+    <div id="end_note" class="invisible"></div>
 </footer>
 </body>
 </html>

@@ -18,22 +18,26 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/br_beta/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/br_beta/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/br_beta/css/flex.min.css?sgg1ycfi" />
-     <link rel="stylesheet" href="/champion-static/br_beta/css/style.min.css?sgg1ycfi" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sgg1ycfi" />
-      <script src="/champion-static/br_beta/js/bundle.js?sgg1ycfi" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?sgg1ycfi" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/br_beta/css/flex.min.css?cb6ac48t" />
+     <link rel="stylesheet" href="/champion-static/br_beta/css/style.min.css?cb6ac48t" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?cb6ac48t" />
+      <script src="/champion-static/br_beta/js/bundle.js?cb6ac48t" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?cb6ac48t" type="text/javascript"></script>
      
 </head>
 <body>
     <div class="topbar primary-color-dark">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
             <div class="col-sm-12 topbar-container flex-items-sm-middle">
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/br_beta/en/contact.html">Contact Us</a></li>
+                        <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
+                </div>
+                <div class="upgrade-message hidden">
+                    <a href="/champion-static/br_beta/en/new-account/real.html">Upgrade to a Real Account</a>
                 </div>
                 <div class="invisible">
                     <div class="languages">
@@ -62,30 +66,21 @@
     </div>
 </div>
     <div class="dark-blue header">
-    <div class="fx-container">
+    <div class="menu-container">
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-md-3 col-sm-6 col-xs-6 vertical-center">
                 <div class="logo-wrapper">
                     <a href="/champion-static/br_beta/en/home.html" class="logo-parent">
                         <div class="logo">
                             <div></div>
                         </div>
-                        <div class="mobile-hide binary-logo-text ">
+                        <div class="binary-logo-text hidden-xs-down">
                             <div></div>
                         </div>
                     </a>
                 </div>
             </div>
-            <div class="col-lg-7">
-                <ul class="top-nav-menu mobile-hide">
-                    <li><a href="/champion-static/br_beta/en/about-us.html">About</a></li>
-                    <li><a href="/champion-static/br_beta/en/forex.html">Forex</a></li>
-                    <li><a href="/champion-static/br_beta/en/binary-options.html">Binary Options</a></li>
-                    <li><a href="/champion-static/br_beta/en/range-of-markets.html">Markets</a></li>
-                    <li><a href="/champion-static/br_beta/en/partnerships.html">Partnerships</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2">
+            <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
                 <div id="main-logout" class="hidden">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
@@ -105,15 +100,32 @@
                                 <div class="main-account">
                                     <div class="account-type"></div>
                                     <div class="account-id"></div>
-                                    <div class="topMenuBalance"></div>
+                                    <div class="topMenuBalance">&nbsp;</div>
                                 </div>
                                 <div class="nav-caret"></div>
                             </a>
                             <ul>
+                                <a class="link" href="/champion-static/br_beta/en/user/settings.html">
+                                    <li class="topMenuSettings">Settings</li>
+                                </a>
+                                <div class="separator-line-thin-gray"></div>
                                 <a class="link" href="/champion-static/br_beta/en/cashier.html">
                                     <li class="topMenuCashier">Cashier</li>
                                 </a>
                                 <div class="separator-line-thin-gray"></div>
+                                <a href="/champion-static/br_beta/en/about-us.html" class="hidden-sm-up">
+                                    <li>About</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/mt5.html" class="hidden-sm-up">
+                                    <li>MT5</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/binary-options.html" class="hidden-sm-up">
+                                    <li>Binary Options</li>
+                                </a>
+                                <a href="/champion-static/br_beta/en/partnerships.html" class="hidden-sm-up">
+                                    <li>Partnerships</li>
+                                </a>
+                                <div class="separator-line-thin-gray hidden-sm-up"></div>
                                 <div class="login-id-list"></div>
                                 <a href="javascript:;" id="btn_logout" class="logout">
                                     <li>Sign out</li>
@@ -122,279 +134,177 @@
                         </li>
                     </ul>
                 </div>
-                <div id="main-login" class="FX__Header__cta hidden">
-                    <a class="button-secondary" href="javascript:;"><span>Log In</span></a>
+                <div id="main-signup" class="hidden">
+                    <ul class="signup-button">
+                        <li class="">
+                            <button class="button-secondary" href="javascript:;">Sign Up</button>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+            <div class="col-md-7 pull-md-2 hidden-sm-down">
+                <ul class="top-nav-menu">
+                    <li>
+                        <a href="/champion-static/br_beta/en/about-us.html" class="nav-dropdown-toggle">About</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/mt5.html" class="nav-dropdown-toggle">MT5</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/binary-options.html" class="nav-dropdown-toggle">Binary Options</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/partnerships.html" class="nav-dropdown-toggle">Partnerships</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 
-    <div class="fill-bg-color centered hidden" id="signup">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm flex-sm-middle">
-                    <form id="verify-email-form">
-    <div class="signup-box border primary-bg-color fx-material">
-        <div class="">
-            <input class="clean-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
-        </div>
-        <div class="">
-            <button class="button-secondary" id="btn-verify-email" type="submit">Create Free Account</button>
-        </div>
-        <span class="error-msg hint color-white center-text" id="signup_error" style="display:none"></span>
-    </div>
-</form>
-                </div>
-            </div>
-        </div>
-    </div>
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
             <div class="fx-section">
     <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <h1>Real Money Account Opening</h1>
-            </div>
-        </div>
+        <h1 class="main-title" >Create a ChampionFX real account</h1>
 
         <form id="frm_new_account_real">
-            <fieldset>
-                <legend id="details">Details</legend>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="title">Title</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <select id="title" name="title">
-                                <option value="Mr">Mr</option>
-                                <option value="Mrs">Mrs</option>
-                                <option value="Ms">Ms</option>
-                                <option value="Miss">Miss</option>
-                            </select>
-                            <p class="error-msg hidden" id="error-title" style="display:none"></p>
-                        </div>
-                    </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>Details</h4>
+    <div class="separator primary-color"></div>
+    <div class="fx-divider"></div>
+                    <div class="form-row ">
+    <label for="ddl_title">Title</label>
+    
+                <select id="ddl_title" > 
+                        <option value="Mr">Mr</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Miss">Miss</option>
+                                </select>
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_fname">First name</label>
+    
+                <input type="text" id="txt_fname" maxlength="30" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_lname">Family name</label>
+    
+                <input type="text" id="txt_lname" maxlength="30" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_birth_date">Date of birth</label>
+    
+                <input type="text" id="txt_birth_date" size="12" readonly="readonly" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="ddl_residence">Country of residence</label>
+    <div id="residence_loading" class="small-spinner"><div class="barspinner dark">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div></div>
+                <select id="ddl_residence" class="hidden">             </select>
+    
+</div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="fname">First name</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input type="text" class="text" id="fname" name="fname" maxlength="30" />
-                            <p class="error-msg hidden" id="error-fname" style="display:none"></p>
-                        </div>
-                    </div>
+                <div class="col-md-4">
+                    <h4>Address</h4>
+    <div class="separator primary-color"></div>
+    <div class="fx-divider"></div>
+                    <div class="form-row ">
+    <label for="txt_address1">First line of home address</label>
+    
+                <input type="text" id="txt_address1" maxlength="70" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_address2">Second line of home address</label>
+    
+                <input type="text" id="txt_address2" maxlength="70" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_city">Town/City</label>
+    
+                <input type="text" id="txt_city" maxlength="35" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="ddl_state">State/Province</label>
+    <div id="state_loading" class="small-spinner"><div class="barspinner dark">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div></div>
+                <select id="ddl_state" class="hidden">             </select>
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_postcode">Postal code/ZIP</label>
+    
+                <input type="text" id="txt_postcode" maxlength="20" />
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_phone">Telephone</label>
+    
+                <input type="text" id="txt_phone" maxlength="35" />
+    
+</div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="lname">Family name</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input type="text" class="text" id="lname" name="lname" maxlength="30" />
-                            <p class="error-msg hidden" id="error-lname" style="display:none"></p>
-                        </div>
-                    </div>
+                <div class="col-md-4">
+                    <h4>Security</h4>
+    <div class="separator primary-color"></div>
+    <div class="fx-divider"></div>
+                    <div class="form-row ">
+    <label for="ddl_secret_question">Secret question</label>
+    
+                <select id="ddl_secret_question" > 
+                        <option value="Favourite dish">Favourite dish</option>
+                        <option value="Mother's maiden name">Mother's maiden name</option>
+                        <option value="Name of your pet">Name of your pet</option>
+                        <option value="Name of first love">Name of first love</option>
+                        <option value="Memorable town/city">Memorable town/city</option>
+                        <option value="Memorable date">Memorable date</option>
+                        <option value="Brand of first car">Brand of first car</option>
+                        <option value="Favourite artist">Favourite artist</option>
+                                </select>
+    
+</div>
+                    <div class="form-row ">
+    <label for="txt_secret_answer">Answer to secret question</label>
+    
+                <input type="text" id="txt_secret_answer" maxlength="50" autocomplete="off" />
+    
+</div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="dobdd">Date of birth</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <select name="dobdd" id="dobdd"></select>
-                            <select name="dobmm" id="dobmm"></select>
-                            <select name="dobyy" id="dobyy"></select>
-                            <p class="error-msg hidden" id="error-birthdate" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="residence-disabled">Country of residence</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <span id="move-residence-back"></span>
-                            <select name="residence-disabled" id="residence-disabled" disabled></select>
-                            <p class="error-msg hidden" id="error-residence" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend id="address">Address</legend>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="address1">First line of home address</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input type="text" class="text" id="address1" name="address1" maxlength="70" />
-                            <p class="error-msg hidden" id="error-address1" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="address2">Second line of home address</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input type="text" class="text" id="address2" name="address2" maxlength="70" />
-                            <p class="error-msg hidden" id="error-address2" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="address-town">Town/City</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input type="text" class="text" id="address-town" name="address-town" maxlength="35" />
-                            <p class="error-msg hidden" id="error-town" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="address-state">State/Province</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <select id="address-state" name="address-state"></select>
-                            <p class="error-msg hidden" id="error-state" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="address-postcode">Postal code/ZIP</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input type="text" class="text" id="address-postcode" name="address-postcode" maxlength="20"></select>
-                            <p class="error-msg hidden" id="error-postcode" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="tel">Telephone</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input type="text" class="text" id="tel" name="tel" maxlength="35"></select>
-                            <p class="error-msg hidden" id="error-tel" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset>
-                <legend id="security">Security</legend>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="secret-question">Secret question</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <select id="secret-question">
-                                <option value="Favourite dish">Favourite dish</option>
-                                <option value="Mother's maiden name">Mother's maiden name</option>
-                                <option value="Name of your pet">Name of your pet</option>
-                                <option value="Name of first love">Name of first love</option>
-                                <option value="Memorable town/city">Memorable town/city</option>
-                                <option value="Memorable date">Memorable date</option>
-                                <option value="Brand of first car">Brand of first car</option>
-                                <option value="Favourite artist">Favourite artist</option>
-                            </select>
-                            <p class="error-msg hidden" id="error-question" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="secret-answer">Answer to secret question</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input type="text" class="text" id="secret-answer" maxlength="50" autocomplete="off"/>
-                            <p class="error-msg hidden" id="error-answer" style="display:none"></p>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="center-text" id="formlayout">
-                <div class="row">
-                    <div class="col-xs-12 centered">
-                        <p>
-                            <input type="checkbox" name="tnc" id="tnc">
-                                <span onclick="document.getElementById('tnc').checked=!document.getElementById('tnc').checked">I have read and agree to the <a target="_blank" href="/terms-and-conditions">terms and conditions</a> of the site.</span>
-                            </input>
-                        </p>
-                        <p class="errorfield" id="error-tnc" style="display:none"></p>
-                    </div>
-                </div>
-            </fieldset>
-            <div class="submit-holder">
-                <button class="btn btn-default" id="btn_submit" type="submit">Open Account</button>
+            <div class="center-text">
+                <div class="fx-divider"></div>
+                <div class="form-row checkbox">
+    <input id="chk_tnc" type="checkbox" />
+    <label for="chk_tnc">I have read and agree to the <a target="_blank" href="/champion-static/br_beta/en/terms-and-conditions.html">terms and conditions</a> of the site.</label>
+</div>
+                <div class="submit-row ">
+    <p id="msg_form" class="error-msg invisible"></p>
+    <button id="btn_submit" type="submit">Create account</button>
+</div>
             </div>
         </form>
-
-        <div class="errorbox rbox" id="client_message" style="display:none">
-            <div class="rbox-wrap">
-                <div class="gr-12 rbox-content" id="client_message_content">
-                    <p class="center notice-msg"></p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
         </div>
@@ -403,24 +313,35 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                 <ul>
-                    <li><a class="" href=""></a></li>
+                    <li>
+                        <a href="/champion-static/br_beta/en/terms-and-conditions.html">Terms and Conditions</a>
+                    </li>
                 </ul>
                 </div>
-                <div class="col-sm">
+                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
                     <ul>
-                        <li><a class="" href=""></a></li>
+                        <li><a class="" href="/champion-static/br_beta/en/cashier/payment-methods.html">Payment Methods</a></li>
                     </ul>
                 </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
-                    </ul>
-                </div>
-                <div class="col-sm">
-                    <ul>
-                        <li><a class="" href=""></a></li>
+                <div class="col-sm flex-sm-middle col-md-6 col-lg-6">
+                    <ul class="social-network">
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/fb.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/t.svg" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="">
+                                <img src="/champion-static/br_beta/images/symbols/yt.svg" alt="">
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -435,15 +356,16 @@
             </div>
         </div>
     </div>
-    <div id="footer-last" class="">
-        <div class="container centered">
+    <div id="footer-last" class="primary-color-dark">
+        <div class="container">
             <div class="row">
                 <div class="col-sm">
-                    &copy; 2016 Champion FX
+                    &copy; 2017 Champion FX
                 </div>
             </div>
         </div>
     </div>
+    <div id="end_note" class="invisible"></div>
 </footer>
 </body>
 </html>

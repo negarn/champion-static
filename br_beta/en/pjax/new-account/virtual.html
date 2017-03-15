@@ -4,84 +4,65 @@
     <div class="wrapper" id="champion-content">
         <div class="fx-section">
     <div class="container">
-        <div class="row">
-            <div class="col-sm">
-                <h1>Create New Account</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm">
-                <p>Thank you for signing up! Please check your email to retrieve the verification token.</p>
+        <h1 class="main-title" >Complete your ChampionFX virtual account signup</h1>
+
+        <p>Your new ChampionFX virtual account lets you trade binary options with unlimited virtual currency.</p>
             </div>
         </div>
 
-        <form id="frm_new_account_virtual">
-            <fieldset>
-                <legend>Details</legend>
+        <h2>Details</h2>
 
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="verification-code">Verification token</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8 ">
-                        <div class="form-input">
-                            <input id="verification-code" type="text" maxlength="48" autocomplete="off">
-                            <div class="hint">Please check your email for the value of this token</div>
-                            <p class="error-msg hidden" id="error-code">Please submit a valid verification token.</p>
-                        </div>
-                    </div>
-                </div>
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <form id="frm_new_account_virtual">
+                    <div class="form-row ">
+    <label for="txt_verification_code">Verification token</label>
+    
+                <input type="text" id="txt_verification_code" maxlength="48" autocomplete="off" />
+    <p class="hint">Please check your email for the token</p>
+</div>
 
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="password">Choose a password</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input id="password" type="password" maxlength="25" autocomplete="off">
-                            <div class="hint">Minimum of six lower and uppercase letters with numbers</div>
-                            <p class="error-msg hidden" id="error-pass-short">You should enter between 6-25 characters.</p>
-                            <p class="error-msg hidden" id="error-pass-char">Password should have lower and uppercase letters with numbers.</p>
-                        </div>
-                    </div>
-                </div>
+                    <div class="form-row ">
+    <label for="txt_password">Choose password</label>
+    
+                <input type="password" id="txt_password" maxlength="25"  />
+    <p class="hint">Minimum of six lower and uppercase letters with numbers</p>
+</div>
 
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="r-password">Re-enter password</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <input id="r-password" type="password" maxlength="25" autocomplete="off">
-                            <p class="error-msg hidden" id="error-pass-nomatch">The two passwords that you entered do not match.</p>
-                        </div>
-                    </div>
-                </div>
+                    <div class="form-row ">
+    <label for="txt_re_password">Verify password</label>
+    
+                <input type="password" id="txt_re_password" maxlength="25"  />
+    
+</div>
 
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="form-label">
-                            <label for="residence">Country of residence</label>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <div class="form-input">
-                            <select id="residence"></select>
-                        </div>
-                    </div>
-                </div>
-            </fieldset>
-            <div class="submit-holder">
-                <p class="error-msg hidden" id="error-create-account"></p>
-                <button class="button-secondary" id="btn-submit" type="submit">Create Free Account</button>
+                    <div class="form-row ">
+    <label for="ddl_residence">Country of residence</label>
+    <div id="residence_loading" class="small-spinner"><div class="barspinner dark">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+</div></div>
+                <select id="ddl_residence" class="hidden">             </select>
+    
+</div>
+
+                    <div class="submit-row ">
+    <p id="msg_form" class="error-msg invisible"></p>
+    <button id="btn_submit" type="submit">Create account</button>
+</div>
+                </form>
             </div>
-        </form>
+            <div class="col-lg-7 col-md-6">
+                <p>Once you've finished setting up your ChampionFX virtual account, you can upgrade to a real account to unlock the following features:</p>
+                <ul class="bullet">
+                    <li>Trade binary options with real money using our dedicated binary options trading platform - Champion Trader.</li>
+                    <li>Upgrade to Cent, Standard, or STP account to trade Forex and other assets using our MetaTrader 5 platform.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
     </div>
