@@ -18,11 +18,11 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/css/flex.min.css?sckv4moy" />
-     <link rel="stylesheet" href="/champion-static/css/style.min.css?sckv4moy" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sckv4moy" />
-      <script src="/champion-static/js/bundle.js?sckv4moy" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?sckv4moy" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/css/flex.min.css?sdy4xrf5" />
+     <link rel="stylesheet" href="/champion-static/css/style.min.css?sdy4xrf5" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sdy4xrf5" />
+      <script src="/champion-static/js/bundle.js?sdy4xrf5" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?sdy4xrf5" type="text/javascript"></script>
      
 </head>
 <body>
@@ -34,10 +34,10 @@
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/en/contact.html">Contact Us</a></li>
-                        <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
+                        <li id="main-login" class="FX__Header__cta invisible"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
                 </div>
-                <div class="upgrade-message hidden">
+                <div class="upgrade-message pulser invisible">
                     <a href="/champion-static/en/new-account/real.html">Upgrade to a Real Account</a>
                 </div>
                 <div class="invisible">
@@ -66,7 +66,7 @@
         </div>
     </div>
 </div>
-    <div class="dark-blue header">
+    <div id="header" class="dark-blue header">
     <div class="menu-container">
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-6 vertical-center">
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
-                <div id="main-logout" class="hidden">
+                <div id="main-logout" class="invisible">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
                             <a href="javascript:;">
@@ -135,15 +135,15 @@
                         </li>
                     </ul>
                 </div>
-                <div id="main-signup" class="hidden">
+                <div id="main-signup" class="invisible">
                     <ul class="signup-button">
                         <li class="">
-                            <button class="button-secondary" href="javascript:;">Sign Up</button>
+                            <a class="button-secondary" href="/champion-static/en/home.html#signup"><span>Sign Up</span></a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="col-md-7 pull-md-2 hidden-sm-down">
+            <div class="col-md-7 pull-md-2 hidden-sm-down vertical-center">
                 <ul class="top-nav-menu">
                     <li>
                         <a href="/champion-static/en/about-us.html" class="nav-dropdown-toggle">About</a>
@@ -153,6 +153,9 @@
                     </li>
                     <li>
                         <a href="/champion-static/en/binary-options.html" class="nav-dropdown-toggle">Binary Options</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/en/trading-platform.html" class="nav-dropdown-toggle">Trading Platforms</a>
                     </li>
                     <li>
                         <a href="/champion-static/en/partnerships.html" class="nav-dropdown-toggle">Partnerships</a>
@@ -181,8 +184,8 @@
 
         <div class="row">
             <div class="fst-container col-xs-12">
-                <div id="main_msg" class="notice-msg center-text hidden"></div>
-                <div id="fst_action" class="hidden">
+                <div id="main_msg" class="notice-msg center-text invisible"></div>
+                <div id="fst_action" class="invisible">
                     <h4></h4>
                     <div class="separator primary-color"></div>
                     <span class="close"></span>
@@ -192,7 +195,7 @@
             </div>
         </div>
 
-        <div id="templates" class="hidden">
+        <div id="templates" class="invisible">
             <div class="acc-box col-xs-12 col-sm-6 col-md-6 col-lg-3">
                 <div>
                     <h4 class="title"></h4>
@@ -204,17 +207,17 @@
     <div class="rect4"></div>
     <div class="rect5"></div>
 </div></div>
-                    <div class="no-account hidden">
+                    <div class="no-account invisible">
                         <div class="info"></div>
                         <span class="button"><span class="act_new_account">Sign up</span></span>
                     </div>
-                    <div class="acc-info has-account row hidden">
+                    <div class="acc-info has-account row invisible">
                         <div class="col-xs-4">Login ID:</div><div data="login" class="col-xs-8"></div>
                         <div class="col-xs-4">Name:</div><div data="name" class="col-xs-7"></div>
                         <div class="col-xs-4">Balance:</div><div data="balance" class="col-xs-8"></div>
-                        <div class="col-xs-4">Leverage:</div><div data="leverage" class="col-xs-8"></div>
+                        <div class="col-xs-4 invisible">Leverage:</div><div data="leverage" class="col-xs-8 invisible"></div>
                     </div>
-                    <div class="acc-actions has-account hidden">
+                    <div class="acc-actions has-account invisible">
                         <a href="javascript:;" class="act_deposit">
                             <img src="/champion-static/images/metatrader/deposit.svg" alt="" />
                             Deposit
@@ -235,15 +238,15 @@
                 <div id="demo">Open a free Demo account.</div>
                 <div id="champion_cent">
                     The Cent account offers the highest leverage, as well as low margin call and stop out level.
-                    <a href="forex#forex-accounts-cent" target="_blank">Read more</a>
+                    <a href="/champion-static/en/forex/accounts/cent.html" target="_blank">Read more</a>
                 </div>
                 <div id="champion_standard">
                     The Standard account is suitable for a wide range of traders, both new and experienced.
-                    <a href="forex#forex-accounts-standard" target="_blank">Read more</a>
+                    <a href="/champion-static/en/forex/accounts/standard.html" target="_blank">Read more</a>
                 </div>
                 <div id="champion_stp">
                     The STP account provides you with the tightest spreads and connects you directly to the market.
-                    <a href="forex#forex-accounts-stp" target="_blank">Read more</a>
+                    <a href="/champion-static/en/forex/accounts/stp.html" target="_blank">Read more</a>
                 </div>
             </div>
 
@@ -251,7 +254,7 @@
                 <div class="form-row ">
     <label>Account type</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_account_type" ></span>
             </span>
     
@@ -259,7 +262,7 @@
                 <div class="form-row ">
     <label>Email</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_email" ></span>
             </span>
     
@@ -270,7 +273,7 @@
                 <input type="text" id="txt_name" maxlength="30" autocomplete="off" />
     
 </div>
-                <div class="form-row hidden">
+                <div class="form-row invisible">
     <label for="ddl_leverage">Leverage</label>
     
                 <select id="ddl_leverage" > 
@@ -309,15 +312,14 @@
 
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Create account</button>
-</div>
+    <button id="btn_submit" type="submit">Create account</button> </div>
             </form>
 
             <form id="frm_password_change">
                 <div class="form-row ">
     <label>Login ID</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_login" ></span>
             </span>
     
@@ -343,8 +345,7 @@
 
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Change Password</button>
-</div>
+    <button id="btn_submit" type="submit">Change Password</button> </div>
             </form>
 
             <form id="frm_deposit">
@@ -352,7 +353,7 @@
                 <div class="form-row ">
     <label>Transfer from</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_from" ></span>
             </span>
     
@@ -360,22 +361,21 @@
                 <div class="form-row ">
     <label>Deposit into</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_to" ></span>
             </span>
     
 </div>
                 <div class="form-row ">
-    <label for="txt_amount">Amount</label>
+    <label for="txt_amount">Amount (&#36;)</label>
     
-                &#36; <input type="text" id="txt_amount" maxlength="10" />
+                <input type="text" id="txt_amount" maxlength="10" />
     
 </div>
 
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Deposit</button>
-</div>
+    <button id="btn_submit" type="submit">Deposit</button> </div>
             </form>
 
             <form id="frm_withdrawal">
@@ -383,7 +383,7 @@
                 <div class="form-row ">
     <label>Withdraw from</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_from" ></span>
             </span>
     
@@ -391,7 +391,7 @@
                 <div class="form-row ">
     <label>Transfer into</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_to" ></span>
             </span>
     
@@ -403,21 +403,20 @@
     
 </div>
                 <div class="form-row ">
-    <label for="txt_amount">Amount</label>
+    <label for="txt_amount">Amount (&#36;)</label>
     
-                &#36; <input type="text" id="txt_amount" maxlength="10" />
+                <input type="text" id="txt_amount" maxlength="10" />
     
 </div>
 
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Withdraw</button>
-</div>
+    <button id="btn_submit" type="submit">Withdraw</button> </div>
             </form>
 
             <div id="messages">
                 <div id="msg_switch">To perform this action, please switch to your Champion-FX.com Real Account.</div>
-                <div id="msg_upgrade">To perform this action, please <a href="/champion-static/en/new-account/real.html">upgrade to Champion-FX.com Real Account</a>.</div>
+                <div id="msg_upgrade">To perform this action, please <a href="/champion-static/en/new-account/real.html">upgrade to a Champion-FX.com Real Account</a>.</div>
                 <div id="msg_assessment">To create an MT5 Financial Account please complete the <a href="/champion-static/en/user/profile.html#assessment">Financial Assessment</a>.</div>
                 <div id="msg_authenticate">
                     <div class="txt-left">
@@ -441,32 +440,104 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
-                <ul>
-                    <li>
-                        <a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a>
-                    </li>
-                </ul>
+                <div class="col-sm-10 col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-3">
+                            <h4>ChampionFX</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/about-us.html">About</a></li>
+        
+            <li><a href="/champion-static/en/licensing.html">License</a></li>
+        
+    </ul>
+                            <h4>Partnerships</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/partnerships-ib.html">Introducing Broker (IB)</a></li>
+        
+            <li><a href="/champion-static/en/partnerships-affiliate.html">Affiliate</a></li>
+        
+            <li><a href="/champion-static/en/partnerships-contributor.html">Content Contributor</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <h4>MT5</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li class="invisible"><a href="#">Forex</a></li>
+        
+            <li class="invisible"><a href="#">CFDs</a></li>
+        
+            <li class="invisible"><a href="#">Metals</a></li>
+        
+            <li><a href="/champion-static/en/mt5.html#contract-spec">Contract Specifications</a></li>
+        
+            <li><a href="/champion-static/en/mt5.html#margin-policy">Trading Policies</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <h4>Binary options</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/range-of-markets.html">Range of markets</a></li>
+        
+            <li><a href="/champion-static/en/types-of-accounts.html">Types of accounts</a></li>
+        
+    </ul>
+                            <h4>Trading platforms</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/trading-platform/metatrader-5.html">MT5</a></li>
+        
+            <li><a href="/champion-static/en/trading-platform/champion-trader.html">Champion Trader</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            
+                            <h4>Legal</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a></li>
+        
+            <li><a href="/champion-static/en/home.html">&nbsp;</a></li>
+        
+    </ul>
+                            <h4>Resources</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/trading-times.html">Trading Times</a></li>
+        
+            <li><a href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
+        
+    </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
-                    <ul>
-                        <li><a class="" href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm flex-sm-middle col-md-6 col-lg-6">
+                <div class="col-sm-2 col-xs-12">
                     <ul class="social-network">
                         <li>
-                            <a href="">
+                            <a href="https://www.facebook.com/champion.fx" target="_blank">
                                 <img src="/champion-static/images/symbols/fb.svg" alt="">
                             </a>
                         </li>
-                        <li>
-                            <a href="">
+                        <li class="invisible">
+                            <a href="https://twitter.com/champ_fx" target="_blank">
                                 <img src="/champion-static/images/symbols/t.svg" alt="">
                             </a>
                         </li>
                         <li>
-                            <a href="">
+                            <a href="https://www.youtube.com/channel/UCBqTu-uQkmaIh5wgBswo2TA" target="_blank">
                                 <img src="/champion-static/images/symbols/yt.svg" alt="">
                             </a>
                         </li>
@@ -493,7 +564,7 @@
             </div>
         </div>
     </div>
-    <div id="end_note" class="invisible"></div>
+    <div id="end_note" class="invisible hidden-xs-down"></div>
 </footer>
 </body>
 </html>

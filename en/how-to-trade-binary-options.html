@@ -18,11 +18,11 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/css/flex.min.css?sckv4moy" />
-     <link rel="stylesheet" href="/champion-static/css/style.min.css?sckv4moy" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sckv4moy" />
-      <script src="/champion-static/js/bundle.js?sckv4moy" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?sckv4moy" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/css/flex.min.css?sdy4xrf5" />
+     <link rel="stylesheet" href="/champion-static/css/style.min.css?sdy4xrf5" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sdy4xrf5" />
+      <script src="/champion-static/js/bundle.js?sdy4xrf5" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?sdy4xrf5" type="text/javascript"></script>
      
 </head>
 <body>
@@ -34,10 +34,10 @@
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/en/contact.html">Contact Us</a></li>
-                        <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
+                        <li id="main-login" class="FX__Header__cta invisible"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
                 </div>
-                <div class="upgrade-message hidden">
+                <div class="upgrade-message pulser invisible">
                     <a href="/champion-static/en/new-account/real.html">Upgrade to a Real Account</a>
                 </div>
                 <div class="invisible">
@@ -66,7 +66,7 @@
         </div>
     </div>
 </div>
-    <div class="dark-blue header">
+    <div id="header" class="dark-blue header">
     <div class="menu-container">
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-6 vertical-center">
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
-                <div id="main-logout" class="hidden">
+                <div id="main-logout" class="invisible">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
                             <a href="javascript:;">
@@ -135,15 +135,15 @@
                         </li>
                     </ul>
                 </div>
-                <div id="main-signup" class="hidden">
+                <div id="main-signup" class="invisible">
                     <ul class="signup-button">
                         <li class="">
-                            <button class="button-secondary" href="javascript:;">Sign Up</button>
+                            <a class="button-secondary" href="/champion-static/en/home.html#signup"><span>Sign Up</span></a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="col-md-7 pull-md-2 hidden-sm-down">
+            <div class="col-md-7 pull-md-2 hidden-sm-down vertical-center">
                 <ul class="top-nav-menu">
                     <li>
                         <a href="/champion-static/en/about-us.html" class="nav-dropdown-toggle">About</a>
@@ -153,6 +153,9 @@
                     </li>
                     <li>
                         <a href="/champion-static/en/binary-options.html" class="nav-dropdown-toggle">Binary Options</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/en/trading-platform.html" class="nav-dropdown-toggle">Trading Platforms</a>
                     </li>
                     <li>
                         <a href="/champion-static/en/partnerships.html" class="nav-dropdown-toggle">Partnerships</a>
@@ -170,36 +173,21 @@
         <div class="row">
             <div class="col-sm">
                 <h1 class="main-title" >How to trade binary options</h1>
-                <p>Trading binaries is relatively easy, and you can purchase a trade in only three simple steps.</p>
+                <p>Trading binary options is relatively easy, and you can purchase a trade in only three simple steps.</p>
                 <div class="fx-divider"></div>
                 <div class="row">
                     <div class="col-md-3">
-                        <!-- pLace holder for image -->
-                        <div class="box fill-bg-color">
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                        </div>
+                        <img src="/champion-static/images/binary_options/define_position.svg" class="image-small" alt="" />
                         <h3>Define your position</h3>
                         <p>Consider the market, duration, barrier, and payout.</p>
                     </div>
                     <div class="col-md-3 offset-md-1">
-                        <!-- pLace holder for image -->
-                        <div class="box fill-bg-color">
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                        </div>
+                        <img src="/champion-static/images/binary_options/price.svg" class="image-small" alt="" />
                         <h3>Get your price</h3>
                         <p>Receive instant prices based on your position.</p>
                     </div>
                     <div class="col-md-3 offset-md-1">
-                        <!-- pLace holder for image -->
-                        <div class="box fill-bg-color">
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                        </div>
+                        <img src="/champion-static/images/binary_options/trade.svg" class="image-small" alt="" />
                         <h3>Make your trade</h3>
                         <p>Choose to buy, or redefine your position.</p>
                     </div>
@@ -210,17 +198,17 @@
                         <div class="box bordered">
                             <div class="row center-text">
                                 <div class="col-md-4">
-                                    <a href="#step-1">
+                                    <a href="#step-1" class="no-ajax">
                                         <h4>Define your position</h4>
                                     </a>
                                 </div>
                                 <div class="col-md-4">
-                                    <a href="#step-2">
+                                    <a href="#step-2" class="no-ajax">
                                         <h4>Get your price</h4>
                                     </a>
                                 </div>
                                 <div class="col-md-4">
-                                    <a href="#step-3">
+                                    <a href="#step-3" class="no-ajax">
                                         <h4>Make your trade</h4>
                                     </a>
                                 </div>
@@ -230,106 +218,131 @@
                 </div>
                 <div class="fx-divider"></div>
                 <div class="center-text">
+                    <a name="step-1"></a>
                     <h3 id="step-1">Step 1: Define your position</h3>
-                    <p>First you need to set the parameters of your trade. Here's what you need to consider.</p>
+                    <p>First, you need to set the parameters of your trade. Here's what you need to consider.</p>
                 </div>
                 <div class="fx-divider"></div>
+
+
+
                 <div class="row">
-                    <div class="col-md-5 push-md-1 flex-md-middle">
-                        <!-- pLace holder for image -->
-                        <div class="box fill-bg-color">
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                        </div>
-                    </div>
-                    <div class="col-md-5 push-md-1">
-                        <h4>1. Underlying market</h4>
-                        <p>Choose the asset you wish to trade, such as gold, oil, stocks, or currency pairs. The value of a binary option is derived from the price of the underlying asset. One advantage of trading binary options is that you are not buying or selling the actual asset, only a contract that determines how that asset performs.</p>
-                        <p>Choose from ﬁve types of markets and their respective assets:</p>
-                        <ul class="bullet">
-                            <li>Currencies - All major Forex pairs</li>
-                            <li>Stock indices - All major worldwide stock indices sourced from the over-the-counter market</li>
-                            <li>Commodities - Major commodities such as gold and oil</li>
-                            <li>OTC stocks - Blue-chip stock contracts sourced from the over-the-counter market</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="fx-divider"></div>
+        <div class="col-sm-3 push-sm-1 flex-sm-middle">
+            <img src="/champion-static/images/binary_options/p1.svg" class="image-medium" alt="" />
+        </div>
+        <div class="col-sm-6 push-sm-2 flex-sm-middle">
+            
+                    <h4>1. Underlying market</h4>
+                    <p>Choose the asset you wish to trade, such as gold, oil, stocks, or currency pairs. The value of a binary option is derived from the price of the underlying asset. One advantage of trading binary options is that you are not buying or selling the actual asset, only a contract that determines how that asset performs.</p>
+                    <p>Choose from five types of markets and their respective assets:</p>
+                    <ul class="bullet no-padding">
+                        <li>Currencies - All major Forex pairs</li>
+                        <li>Stock indices - All major worldwide stock indices sourced from the over-the-counter market</li>
+                        <li>Commodities - Major commodities such as gold and oil</li>
+                        <li>OTC stocks - Blue-chip stock contracts sourced from the over-the-counter market</li>
+                    </ul>
+                
+        </div>
+    </div>
+    <div class="fx-divider"></div>
+    
+    <div class="row">
+        <div class="col-sm-6 push-sm-5 flex-sm-middle hidden-xs-down">
+            <img src="/champion-static/images/binary_options/arrow_down.svg" height="50" alt="" />
+        </div>
+    </div>
+    <div class="fx-divider hidden-xs-down"></div>
+
                 <div class="row">
-                    <div class="col-md-5 push-md-1 flex-md-middle">
-                        <!-- pLace holder for image -->
-                        <div class="box fill-bg-color">
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                        </div>
-                    </div>
-                    <div class="col-md-5 push-md-1">
-                        <h4>2. Trade type</h4>
-                        <p>There are four trade types for you to choose from:</p>
-                        <ul class="bullet">
-                            <li><strong>Rise/Fall</strong> - Predict if the market will rise or fall from its current level</li>
-                            <li><strong>Higher/Lower</strong> - Predict if the market will end higher or lower than a target price</li>
-                            <li><strong>Touch/No Touch</strong> - Predict if the market will touch or not touch a target price</li>
-                            <li><strong>In/Out</strong> - Predict if the market will stay between or outside two target prices</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="fx-divider"></div>
+        <div class="col-sm-3 push-sm-1 flex-sm-middle">
+            <img src="/champion-static/images/binary_options/p2.svg" class="image-medium" alt="" />
+        </div>
+        <div class="col-sm-6 push-sm-2 flex-sm-middle">
+            
+                    <h4>2. Trade type</h4>
+                    <p>There are four trade types for you to choose from:</p>
+                    <ul class="bullet no-padding">
+                        <li><strong>Rise/Fall</strong> - Predict if the market will rise or fall from its current level</li>
+                        <li><strong>Higher/Lower</strong> - Predict if the market will end higher or lower than a target price</li>
+                        <li><strong>Touch/No Touch</strong> - Predict if the market will touch or not touch a target price</li>
+                        <li><strong>In/Out</strong> - Predict if the market will stay between or outside two target prices</li>
+                    </ul>
+                
+        </div>
+    </div>
+    <div class="fx-divider"></div>
+    
+    <div class="row">
+        <div class="col-sm-6 push-sm-5 flex-sm-middle hidden-xs-down">
+            <img src="/champion-static/images/binary_options/arrow_down.svg" height="50" alt="" />
+        </div>
+    </div>
+    <div class="fx-divider hidden-xs-down"></div>
+
                 <div class="row">
-                    <div class="col-md-5 push-md-1 flex-md-middle">
-                        <!-- pLace holder for image -->
-                        <div class="box fill-bg-color">
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                        </div>
-                    </div>
-                    <div class="col-md-5 push-md-1 flex-md-middle">
-                        <h4>3. Duration</h4>
-                        <p>Set the length of your trade. from 10 seconds to 365 days. You don't even need to wait until expiry. Sell back any long-term trades that you purchased at any time to proﬁt from favourable market conditions.</p>
-                    </div>
-                </div>
-                <div class="fx-divider"></div>
+        <div class="col-sm-3 push-sm-1 flex-sm-middle">
+            <img src="/champion-static/images/binary_options/p3.svg" class="image-medium" alt="" />
+        </div>
+        <div class="col-sm-6 push-sm-2 flex-sm-middle">
+            
+                    <h4>3. Duration</h4>
+                    <p>Set the length of your trade, from 10 seconds to 365 days. You don’t even need to wait until expiry. Sell back any long-term trades that you purchased at any time to profit from favourable market conditions.</p>
+                
+        </div>
+    </div>
+    <div class="fx-divider"></div>
+    
+    <div class="row">
+        <div class="col-sm-6 push-sm-5 flex-sm-middle hidden-xs-down">
+            <img src="/champion-static/images/binary_options/arrow_down.svg" height="50" alt="" />
+        </div>
+    </div>
+    <div class="fx-divider hidden-xs-down"></div>
+
                 <div class="row">
-                    <div class="col-md-5 push-md-1 flex-md-middle">
-                        <!-- pLace holder for image -->
-                        <div class="box fill-bg-color">
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                        </div>
-                    </div>
-                    <div class="col-md-5 push-md-1 flex-md-middle">
-                        <h4>4. Barrier(s)</h4>
-                        <p>Set barrier(s) to define your position and trigger the payout you will receive</p>
-                    </div>
-                </div>
-                <div class="fx-divider"></div>
+        <div class="col-sm-3 push-sm-1 flex-sm-middle">
+            <img src="/champion-static/images/binary_options/p4.svg" class="image-medium" alt="" />
+        </div>
+        <div class="col-sm-6 push-sm-2 flex-sm-middle">
+            
+                    <h4>4. Barrier(s)</h4>
+                    <p>Set barrier(s) to define your position and trigger the payout you will receive</p>
+                
+        </div>
+    </div>
+    <div class="fx-divider"></div>
+    
+    <div class="row">
+        <div class="col-sm-6 push-sm-5 flex-sm-middle hidden-xs-down">
+            <img src="/champion-static/images/binary_options/arrow_down.svg" height="50" alt="" />
+        </div>
+    </div>
+    <div class="fx-divider hidden-xs-down"></div>
+
                 <div class="row">
-                    <div class="col-md-5 push-md-1 flex-md-middle">
-                        <!-- pLace holder for image -->
-                        <div class="box fill-bg-color">
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                            <p>&nbsp;</p>
-                        </div>
-                    </div>
-                    <div class="col-md-5 push-md-1 flex-md-middle">
-                        <h4>5. Payout</h4>
-                        <p>Each trade comes with a pre-determined payout that you will see after adjusting each parameter. You'll win the payout if your prediction is correct.</p>
-                    </div>
-                </div>
+        <div class="col-sm-3 push-sm-1 flex-sm-middle">
+            <img src="/champion-static/images/binary_options/p5.svg" class="image-medium" alt="" />
+        </div>
+        <div class="col-sm-6 push-sm-2 flex-sm-middle">
+            
+                    <h4>5. Payout</h4>
+                    <p>Each trade comes with a pre-determined payout that you will see after adjusting each parameter. You'll win the payout if your prediction is correct.</p>
+                
+        </div>
+    </div>
+    <div class="fx-divider"></div>
+
                 <div class="fx-divider-xl"></div>
                 <div class="center-text">
+                    <a name="step-2"></a>
                     <h3 id="step-2">Step 2: Get your price</h3>
                     <p>Our prices are benchmarked against the interbank options market, so you always get the most competitive prices. You'll always receive fair and transparent pricing, whatever your position.</p>
                 </div>
                 <div class="fx-divider-xl"></div>
                 <div class="center-text">
+                    <a name="step-3"></a>
                     <h3 id="step-3">Step 3: Make your trade</h3>
-                    <p>When you are satisﬁed with the price that you receive, execute your trade immediately. With our unique platform, there's no risk of 'slippage' or gaping markets. And most importantly, there are no hidden fees. You can also sell back any long-term trades at any time to proﬁt from favourable market conditions.</p>
+                    <p>When you are satisfied with the price that you receive, execute your trade immediately. With our unique platform, there's no risk of 'slippage' or gaping markets. And most importantly, there are no hidden fees. You can also sell back any long-term trades at any time to profit from favourable market conditions.</p>
                 </div>
             </div>
         </div>
@@ -341,32 +354,104 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
-                <ul>
-                    <li>
-                        <a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a>
-                    </li>
-                </ul>
+                <div class="col-sm-10 col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-3">
+                            <h4>ChampionFX</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/about-us.html">About</a></li>
+        
+            <li><a href="/champion-static/en/licensing.html">License</a></li>
+        
+    </ul>
+                            <h4>Partnerships</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/partnerships-ib.html">Introducing Broker (IB)</a></li>
+        
+            <li><a href="/champion-static/en/partnerships-affiliate.html">Affiliate</a></li>
+        
+            <li><a href="/champion-static/en/partnerships-contributor.html">Content Contributor</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <h4>MT5</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li class="invisible"><a href="#">Forex</a></li>
+        
+            <li class="invisible"><a href="#">CFDs</a></li>
+        
+            <li class="invisible"><a href="#">Metals</a></li>
+        
+            <li><a href="/champion-static/en/mt5.html#contract-spec">Contract Specifications</a></li>
+        
+            <li><a href="/champion-static/en/mt5.html#margin-policy">Trading Policies</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <h4>Binary options</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/range-of-markets.html">Range of markets</a></li>
+        
+            <li><a href="/champion-static/en/types-of-accounts.html">Types of accounts</a></li>
+        
+    </ul>
+                            <h4>Trading platforms</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/trading-platform/metatrader-5.html">MT5</a></li>
+        
+            <li><a href="/champion-static/en/trading-platform/champion-trader.html">Champion Trader</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            
+                            <h4>Legal</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a></li>
+        
+            <li><a href="/champion-static/en/home.html">&nbsp;</a></li>
+        
+    </ul>
+                            <h4>Resources</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/trading-times.html">Trading Times</a></li>
+        
+            <li><a href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
+        
+    </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
-                    <ul>
-                        <li><a class="" href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm flex-sm-middle col-md-6 col-lg-6">
+                <div class="col-sm-2 col-xs-12">
                     <ul class="social-network">
                         <li>
-                            <a href="">
+                            <a href="https://www.facebook.com/champion.fx" target="_blank">
                                 <img src="/champion-static/images/symbols/fb.svg" alt="">
                             </a>
                         </li>
-                        <li>
-                            <a href="">
+                        <li class="invisible">
+                            <a href="https://twitter.com/champ_fx" target="_blank">
                                 <img src="/champion-static/images/symbols/t.svg" alt="">
                             </a>
                         </li>
                         <li>
-                            <a href="">
+                            <a href="https://www.youtube.com/channel/UCBqTu-uQkmaIh5wgBswo2TA" target="_blank">
                                 <img src="/champion-static/images/symbols/yt.svg" alt="">
                             </a>
                         </li>
@@ -393,7 +478,7 @@
             </div>
         </div>
     </div>
-    <div id="end_note" class="invisible"></div>
+    <div id="end_note" class="invisible hidden-xs-down"></div>
 </footer>
 </body>
 </html>

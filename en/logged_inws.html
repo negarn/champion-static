@@ -18,11 +18,11 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/css/flex.min.css?sckv4moy" />
-     <link rel="stylesheet" href="/champion-static/css/style.min.css?sckv4moy" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sckv4moy" />
-      <script src="/champion-static/js/bundle.js?sckv4moy" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?sckv4moy" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/css/flex.min.css?sdy4xrf5" />
+     <link rel="stylesheet" href="/champion-static/css/style.min.css?sdy4xrf5" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?sdy4xrf5" />
+      <script src="/champion-static/js/bundle.js?sdy4xrf5" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?sdy4xrf5" type="text/javascript"></script>
      
 </head>
 <body>
@@ -34,10 +34,10 @@
                 <div class="topbar-contacts">
                     <ul>
                         <li class="last"><a href="/champion-static/en/contact.html">Contact Us</a></li>
-                        <li id="main-login" class="FX__Header__cta hidden"><a class="button-secondary" href="javascript:;">Log In</a></li>
+                        <li id="main-login" class="FX__Header__cta invisible"><a class="button-secondary" href="javascript:;">Log In</a></li>
                     </ul>
                 </div>
-                <div class="upgrade-message hidden">
+                <div class="upgrade-message pulser invisible">
                     <a href="/champion-static/en/new-account/real.html">Upgrade to a Real Account</a>
                 </div>
                 <div class="invisible">
@@ -66,7 +66,7 @@
         </div>
     </div>
 </div>
-    <div class="dark-blue header">
+    <div id="header" class="dark-blue header">
     <div class="menu-container">
         <div class="row">
             <div class="col-md-3 col-sm-6 col-xs-6 vertical-center">
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
-                <div id="main-logout" class="hidden">
+                <div id="main-logout" class="invisible">
                     <ul id="main-account" class="nav-menu main-nav">
                         <li class="account">
                             <a href="javascript:;">
@@ -135,15 +135,15 @@
                         </li>
                     </ul>
                 </div>
-                <div id="main-signup" class="hidden">
+                <div id="main-signup" class="invisible">
                     <ul class="signup-button">
                         <li class="">
-                            <button class="button-secondary" href="javascript:;">Sign Up</button>
+                            <a class="button-secondary" href="/champion-static/en/home.html#signup"><span>Sign Up</span></a>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="col-md-7 pull-md-2 hidden-sm-down">
+            <div class="col-md-7 pull-md-2 hidden-sm-down vertical-center">
                 <ul class="top-nav-menu">
                     <li>
                         <a href="/champion-static/en/about-us.html" class="nav-dropdown-toggle">About</a>
@@ -153,6 +153,9 @@
                     </li>
                     <li>
                         <a href="/champion-static/en/binary-options.html" class="nav-dropdown-toggle">Binary Options</a>
+                    </li>
+                    <li>
+                        <a href="/champion-static/en/trading-platform.html" class="nav-dropdown-toggle">Trading Platforms</a>
                     </li>
                     <li>
                         <a href="/champion-static/en/partnerships.html" class="nav-dropdown-toggle">Partnerships</a>
@@ -166,7 +169,7 @@
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
             <style>
-    #signup {display: none;}
+    #main-signup {display: none;}
     #loading_link {display: inline-block;}
 </style>
 <div id="login_loading" class="center-text">
@@ -186,32 +189,104 @@
     <div id="footer-menu" class="">
         <div class="container">
             <div class="row">
-                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
-                <ul>
-                    <li>
-                        <a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a>
-                    </li>
-                </ul>
+                <div class="col-sm-10 col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-3">
+                            <h4>ChampionFX</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/about-us.html">About</a></li>
+        
+            <li><a href="/champion-static/en/licensing.html">License</a></li>
+        
+    </ul>
+                            <h4>Partnerships</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/partnerships-ib.html">Introducing Broker (IB)</a></li>
+        
+            <li><a href="/champion-static/en/partnerships-affiliate.html">Affiliate</a></li>
+        
+            <li><a href="/champion-static/en/partnerships-contributor.html">Content Contributor</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <h4>MT5</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li class="invisible"><a href="#">Forex</a></li>
+        
+            <li class="invisible"><a href="#">CFDs</a></li>
+        
+            <li class="invisible"><a href="#">Metals</a></li>
+        
+            <li><a href="/champion-static/en/mt5.html#contract-spec">Contract Specifications</a></li>
+        
+            <li><a href="/champion-static/en/mt5.html#margin-policy">Trading Policies</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <h4>Binary options</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/range-of-markets.html">Range of markets</a></li>
+        
+            <li><a href="/champion-static/en/types-of-accounts.html">Types of accounts</a></li>
+        
+    </ul>
+                            <h4>Trading platforms</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/trading-platform/metatrader-5.html">MT5</a></li>
+        
+            <li><a href="/champion-static/en/trading-platform/champion-trader.html">Champion Trader</a></li>
+        
+    </ul>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            
+                            <h4>Legal</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/terms-and-conditions.html">Terms and Conditions</a></li>
+        
+            <li><a href="/champion-static/en/home.html">&nbsp;</a></li>
+        
+    </ul>
+                            <h4>Resources</h4>
+    <div class="separator-line-thin-gray"></div>
+    <ul>
+        
+            <li><a href="/champion-static/en/trading-times.html">Trading Times</a></li>
+        
+            <li><a href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
+        
+    </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm flex-sm-middle col-md-3 col-lg-3">
-                    <ul>
-                        <li><a class="" href="/champion-static/en/cashier/payment-methods.html">Payment Methods</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm flex-sm-middle col-md-6 col-lg-6">
+                <div class="col-sm-2 col-xs-12">
                     <ul class="social-network">
                         <li>
-                            <a href="">
+                            <a href="https://www.facebook.com/champion.fx" target="_blank">
                                 <img src="/champion-static/images/symbols/fb.svg" alt="">
                             </a>
                         </li>
-                        <li>
-                            <a href="">
+                        <li class="invisible">
+                            <a href="https://twitter.com/champ_fx" target="_blank">
                                 <img src="/champion-static/images/symbols/t.svg" alt="">
                             </a>
                         </li>
                         <li>
-                            <a href="">
+                            <a href="https://www.youtube.com/channel/UCBqTu-uQkmaIh5wgBswo2TA" target="_blank">
                                 <img src="/champion-static/images/symbols/yt.svg" alt="">
                             </a>
                         </li>
@@ -238,7 +313,7 @@
             </div>
         </div>
     </div>
-    <div id="end_note" class="invisible"></div>
+    <div id="end_note" class="invisible hidden-xs-down"></div>
 </footer>
 </body>
 </html>

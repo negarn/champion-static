@@ -37,7 +37,7 @@
     <div class="form-row is-real">
     <label></label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="name" ></span>
             </span>
     
@@ -52,7 +52,7 @@
     <div class="form-row is-real">
     <label></label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="date_of_birth" ></span>
             </span>
     
@@ -73,7 +73,7 @@
     <div class="form-row ">
     <label></label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="country" ></span>
             </span>
     
@@ -88,7 +88,7 @@
     <div class="form-row ">
     <label></label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="email" ></span>
             </span>
     
@@ -99,7 +99,7 @@
     <div class="form-row is-real">
     <label for="tax_residence">Tax residence</label>
     
-                <select id="tax_residence" multiple="multiple">             </select>
+                <select id="tax_residence" class="invisible" multiple="multiple">             </select>
     
 </div>
     <div class="form-row is-real">
@@ -154,8 +154,7 @@
     <p id="error-update-details" class="error-msg"></p>
     <div class="submit-row is-real">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="submit" type="submit">Update</button>
-</div>
+    <button id="submit" type="submit">Update</button> </div>
 
     <p class="notice-msg is-real">*To update your personal information, please contact our <a href="/champion-static/en/contact.html">customer support</a> team.</p>
 
@@ -165,23 +164,6 @@
         <div id="assessment" class="is-real">
             <div class="container fx-section">
     <h2>Financial assessments</h2>
-    <div id="msg_success" class="invisible">
-        <p>Thank you for completing the Financial Assessment and registering your Financial Account. You can now deposit funds and trade Forex with real money on MT5.</p>
-        <div id="msg_authenticate" class="invisible">
-            <div><strong>Important</strong></div>
-            <p>Please send us the following documents in order to verify your identity and authenticate your account:</p>
-<ul class="checked">
-    <li>Proof of identity - A scanned copy of your passport, driving license (either provisional or full), or identity card that shows your full name and date of birth.</li>
-    <li>Proof of address - A scanned copy of a utility bill or bank statement that's not more than three months old.</li>
-</ul>
-<p class="show_for_mt5 invisible">Kindly send us these documents within 5 days to keep your account active.</p>
-<p>If you have any questions, kindly contact our Customer Support team at <a href="mailto:support@champion-fx.com">support@champion-fx.com</a>.</p>
-        </div>
-        <div class="center-text">
-            <a class="button" href="/champion-static/en/user/metatrader.html"><span>MetaTrader account management</span></a>
-        </div>
-    </div>
-
     <form class="formObject invisible" id="assessment_form" name="assessment_form">
         <p class="invisible" id="high_risk_classification">
             Due to recent changes in the regulations, we are required to ask our clients to complete the following Financial Assessment. Please note that you will not be able to continue trading until this is completed.
@@ -427,8 +409,24 @@
 
         <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="submit" type="submit">Update</button>
-</div>
+    <button id="submit" type="submit">Update</button> </div>
+
+        <div id="msg_success" class="invisible">
+            <p>Thank you for completing the Financial Assessment and registering your Financial Account. You can now deposit funds and trade Forex with real money on MT5.</p>
+            <div id="msg_authenticate" class="invisible">
+                <div><strong>Important</strong></div>
+                <p>Please send us the following documents in order to verify your identity and authenticate your account:</p>
+<ul class="checked">
+    <li>Proof of identity - A scanned copy of your passport, driving license (either provisional or full), or identity card that shows your full name and date of birth.</li>
+    <li>Proof of address - A scanned copy of a utility bill or bank statement that's not more than three months old.</li>
+</ul>
+<p class="show_for_mt5 invisible">Kindly send us these documents within 5 days to keep your account active.</p>
+<p>If you have any questions, kindly contact our Customer Support team at <a href="mailto:support@champion-fx.com">support@champion-fx.com</a>.</p>
+            </div>
+            <div class="center-text">
+                <a href="/champion-static/en/user/metatrader.html"><span>MetaTrader account management</span></a>
+            </div>
+        </div>
     </form>
 </div>
         </div>

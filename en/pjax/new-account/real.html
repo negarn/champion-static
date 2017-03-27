@@ -42,7 +42,7 @@
     
 </div>
                     <div class="form-row ">
-    <label for="ddl_residence">Country of residence</label>
+    <label>Country of residence</label>
     <div id="residence_loading" class="small-spinner"><div class="barspinner dark">
     <div class="rect1"></div>
     <div class="rect2"></div>
@@ -50,7 +50,9 @@
     <div class="rect4"></div>
     <div class="rect5"></div>
 </div></div>
-                <select id="ddl_residence" class="hidden">             </select>
+                <span class="text-display invisible">
+                                <span id="lbl_residence" ></span>
+            </span>
     
 </div>
                 </div>
@@ -86,7 +88,7 @@
     <div class="rect4"></div>
     <div class="rect5"></div>
 </div></div>
-                <select id="ddl_state" class="hidden">             </select>
+                <select id="ddl_state" class="invisible">             </select>
     
 </div>
                     <div class="form-row ">
@@ -139,8 +141,7 @@
 </div>
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Create account</button>
-</div>
+    <button id="btn_submit" type="submit">Create account</button> </div>
             </div>
         </form>
     </div>

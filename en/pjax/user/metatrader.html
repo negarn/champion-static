@@ -18,8 +18,8 @@
 
         <div class="row">
             <div class="fst-container col-xs-12">
-                <div id="main_msg" class="notice-msg center-text hidden"></div>
-                <div id="fst_action" class="hidden">
+                <div id="main_msg" class="notice-msg center-text invisible"></div>
+                <div id="fst_action" class="invisible">
                     <h4></h4>
                     <div class="separator primary-color"></div>
                     <span class="close"></span>
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div id="templates" class="hidden">
+        <div id="templates" class="invisible">
             <div class="acc-box col-xs-12 col-sm-6 col-md-6 col-lg-3">
                 <div>
                     <h4 class="title"></h4>
@@ -41,17 +41,17 @@
     <div class="rect4"></div>
     <div class="rect5"></div>
 </div></div>
-                    <div class="no-account hidden">
+                    <div class="no-account invisible">
                         <div class="info"></div>
                         <span class="button"><span class="act_new_account">Sign up</span></span>
                     </div>
-                    <div class="acc-info has-account row hidden">
+                    <div class="acc-info has-account row invisible">
                         <div class="col-xs-4">Login ID:</div><div data="login" class="col-xs-8"></div>
                         <div class="col-xs-4">Name:</div><div data="name" class="col-xs-7"></div>
                         <div class="col-xs-4">Balance:</div><div data="balance" class="col-xs-8"></div>
-                        <div class="col-xs-4">Leverage:</div><div data="leverage" class="col-xs-8"></div>
+                        <div class="col-xs-4 invisible">Leverage:</div><div data="leverage" class="col-xs-8 invisible"></div>
                     </div>
-                    <div class="acc-actions has-account hidden">
+                    <div class="acc-actions has-account invisible">
                         <a href="javascript:;" class="act_deposit">
                             <img src="/champion-static/images/metatrader/deposit.svg" alt="" />
                             Deposit
@@ -72,15 +72,15 @@
                 <div id="demo">Open a free Demo account.</div>
                 <div id="champion_cent">
                     The Cent account offers the highest leverage, as well as low margin call and stop out level.
-                    <a href="forex#forex-accounts-cent" target="_blank">Read more</a>
+                    <a href="/champion-static/en/forex/accounts/cent.html" target="_blank">Read more</a>
                 </div>
                 <div id="champion_standard">
                     The Standard account is suitable for a wide range of traders, both new and experienced.
-                    <a href="forex#forex-accounts-standard" target="_blank">Read more</a>
+                    <a href="/champion-static/en/forex/accounts/standard.html" target="_blank">Read more</a>
                 </div>
                 <div id="champion_stp">
                     The STP account provides you with the tightest spreads and connects you directly to the market.
-                    <a href="forex#forex-accounts-stp" target="_blank">Read more</a>
+                    <a href="/champion-static/en/forex/accounts/stp.html" target="_blank">Read more</a>
                 </div>
             </div>
 
@@ -88,7 +88,7 @@
                 <div class="form-row ">
     <label>Account type</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_account_type" ></span>
             </span>
     
@@ -96,7 +96,7 @@
                 <div class="form-row ">
     <label>Email</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_email" ></span>
             </span>
     
@@ -107,7 +107,7 @@
                 <input type="text" id="txt_name" maxlength="30" autocomplete="off" />
     
 </div>
-                <div class="form-row hidden">
+                <div class="form-row invisible">
     <label for="ddl_leverage">Leverage</label>
     
                 <select id="ddl_leverage" > 
@@ -146,15 +146,14 @@
 
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Create account</button>
-</div>
+    <button id="btn_submit" type="submit">Create account</button> </div>
             </form>
 
             <form id="frm_password_change">
                 <div class="form-row ">
     <label>Login ID</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_login" ></span>
             </span>
     
@@ -180,8 +179,7 @@
 
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Change Password</button>
-</div>
+    <button id="btn_submit" type="submit">Change Password</button> </div>
             </form>
 
             <form id="frm_deposit">
@@ -189,7 +187,7 @@
                 <div class="form-row ">
     <label>Transfer from</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_from" ></span>
             </span>
     
@@ -197,22 +195,21 @@
                 <div class="form-row ">
     <label>Deposit into</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_to" ></span>
             </span>
     
 </div>
                 <div class="form-row ">
-    <label for="txt_amount">Amount</label>
+    <label for="txt_amount">Amount (&#36;)</label>
     
-                &#36; <input type="text" id="txt_amount" maxlength="10" />
+                <input type="text" id="txt_amount" maxlength="10" />
     
 </div>
 
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Deposit</button>
-</div>
+    <button id="btn_submit" type="submit">Deposit</button> </div>
             </form>
 
             <form id="frm_withdrawal">
@@ -220,7 +217,7 @@
                 <div class="form-row ">
     <label>Withdraw from</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_from" ></span>
             </span>
     
@@ -228,7 +225,7 @@
                 <div class="form-row ">
     <label>Transfer into</label>
     
-                <span class="text-display">
+                <span class="text-display ">
                                 <span id="lbl_to" ></span>
             </span>
     
@@ -240,21 +237,20 @@
     
 </div>
                 <div class="form-row ">
-    <label for="txt_amount">Amount</label>
+    <label for="txt_amount">Amount (&#36;)</label>
     
-                &#36; <input type="text" id="txt_amount" maxlength="10" />
+                <input type="text" id="txt_amount" maxlength="10" />
     
 </div>
 
                 <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Withdraw</button>
-</div>
+    <button id="btn_submit" type="submit">Withdraw</button> </div>
             </form>
 
             <div id="messages">
                 <div id="msg_switch">To perform this action, please switch to your Champion-FX.com Real Account.</div>
-                <div id="msg_upgrade">To perform this action, please <a href="/champion-static/en/new-account/real.html">upgrade to Champion-FX.com Real Account</a>.</div>
+                <div id="msg_upgrade">To perform this action, please <a href="/champion-static/en/new-account/real.html">upgrade to a Champion-FX.com Real Account</a>.</div>
                 <div id="msg_assessment">To create an MT5 Financial Account please complete the <a href="/champion-static/en/user/profile.html#assessment">Financial Assessment</a>.</div>
                 <div id="msg_authenticate">
                     <div class="txt-left">

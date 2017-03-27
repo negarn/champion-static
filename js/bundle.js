@@ -18462,9 +18462,10 @@
 	var Login = __webpack_require__(312);
 	var ChampionRouter = __webpack_require__(313);
 	var ChampionSocket = __webpack_require__(308);
-	var default_redirect_url = __webpack_require__(304).default_redirect_url;
-	var Utility = __webpack_require__(306);
-	var BinaryOptions = __webpack_require__(314);
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var url_for = __webpack_require__(306).url_for;
+	var Utility = __webpack_require__(303);
+	var ClientType = __webpack_require__(314);
 	var ChampionContact = __webpack_require__(299);
 	var ChampionEndpoint = __webpack_require__(315);
 	var MT5 = __webpack_require__(316);
@@ -18486,6 +18487,9 @@
 	var Home = __webpack_require__(447);
 	var ChampionProfile = __webpack_require__(450);
 	var ChampionSecurity = __webpack_require__(454);
+	var LoginHistory = __webpack_require__(455);
+	var TradingTimes = __webpack_require__(456);
+	var Limits = __webpack_require__(457);
 
 	var Champion = function () {
 	    'use strict';
@@ -18537,6 +18541,8 @@
 	            contact: { module: ChampionContact },
 	            endpoint: { module: ChampionEndpoint },
 	            forward: { module: CashierDepositWithdraw, is_authenticated: true, only_real: true },
+	            home: { module: Home },
+	            limits: { module: Limits, is_authenticated: true, only_real: true },
 	            logged_inws: { module: LoggedIn },
 	            metatrader: { module: MetaTrader, is_authenticated: true },
 	            mt5: { module: MT5 },
@@ -18545,15 +18551,19 @@
 	            settings: { module: ChampionSettings, is_authenticated: true },
 	            security: { module: ChampionSecurity, is_authenticated: true },
 	            virtual: { module: ChampionNewVirtual, not_authenticated: true },
-	            'binary-options': { module: BinaryOptions },
 	            'cashier-password': { module: CashierPassword, is_authenticated: true, only_real: true },
 	            'change-password': { module: ChangePassword, is_authenticated: true },
+	            'login-history': { module: LoginHistory, is_authenticated: true },
 	            'lost-password': { module: LostPassword, not_authenticated: true },
 	            'payment-methods': { module: CashierPaymentMethods },
 	            'reset-password': { module: ResetPassword, not_authenticated: true },
 	            'tnc-approval': { module: TNCApproval, is_authenticated: true, only_real: true },
 	            'top-up-virtual': { module: CashierTopUpVirtual, is_authenticated: true, only_virtual: true },
-	            home: { module: Home }
+	            'trading-times': { module: TradingTimes },
+	            'types-of-accounts': { module: ClientType },
+	            'trading-platform': { module: ClientType },
+	            'metatrader-5': { module: ClientType },
+	            'champion-trader': { module: ClientType }
 	        };
 	        if (page in pages_map) {
 	            loadHandler(pages_map[page]);
@@ -18566,8 +18576,8 @@
 	    };
 
 	    var errorMessages = {
-	        login: function login() {
-	            return Utility.template('Please <a href="[_1]">log in</a> to view this page.', [Login.login_url()]);
+	        login: function login(module) {
+	            return module === MetaTrader ? Utility.template('To register an MT5 account, please <a href="[_1]">log in</a> to your ChampionFX account<br />\n                Don\'t have a ChampionFX account? <a href="[_2]">Create one</a> now', [Login.login_url(), url_for('/')]) : Utility.template('Please <a href="[_1]">log in</a> to view this page.', [Login.login_url()]);
 	        },
 	        only_virtual: 'Sorry, this feature is available to virtual accounts only.',
 	        only_real: 'This feature is not relevant to virtual-money accounts.'
@@ -18577,7 +18587,7 @@
 	        active_script = config.module;
 	        if (config.is_authenticated) {
 	            if (!Client.is_logged_in()) {
-	                displayMessage(errorMessages.login());
+	                displayMessage(errorMessages.login(config.module));
 	            } else {
 	                ChampionSocket.wait('authorize').then(function (response) {
 	                    if (response.error) {
@@ -18619,10 +18629,10 @@
 	var CookieStorage = __webpack_require__(302).CookieStorage;
 	var LocalStore = __webpack_require__(302).LocalStore;
 	var State = __webpack_require__(302).State;
-	var url = __webpack_require__(304);
-	var template = __webpack_require__(306).template;
+	var url = __webpack_require__(306);
+	var template = __webpack_require__(303).template;
 	var ChampionSocket = __webpack_require__(308);
-	var Cookies = __webpack_require__(303);
+	var Cookies = __webpack_require__(305);
 
 	var Client = function () {
 	    var client_object = {};
@@ -18699,7 +18709,7 @@
 	        client_object.values_set = true;
 
 	        if (authorize.is_virtual && !get('has_real')) {
-	            $('.upgrade-message').removeClass('hidden');
+	            $('.upgrade-message').removeClass('invisible');
 	        }
 
 	        ChampionSocket.send({ balance: 1, subscribe: 1 });
@@ -18882,7 +18892,9 @@
 
 	'use strict';
 
-	var Cookies = __webpack_require__(303);
+	var getPropertyValue = __webpack_require__(303).getPropertyValue;
+	var isEmptyObject = __webpack_require__(303).isEmptyObject;
+	var Cookies = __webpack_require__(305);
 
 	var isStorageSupported = function isStorageSupported(storage) {
 	    if (typeof storage === 'undefined') {
@@ -18926,29 +18938,18 @@
 
 	InScriptStore.prototype = {
 	    get: function get(key) {
-	        var obj = this.store;
-	        var keys = key.slice(0);
-	        if (Array.isArray(keys)) {
-	            keys.some(function (k, idx) {
-	                if (k in obj && idx !== keys.length - 1) {
-	                    obj = obj[k];
-	                    key.shift();
-	                    return false;
-	                }
-	                key = k;
-	                return true;
-	            });
-	        }
-	        return obj[key];
+	        return getPropertyValue(this.store, key);
 	    },
 	    set: function set(key, value) {
-	        var obj = this.store;
-	        if (Array.isArray(key)) {
-	            key.forEach(function (k) {
-	                if (k in obj) obj = obj[k];else key = k;
-	            });
+	        var obj = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.store;
+
+	        if (!Array.isArray(key)) key = [key];
+	        if (key.length > 1) {
+	            if (!(key[0] in obj) || isEmptyObject(obj[key[0]])) obj[key[0]] = {};
+	            this.set(key.slice(1), value, obj[key[0]]);
+	        } else {
+	            obj[key[0]] = value;
 	        }
-	        obj[key] = value;
 	    },
 	    remove: function remove(key) {
 	        delete this.store[key];
@@ -19075,296 +19076,9 @@
 /* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-	/*!
-	 * JavaScript Cookie v2.1.2
-	 * https://github.com/js-cookie/js-cookie
-	 *
-	 * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
-	 * Released under the MIT license
-	 */
-	;(function (factory) {
-		if (true) {
-			!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		} else if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
-			module.exports = factory();
-		} else {
-			var OldCookies = window.Cookies;
-			var api = window.Cookies = factory();
-			api.noConflict = function () {
-				window.Cookies = OldCookies;
-				return api;
-			};
-		}
-	})(function () {
-		function extend() {
-			var i = 0;
-			var result = {};
-			for (; i < arguments.length; i++) {
-				var attributes = arguments[i];
-				for (var key in attributes) {
-					result[key] = attributes[key];
-				}
-			}
-			return result;
-		}
-
-		function init(converter) {
-			function api(key, value, attributes) {
-				var result;
-				if (typeof document === 'undefined') {
-					return;
-				}
-
-				// Write
-
-				if (arguments.length > 1) {
-					attributes = extend({
-						path: '/'
-					}, api.defaults, attributes);
-
-					if (typeof attributes.expires === 'number') {
-						var expires = new Date();
-						expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
-						attributes.expires = expires;
-					}
-
-					try {
-						result = JSON.stringify(value);
-						if (/^[\{\[]/.test(result)) {
-							value = result;
-						}
-					} catch (e) {}
-
-					if (!converter.write) {
-						value = encodeURIComponent(String(value)).replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
-					} else {
-						value = converter.write(value, key);
-					}
-
-					key = encodeURIComponent(String(key));
-					key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
-					key = key.replace(/[\(\)]/g, escape);
-
-					return document.cookie = [key, '=', value, attributes.expires && '; expires=' + attributes.expires.toUTCString(), // use expires attribute, max-age is not supported by IE
-					attributes.path && '; path=' + attributes.path, attributes.domain && '; domain=' + attributes.domain, attributes.secure ? '; secure' : ''].join('');
-				}
-
-				// Read
-
-				if (!key) {
-					result = {};
-				}
-
-				// To prevent the for loop in the first place assign an empty array
-				// in case there are no cookies at all. Also prevents odd result when
-				// calling "get()"
-				var cookies = document.cookie ? document.cookie.split('; ') : [];
-				var rdecode = /(%[0-9A-Z]{2})+/g;
-				var i = 0;
-
-				for (; i < cookies.length; i++) {
-					var parts = cookies[i].split('=');
-					var cookie = parts.slice(1).join('=');
-
-					if (cookie.charAt(0) === '"') {
-						cookie = cookie.slice(1, -1);
-					}
-
-					try {
-						var name = parts[0].replace(rdecode, decodeURIComponent);
-						cookie = converter.read ? converter.read(cookie, name) : converter(cookie, name) || cookie.replace(rdecode, decodeURIComponent);
-
-						if (this.json) {
-							try {
-								cookie = JSON.parse(cookie);
-							} catch (e) {}
-						}
-
-						if (key === name) {
-							result = cookie;
-							break;
-						}
-
-						if (!key) {
-							result[name] = cookie;
-						}
-					} catch (e) {}
-				}
-
-				return result;
-			}
-
-			api.set = api;
-			api.get = function (key) {
-				return api(key);
-			};
-			api.getJSON = function () {
-				return api.apply({
-					json: true
-				}, [].slice.call(arguments));
-			};
-			api.defaults = {};
-
-			api.remove = function (key, attributes) {
-				api(key, '', extend(attributes, {
-					expires: -1
-				}));
-			};
-
-			api.withConverter = init;
-
-			return api;
-		}
-
-		return init(function () {});
-	});
-
-/***/ },
-/* 304 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
-	var getLanguage = __webpack_require__(305).getLanguage;
-
-	function url_for(path, params) {
-	    if (!path) {
-	        path = '';
-	    } else if (path.length > 0 && path[0] === '/') {
-	        path = path.substr(1);
-	    }
-	    var lang = getLanguage().toLowerCase();
-	    var url = '';
-	    if (typeof window !== 'undefined') {
-	        url = window.location.href;
-	    }
-	    return '' + url.substring(0, url.indexOf('/' + lang + '/') + lang.length + 2) + (path || 'home') + '.html' + (params ? '?' + params : '');
-	}
-
-	function url_for_static(path) {
-	    if (!path) {
-	        path = '';
-	    } else if (path.length > 0 && path[0] === '/') {
-	        path = path.substr(1);
-	    }
-
-	    var staticHost = void 0;
-	    if (typeof window !== 'undefined') {
-	        staticHost = window.staticHost;
-	    }
-	    if (!staticHost || staticHost.length === 0) {
-	        staticHost = $('script[src*="bundle.min.js"],script[src*="bundle.js"]').attr('src');
-
-	        if (staticHost && staticHost.length > 0) {
-	            staticHost = staticHost.substr(0, staticHost.indexOf('/js/') + 1);
-	        } else {
-	            staticHost = 'https://www.champion-fx.com/';
-	        }
-
-	        if (typeof window !== 'undefined') {
-	            window.staticHost = staticHost;
-	        }
-	    }
-
-	    return staticHost + path;
-	}
-
-	function default_redirect_url() {
-	    return url_for('user/settings');
-	}
-
-	function get_params() {
-	    var urlParams = {};
-	    window.location.search.substring(1).split('&').forEach(function (pair) {
-	        var keyValue = pair.split('=');
-	        if (keyValue[0] && keyValue[1]) urlParams[keyValue[0]] = decodeURIComponent(keyValue[1]);
-	    });
-	    return urlParams;
-	}
-
-	module.exports = {
-	    url_for: url_for,
-	    url_for_static: url_for_static,
-	    default_redirect_url: default_redirect_url,
-	    get_params: get_params
-	};
-
-/***/ },
-/* 305 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Cookies = __webpack_require__(303);
-
-	var Language = function () {
-	    var all_languages = function all_languages() {
-	        return {
-	            EN: 'English',
-	            DE: 'Deutsch',
-	            ES: 'Español',
-	            FR: 'Français',
-	            ID: 'Indonesia',
-	            IT: 'Italiano',
-	            JA: '日本語',
-	            PL: 'Polish',
-	            PT: 'Português',
-	            RU: 'Русский',
-	            TH: 'Thai',
-	            VI: 'Tiếng Việt',
-	            ZH_CN: '简体中文',
-	            ZH_TW: '繁體中文'
-	        };
-	    };
-
-	    var language_from_url = function language_from_url() {
-	        var regex = new RegExp('^(' + Object.keys(all_languages()).join('|') + ')$', 'i');
-	        var langs = window.location.href.split('/').slice(3);
-	        var lang = '';
-	        langs.forEach(function (l) {
-	            lang = regex.test(l) ? l : lang;
-	        });
-	        return lang;
-	    };
-
-	    var current_lang = null;
-	    var language = function language() {
-	        var lang = current_lang;
-	        if (!lang) {
-	            lang = (language_from_url() || Cookies.get('language') || 'EN').toUpperCase();
-	            current_lang = lang;
-	        }
-	        return lang;
-	    };
-
-	    var url_for_language = function url_for_language(lang) {
-	        return window.location.href.replace(new RegExp('/' + language() + '/', 'i'), '/' + lang.trim().toLowerCase() + '/');
-	    };
-
-	    return {
-	        all_languages: all_languages,
-	        language: language,
-	        url_for_language: url_for_language
-	    };
-	}();
-
-	module.exports = {
-	    getAllLanguages: Language.all_languages,
-	    getLanguage: Language.language,
-	    URLForLanguage: Language.url_for_language
-	};
-
-/***/ },
-/* 306 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	__webpack_require__(307);
+	__webpack_require__(304);
 
 	function showLoadingImage(container) {
 	    var theme = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'dark';
@@ -19497,6 +19211,19 @@
 	    });
 	}
 
+	function cloneObject(obj) {
+	    return !isEmptyObject(obj) ? $.extend({}, obj) : obj;
+	}
+
+	function getPropertyValue(obj, keys) {
+	    if (!Array.isArray(keys)) keys = [keys];
+	    if (!isEmptyObject(obj) && keys[0] in obj && keys && keys.length > 1) {
+	        return getPropertyValue(obj[keys[0]], keys.slice(1));
+	    }
+	    // else return clone of object to avoid overwriting data
+	    return obj ? cloneObject(obj[keys[0]]) : undefined;
+	}
+
 	module.exports = {
 	    showLoadingImage: showLoadingImage,
 	    isEmptyObject: isEmptyObject,
@@ -19509,11 +19236,12 @@
 	    toISOFormat: toISOFormat,
 	    checkInput: checkInput,
 	    dateValueChanged: dateValueChanged,
-	    template: template
+	    template: template,
+	    getPropertyValue: getPropertyValue
 	};
 
 /***/ },
-/* 307 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -19729,6 +19457,293 @@
 
 
 /***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	/*!
+	 * JavaScript Cookie v2.1.2
+	 * https://github.com/js-cookie/js-cookie
+	 *
+	 * Copyright 2006, 2015 Klaus Hartl & Fagner Brack
+	 * Released under the MIT license
+	 */
+	;(function (factory) {
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else if ((typeof exports === 'undefined' ? 'undefined' : _typeof(exports)) === 'object') {
+			module.exports = factory();
+		} else {
+			var OldCookies = window.Cookies;
+			var api = window.Cookies = factory();
+			api.noConflict = function () {
+				window.Cookies = OldCookies;
+				return api;
+			};
+		}
+	})(function () {
+		function extend() {
+			var i = 0;
+			var result = {};
+			for (; i < arguments.length; i++) {
+				var attributes = arguments[i];
+				for (var key in attributes) {
+					result[key] = attributes[key];
+				}
+			}
+			return result;
+		}
+
+		function init(converter) {
+			function api(key, value, attributes) {
+				var result;
+				if (typeof document === 'undefined') {
+					return;
+				}
+
+				// Write
+
+				if (arguments.length > 1) {
+					attributes = extend({
+						path: '/'
+					}, api.defaults, attributes);
+
+					if (typeof attributes.expires === 'number') {
+						var expires = new Date();
+						expires.setMilliseconds(expires.getMilliseconds() + attributes.expires * 864e+5);
+						attributes.expires = expires;
+					}
+
+					try {
+						result = JSON.stringify(value);
+						if (/^[\{\[]/.test(result)) {
+							value = result;
+						}
+					} catch (e) {}
+
+					if (!converter.write) {
+						value = encodeURIComponent(String(value)).replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent);
+					} else {
+						value = converter.write(value, key);
+					}
+
+					key = encodeURIComponent(String(key));
+					key = key.replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent);
+					key = key.replace(/[\(\)]/g, escape);
+
+					return document.cookie = [key, '=', value, attributes.expires && '; expires=' + attributes.expires.toUTCString(), // use expires attribute, max-age is not supported by IE
+					attributes.path && '; path=' + attributes.path, attributes.domain && '; domain=' + attributes.domain, attributes.secure ? '; secure' : ''].join('');
+				}
+
+				// Read
+
+				if (!key) {
+					result = {};
+				}
+
+				// To prevent the for loop in the first place assign an empty array
+				// in case there are no cookies at all. Also prevents odd result when
+				// calling "get()"
+				var cookies = document.cookie ? document.cookie.split('; ') : [];
+				var rdecode = /(%[0-9A-Z]{2})+/g;
+				var i = 0;
+
+				for (; i < cookies.length; i++) {
+					var parts = cookies[i].split('=');
+					var cookie = parts.slice(1).join('=');
+
+					if (cookie.charAt(0) === '"') {
+						cookie = cookie.slice(1, -1);
+					}
+
+					try {
+						var name = parts[0].replace(rdecode, decodeURIComponent);
+						cookie = converter.read ? converter.read(cookie, name) : converter(cookie, name) || cookie.replace(rdecode, decodeURIComponent);
+
+						if (this.json) {
+							try {
+								cookie = JSON.parse(cookie);
+							} catch (e) {}
+						}
+
+						if (key === name) {
+							result = cookie;
+							break;
+						}
+
+						if (!key) {
+							result[name] = cookie;
+						}
+					} catch (e) {}
+				}
+
+				return result;
+			}
+
+			api.set = api;
+			api.get = function (key) {
+				return api(key);
+			};
+			api.getJSON = function () {
+				return api.apply({
+					json: true
+				}, [].slice.call(arguments));
+			};
+			api.defaults = {};
+
+			api.remove = function (key, attributes) {
+				api(key, '', extend(attributes, {
+					expires: -1
+				}));
+			};
+
+			api.withConverter = init;
+
+			return api;
+		}
+
+		return init(function () {});
+	});
+
+/***/ },
+/* 306 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getLanguage = __webpack_require__(307).getLanguage;
+
+	function url_for(path, params) {
+	    if (!path) {
+	        path = '';
+	    } else if (path.length > 0 && path[0] === '/') {
+	        path = path.substr(1);
+	    }
+	    var lang = getLanguage().toLowerCase();
+	    var url = '';
+	    if (typeof window !== 'undefined') {
+	        url = window.location.href;
+	    }
+	    return '' + url.substring(0, url.indexOf('/' + lang + '/') + lang.length + 2) + (path || 'home') + '.html' + (params ? '?' + params : '');
+	}
+
+	function url_for_static(path) {
+	    if (!path) {
+	        path = '';
+	    } else if (path.length > 0 && path[0] === '/') {
+	        path = path.substr(1);
+	    }
+
+	    var staticHost = void 0;
+	    if (typeof window !== 'undefined') {
+	        staticHost = window.staticHost;
+	    }
+	    if (!staticHost || staticHost.length === 0) {
+	        staticHost = $('script[src*="bundle.min.js"],script[src*="bundle.js"]').attr('src');
+
+	        if (staticHost && staticHost.length > 0) {
+	            staticHost = staticHost.substr(0, staticHost.indexOf('/js/') + 1);
+	        } else {
+	            staticHost = 'https://www.champion-fx.com/';
+	        }
+
+	        if (typeof window !== 'undefined') {
+	            window.staticHost = staticHost;
+	        }
+	    }
+
+	    return staticHost + path;
+	}
+
+	function default_redirect_url() {
+	    return url_for('user/settings');
+	}
+
+	function get_params() {
+	    var urlParams = {};
+	    window.location.search.substring(1).split('&').forEach(function (pair) {
+	        var keyValue = pair.split('=');
+	        if (keyValue[0] && keyValue[1]) urlParams[keyValue[0]] = decodeURIComponent(keyValue[1]);
+	    });
+	    return urlParams;
+	}
+
+	module.exports = {
+	    url_for: url_for,
+	    url_for_static: url_for_static,
+	    default_redirect_url: default_redirect_url,
+	    get_params: get_params
+	};
+
+/***/ },
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Cookies = __webpack_require__(305);
+
+	var Language = function () {
+	    var all_languages = function all_languages() {
+	        return {
+	            EN: 'English',
+	            DE: 'Deutsch',
+	            ES: 'Español',
+	            FR: 'Français',
+	            ID: 'Indonesia',
+	            IT: 'Italiano',
+	            JA: '日本語',
+	            PL: 'Polish',
+	            PT: 'Português',
+	            RU: 'Русский',
+	            TH: 'Thai',
+	            VI: 'Tiếng Việt',
+	            ZH_CN: '简体中文',
+	            ZH_TW: '繁體中文'
+	        };
+	    };
+
+	    var language_from_url = function language_from_url() {
+	        var regex = new RegExp('^(' + Object.keys(all_languages()).join('|') + ')$', 'i');
+	        var langs = window.location.href.split('/').slice(3);
+	        var lang = '';
+	        langs.forEach(function (l) {
+	            lang = regex.test(l) ? l : lang;
+	        });
+	        return lang;
+	    };
+
+	    var current_lang = null;
+	    var language = function language() {
+	        var lang = current_lang;
+	        if (!lang) {
+	            lang = (language_from_url() || Cookies.get('language') || 'EN').toUpperCase();
+	            current_lang = lang;
+	        }
+	        return lang;
+	    };
+
+	    var url_for_language = function url_for_language(lang) {
+	        return window.location.href.replace(new RegExp('/' + language() + '/', 'i'), '/' + lang.trim().toLowerCase() + '/');
+	    };
+
+	    return {
+	        all_languages: all_languages,
+	        language: language,
+	        url_for_language: url_for_language
+	    };
+	}();
+
+	module.exports = {
+	    getAllLanguages: Language.all_languages,
+	    getLanguage: Language.language,
+	    URLForLanguage: Language.url_for_language
+	};
+
+/***/ },
 /* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -19736,8 +19751,8 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Cookies = __webpack_require__(303);
-	var getLanguage = __webpack_require__(305).getLanguage;
+	var Cookies = __webpack_require__(305);
+	var getLanguage = __webpack_require__(307).getLanguage;
 	var State = __webpack_require__(302).State;
 
 	var ChampionSocket = function () {
@@ -19902,7 +19917,7 @@
 
 	    var onMessage = function onMessage(message) {
 	        var response = JSON.parse(message.data);
-	        State.set(['response', response.msg_type], response);
+	        State.set(['response', response.msg_type], $.extend({}, response));
 	        if (typeof default_calls[response.msg_type] === 'function') {
 	            default_calls[response.msg_type](response);
 	        }
@@ -19953,13 +19968,15 @@
 	var formatMoney = __webpack_require__(310).formatMoney;
 	var ChampionSocket = __webpack_require__(308);
 	var State = __webpack_require__(302).State;
-	var url_for = __webpack_require__(304).url_for;
-	var Utility = __webpack_require__(306);
-	var isEmptyObject = __webpack_require__(306).isEmptyObject;
-	var template = __webpack_require__(306).template;
+	var url_for = __webpack_require__(306).url_for;
+	var Utility = __webpack_require__(303);
+	var isEmptyObject = __webpack_require__(303).isEmptyObject;
+	var template = __webpack_require__(303).template;
 
 	var Header = function () {
 	    'use strict';
+
+	    var hidden_class = 'invisible';
 
 	    var init = function init() {
 	        ChampionSocket.wait('authorize').then(function () {
@@ -19969,7 +19986,7 @@
 	            var window_path = window.location.pathname;
 	            var path = window_path.replace(/\/$/, '');
 	            var href = decodeURIComponent(path);
-	            $('#top-nav-menu li a').each(function () {
+	            $('.top-nav-menu li a').each(function () {
 	                var target = $(this).attr('href');
 	                if (target === href) {
 	                    $(this).addClass('active');
@@ -19982,14 +19999,14 @@
 
 	    var userMenu = function userMenu() {
 	        if (!Client.is_logged_in()) {
-	            $('#main-login, #main-signup').removeClass('hidden');
+	            $('#main-login, #main-signup').removeClass(hidden_class);
 	            return;
 	        }
 	        if (!Client.is_virtual()) {
 	            displayAccountStatus();
 	        }
-	        $('#main-logout').removeClass('hidden');
-	        $('#main-signup').addClass('hidden');
+	        $('#main-logout').removeClass(hidden_class);
+	        $('#main-signup').addClass(hidden_class);
 	        var all_accounts = $('#all-accounts');
 	        var language = $('#select_language');
 	        $('.nav-menu').unbind('click').on('click', function (e) {
@@ -20149,8 +20166,8 @@
 
 	'use strict';
 
-	var addComma = __webpack_require__(306).addComma;
-	var getLanguage = __webpack_require__(305).getLanguage;
+	var addComma = __webpack_require__(303).addComma;
+	var getLanguage = __webpack_require__(307).getLanguage;
 	var State = __webpack_require__(302).State;
 
 	function formatMoney(amount, currency) {
@@ -20198,12 +20215,12 @@
 
 	'use strict';
 
-	var isEmptyObject = __webpack_require__(306).isEmptyObject;
-	var getLanguage = __webpack_require__(305).getLanguage;
+	var isEmptyObject = __webpack_require__(303).isEmptyObject;
+	var getLanguage = __webpack_require__(307).getLanguage;
 	var Client = __webpack_require__(301);
-	var url_for = __webpack_require__(304).url_for;
-	var default_redirect_url = __webpack_require__(304).default_redirect_url;
-	var Cookies = __webpack_require__(303);
+	var url_for = __webpack_require__(306).url_for;
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var Cookies = __webpack_require__(305);
 
 	var LoggedIn = function () {
 	    'use strict';
@@ -20290,7 +20307,7 @@
 	'use strict';
 
 	var getAppId = __webpack_require__(308).getAppId;
-	var getLanguage = __webpack_require__(305).getLanguage;
+	var getLanguage = __webpack_require__(307).getLanguage;
 	var Client = __webpack_require__(301);
 
 	var Login = function () {
@@ -20309,7 +20326,7 @@
 
 	    var login_url = function login_url() {
 	        var server_url = localStorage.getItem('config.server_url');
-	        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage() : 'https://oauth.champion-fx.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage();
+	        return server_url && /qa/.test(server_url) ? 'https://www.' + server_url.split('.')[1] + '.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage() + '&brand=champion' : 'https://oauth.champion-fx.com/oauth2/authorize?app_id=' + getAppId() + '&l=' + getLanguage();
 	    };
 
 	    var is_login_pages = function is_login_pages() {
@@ -20331,7 +20348,7 @@
 
 	'use strict';
 
-	var getLanguage = __webpack_require__(305).getLanguage;
+	var getLanguage = __webpack_require__(307).getLanguage;
 
 	/**
 	 * Router module for ChampionFX
@@ -20344,7 +20361,6 @@
 	    var xhr = void 0;
 	    var params = {},
 	        defaults = {
-	        timeout: 650,
 	        type: 'GET',
 	        dataType: 'html'
 	    },
@@ -20379,16 +20395,17 @@
 
 	        // put current content to cache, so we won't need to load it again
 	        if (title && content && content.length) {
+	            setDataPage(content, url);
 	            cachePut(url, {
 	                title: title,
-	                content: content
+	                content: content.clone()
 	            });
 	            window.history.replaceState({ url: url }, title, url);
-	            setDataPage(content, url);
 	            params.container.trigger('champion:after', content);
 	        }
 
-	        $(document).find('a').on('click', handleClick);
+	        $(document).find('#header a').on('click', handleClick);
+	        $(document).on('click', 'a', handleClick);
 	        $(window).on('popstate', handlePopstate);
 	    };
 
@@ -20405,7 +20422,7 @@
 	        }
 
 	        // Exclude links having no-ajax or target="_blank"
-	        if (link.classList.contains('no-ajax') || link.target === '_blank') {
+	        if (link.classList.contains('no-ajax') || link.target === '_blank' || !/\.html/i.test(url)) {
 	            return;
 	        }
 
@@ -20432,19 +20449,19 @@
 	        }
 	    };
 
-	    var processUrl = function processUrl(url, replace) {
+	    var processUrl = function processUrl(url, replace, no_scroll) {
 	        var cached_content = cacheGet(url);
 	        if (cached_content) {
-	            replaceContent(url, cached_content, replace);
+	            replaceContent(url, cached_content, replace, no_scroll);
 	        } else {
-	            load(url, replace);
+	            load(url, replace, no_scroll);
 	        }
 	    };
 
 	    /**
 	     * Load url from server
 	     */
-	    var load = function load(url, replace) {
+	    var load = function load(url, replace, no_scroll) {
 	        var lang = getLanguage();
 	        var options = $.extend(true, {}, $.ajaxSettings, defaults, {
 	            url: url.replace(new RegExp('/' + lang + '/', 'i'), '/' + lang.toLowerCase() + '/pjax/') });
@@ -20463,7 +20480,7 @@
 
 	            setDataPage(result.content, url);
 	            cachePut(url, result);
-	            replaceContent(url, result, replace);
+	            replaceContent(url, result, replace, no_scroll);
 	        };
 
 	        // Cancel the current request if we're already loading some page
@@ -20475,12 +20492,12 @@
 	    var handlePopstate = function handlePopstate(e) {
 	        var url = e.originalEvent.state ? e.originalEvent.state.url : window.location.href;
 	        if (url) {
-	            processUrl(url, true);
+	            processUrl(url, true, true);
 	        }
 	        return false;
 	    };
 
-	    var replaceContent = function replaceContent(url, content, replace) {
+	    var replaceContent = function replaceContent(url, content, replace, no_scroll) {
 	        window.history[replace ? 'replaceState' : 'pushState']({ url: url }, content.title, url);
 
 	        params.container.trigger('champion:before');
@@ -20490,6 +20507,10 @@
 	        params.container.append(content.content.clone());
 
 	        params.container.trigger('champion:after', content.content);
+
+	        if (!no_scroll) {
+	            $.scrollTo('body', 500);
+	        }
 	    };
 
 	    var abortXHR = function abortXHR(xhrObj) {
@@ -20499,11 +20520,15 @@
 	    };
 
 	    var cachePut = function cachePut(url, content) {
-	        cache[url] = content;
+	        cache[cleanUrl(url)] = content;
 	    };
 
 	    var cacheGet = function cacheGet(url) {
-	        return cache[url];
+	        return cache[cleanUrl(url)];
+	    };
+
+	    var cleanUrl = function cleanUrl(url) {
+	        return url.replace(/(\?|#).*$/, '');
 	    };
 
 	    var locationReplace = function locationReplace(url) {
@@ -20525,27 +20550,28 @@
 
 	'use strict';
 
-	__webpack_require__(307);
+	__webpack_require__(304);
 	var Client = __webpack_require__(301);
+	var Login = __webpack_require__(312);
 
-	var BinaryOptions = function () {
+	var ClientType = function () {
 	    'use strict';
 
 	    var load = function load() {
 	        if (Client.is_logged_in()) {
-	            $('#virtual-signup-button').hide();
+	            $('.virtual-signup').hide();
 	            if (Client.has_real()) {
-	                $('#real-signup-button').hide();
+	                $('.real-signup').hide();
 	            }
 	        } else {
-	            $('#virtual-signup-button').on('click', function () {
-	                $.scrollTo('#verify-email-form', 500);
+	            $('#login-link').find('a').on('click', function () {
+	                Login.redirect_to_login();
 	            });
 	        }
 	    };
 
 	    var unload = function unload() {
-	        $('#virtual-signup-button').off('click');
+	        $('#login-link').find('a').off('click');
 	    };
 
 	    return {
@@ -20554,7 +20580,7 @@
 	    };
 	}();
 
-	module.exports = BinaryOptions;
+	module.exports = ClientType;
 
 /***/ },
 /* 315 */
@@ -20571,20 +20597,20 @@
 	    var $container = void 0,
 	        $txt_server_url = void 0,
 	        $txt_app_id = void 0,
-	        $btn_set_endpoint = void 0,
-	        $btn_reset_endpoint = void 0;
+	        $btn_submit = void 0,
+	        $btn_reset = void 0;
 
 	    var load = function load() {
 	        $container = $('#champion-container');
 	        $txt_server_url = $container.find('#txt_server_url');
 	        $txt_app_id = $container.find('#txt_app_id');
-	        $btn_set_endpoint = $container.find('#btn_set_endpoint');
-	        $btn_reset_endpoint = $container.find('#btn_reset_endpoint');
+	        $btn_submit = $container.find('#btn_submit');
+	        $btn_reset = $container.find('#btn_reset');
 
 	        $txt_server_url.val(getServer());
 	        $txt_app_id.val(getAppId());
 
-	        $btn_set_endpoint.on('click', function (e) {
+	        $btn_submit.on('click', function (e) {
 	            e.preventDefault();
 
 	            var server_url = ($txt_server_url.val() || '').trim().toLowerCase().replace(/[><()\"\']/g, '');
@@ -20600,7 +20626,7 @@
 	            window.location.reload();
 	        });
 
-	        $btn_reset_endpoint.on('click', function (e) {
+	        $btn_reset.on('click', function (e) {
 	            e.preventDefault();
 	            localStorage.removeItem('config.server_url');
 	            localStorage.removeItem('config.app_id');
@@ -20609,8 +20635,8 @@
 	    };
 
 	    var unload = function unload() {
-	        $btn_set_endpoint.off('click');
-	        $btn_reset_endpoint.off('click');
+	        $btn_submit.off('click');
+	        $btn_reset.off('click');
 	    };
 
 	    return {
@@ -20649,15 +20675,17 @@
 
 	var ChampionSocket = __webpack_require__(308);
 	var ChampionRouter = __webpack_require__(313);
-	var url_for = __webpack_require__(304).url_for;
+	var url_for = __webpack_require__(306).url_for;
 	var Validation = __webpack_require__(318);
 	var Client = __webpack_require__(301);
 
 	var ChampionSignup = function () {
 	    'use strict';
 
-	    var form_selector = '.frm-verify-email',
-	        signup_selector = '#signup';
+	    var form_selector = '.frm-verify-email';
+	    var signup_selector = '#signup';
+	    var hidden_class = 'invisible';
+
 	    var is_active = false,
 	        $form = void 0,
 	        $input = void 0,
@@ -20679,9 +20707,9 @@
 
 	    var changeVisibility = function changeVisibility($selector, action) {
 	        if (action === 'hide') {
-	            $selector.addClass('hidden');
+	            $selector.addClass(hidden_class);
 	        } else {
-	            $selector.removeClass('hidden');
+	            $selector.removeClass(hidden_class);
 	        }
 	    };
 
@@ -20712,7 +20740,7 @@
 	                if (response.verify_email) {
 	                    ChampionRouter.forward(url_for('new-account/virtual'));
 	                } else if (response.error) {
-	                    $(form_selector + ':visible #signup_error').text(response.error.message).removeClass('hidden');
+	                    $(form_selector + ':visible #signup_error').text(response.error.message).removeClass(hidden_class);
 	                }
 	            });
 	        }
@@ -20737,7 +20765,7 @@
 
 	    var forms = {};
 	    var error_class = 'error-msg';
-	    var hidden_class = 'hidden';
+	    var hidden_class = 'invisible';
 
 	    var events_map = {
 	        input: 'input change',
@@ -20797,10 +20825,13 @@
 	        );
 	    };
 	    var validLetterSymbol = function validLetterSymbol(value) {
-	        return !/[`~!@#$%^&*)(_=+\[}{\]\\\/";:\?><|\d]+/.test(value);
+	        return !/[`~!@#$%^&*)(_=+\[}{\]\\\/";:\?><,|\d]+/.test(value);
 	    };
 	    var validGeneral = function validGeneral(value) {
 	        return !/[`~!@#$%^&*)(_=+\[}{\]\\\/";:\?><|]+/.test(value);
+	    };
+	    var validAddress = function validAddress(value) {
+	        return !/[`~!#$%^&*)(_=+\[}{\]\\";:\?><|]+/.test(value);
 	    };
 	    var validPostCode = function validPostCode(value) {
 	        return (/^[a-zA-Z\d-\s]*$/.test(value)
@@ -20811,7 +20842,7 @@
 	        );
 	    };
 	    var validEmailToken = function validEmailToken(value) {
-	        return value.trim().length === 48;
+	        return value.trim().length === 8;
 	    };
 
 	    var validCompare = function validCompare(value, options) {
@@ -20824,6 +20855,7 @@
 	        return options.min ? value.trim().length >= options.min : true;
 	    };
 	    var validLength = function validLength(value, options) {
+	        if (options.exclude) value = value.replace(new RegExp(options.exclude, 'g'), '');
 	        return (options.min ? value.trim().length >= options.min : true) && (options.max ? value.trim().length <= options.max : true);
 	    };
 
@@ -20834,6 +20866,9 @@
 	        if (!(options.type === 'float' ? /^\d+(\.\d+)?$/ : /^\d+$/).test(value) || !$.isNumeric(value)) {
 	            is_ok = false;
 	            message = 'Should be a valid number';
+	        } else if (options.type === 'float' && options.decimals && !new RegExp('^\\d+(\\.\\d{' + options.decimals.replace(/ /g, '') + '})?$').test(value)) {
+	            is_ok = false;
+	            message = 'Only [_1] decimal points are allowed.'.replace('[_1]', [options.decimals]);
 	        } else if (options.min && +value < +options.min) {
 	            is_ok = false;
 	            message = 'Should be more than [_1]'.replace('[_1]', options.min);
@@ -20851,6 +20886,7 @@
 	        email: { func: validEmail, message: 'Invalid email address' },
 	        password: { func: validPassword, message: 'Password should have lower and uppercase letters with numbers.' },
 	        general: { func: validGeneral, message: 'Only letters, numbers, space, hyphen, period, and apostrophe are allowed.' },
+	        address: { func: validAddress, message: 'Only letters, numbers, space, hyphen, period, and apostrophe are allowed.' },
 	        letter_symbol: { func: validLetterSymbol, message: 'Only letters, space, hyphen, period, and apostrophe are allowed.' },
 	        postcode: { func: validPostCode, message: 'Only letters, numbers, space and hyphen are allowed.' },
 	        phone: { func: validPhone, message: 'Only numbers and spaces are allowed.' },
@@ -20862,7 +20898,9 @@
 	        number: { func: validNumber, message: '' }
 	    };
 
-	    var pass_length = { min: 6, max: 25 };
+	    var pass_length = function pass_length(type) {
+	        return { min: /^mt$/.test(type) ? 8 : 6, max: 25 };
+	    };
 
 	    // --------------------
 	    // ----- Validate -----
@@ -20883,10 +20921,10 @@
 	                options = valid[1];
 	            }
 
-	            if (type === 'password' && !validLength(getFieldValue(field.$), pass_length)) {
+	            if (type === 'password' && !validLength(getFieldValue(field.$), pass_length(options))) {
 	                field.is_ok = false;
 	                type = 'length';
-	                options = pass_length;
+	                options = pass_length(options);
 	            } else {
 	                var validator = validators_map[type].func;
 	                field.is_ok = validator(getFieldValue(field.$), options, field.form);
@@ -20959,8 +20997,8 @@
 	var moment = __webpack_require__(320);
 	var ChampionSocket = __webpack_require__(308);
 	var Client = __webpack_require__(301);
-	var Utility = __webpack_require__(306);
-	var default_redirect_url = __webpack_require__(304).default_redirect_url;
+	var Utility = __webpack_require__(303);
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
 	var Validation = __webpack_require__(318);
 	var DatePicker = __webpack_require__(431).DatePicker;
 
@@ -20968,6 +21006,7 @@
 	    'use strict';
 
 	    var form_selector = '#frm_new_account_real';
+	    var hidden_class = 'invisible';
 
 	    var client_residence = void 0;
 
@@ -20980,7 +21019,7 @@
 	        txt_fname: '#txt_fname',
 	        txt_lname: '#txt_lname',
 	        txt_birth_date: '#txt_birth_date',
-	        ddl_residence: '#ddl_residence',
+	        lbl_residence: '#lbl_residence',
 	        txt_address1: '#txt_address1',
 	        txt_address2: '#txt_address2',
 	        txt_city: '#txt_city',
@@ -21002,7 +21041,7 @@
 
 	        container = $('#champion-container');
 	        client_residence = Client.get('residence');
-	        populateResidence();
+	        displayResidence();
 	        populateState();
 	        attachDatePicker();
 
@@ -21020,21 +21059,23 @@
 	    };
 
 	    var initValidation = function initValidation() {
-	        Validation.init(form_selector, [{ selector: fields.txt_fname, validations: ['req', 'letter_symbol', ['min', { min: 2 }]] }, { selector: fields.txt_lname, validations: ['req', 'letter_symbol', ['min', { min: 2 }]] }, { selector: fields.txt_birth_date, validations: ['req'] }, { selector: fields.ddl_residence, validations: ['req'] }, { selector: fields.txt_address1, validations: ['req', 'general'] }, { selector: fields.txt_address2, validations: ['general'] }, { selector: fields.txt_city, validations: ['req', 'letter_symbol'] }, { selector: fields.txt_state, validations: ['letter_symbol'] }, { selector: fields.txt_postcode, validations: ['postcode'] }, { selector: fields.txt_phone, validations: ['req', 'phone', ['min', { min: 6 }]] }, { selector: fields.ddl_secret_question, validations: ['req'] }, { selector: fields.txt_secret_answer, validations: ['req', ['min', { min: 4 }]] }, { selector: fields.chk_tnc, validations: ['req'] }]);
+	        Validation.init(form_selector, [{ selector: fields.txt_fname, validations: ['req', 'letter_symbol', ['min', { min: 2 }]] }, { selector: fields.txt_lname, validations: ['req', 'letter_symbol', ['min', { min: 2 }]] }, { selector: fields.txt_birth_date, validations: ['req'] }, { selector: fields.txt_address1, validations: ['req', 'address', ['length', { min: 1, max: 70 }]] }, { selector: fields.txt_address2, validations: ['address', ['length', { min: 0, max: 70 }]] }, { selector: fields.txt_city, validations: ['req', 'letter_symbol', ['length', { min: 1, max: 35 }]] }, { selector: fields.txt_state, validations: ['letter_symbol'] }, { selector: fields.txt_postcode, validations: ['postcode', ['length', { min: 0, max: 20 }]] }, { selector: fields.txt_phone, validations: ['req', 'phone', ['length', { min: 6, max: 35, exclude: /^\+/ }]] }, { selector: fields.ddl_secret_question, validations: ['req'] }, { selector: fields.txt_secret_answer, validations: ['req', 'general', ['length', { min: 4, max: 50 }]] }, { selector: fields.chk_tnc, validations: ['req'] }]);
 	    };
 
-	    var populateResidence = function populateResidence() {
+	    var displayResidence = function displayResidence() {
 	        ChampionSocket.send({ residence_list: 1 }).then(function (response) {
-	            var $ddl_residence = container.find(fields.ddl_residence);
-	            Utility.dropDownFromObject($ddl_residence, response.residence_list, client_residence);
 	            container.find('#residence_loading').remove();
-	            $ddl_residence.removeClass('hidden');
+	            var $lbl_residence = container.find(fields.lbl_residence);
 	            var country_obj = response.residence_list.find(function (r) {
 	                return r.value === client_residence;
 	            });
-	            if (country_obj && country_obj.phone_idd) {
-	                $(fields.txt_phone).val('+' + country_obj.phone_idd);
+	            if (country_obj) {
+	                $lbl_residence.text(country_obj.text);
+	                if (country_obj.phone_idd) {
+	                    $(fields.txt_phone).val('+' + country_obj.phone_idd);
+	                }
 	            }
+	            $lbl_residence.parent().removeClass(hidden_class);
 	        });
 	    };
 
@@ -21045,7 +21086,7 @@
 	            container.find('#state_loading').remove();
 	            if (states && states.length) {
 	                Utility.dropDownFromObject($ddl_state, states);
-	                $ddl_state.removeClass('hidden');
+	                $ddl_state.removeClass(hidden_class);
 	            } else {
 	                $ddl_state.replaceWith($('<input/>', { type: 'text', id: fields.txt_state.replace('#', ''), class: 'text', maxlength: '35' }));
 	            }
@@ -21075,7 +21116,7 @@
 	                first_name: $(fields.txt_fname).val(),
 	                last_name: $(fields.txt_lname).val(),
 	                date_of_birth: $(fields.txt_birth_date).val(),
-	                residence: $(fields.ddl_residence).val(),
+	                residence: client_residence,
 	                address_line_1: $(fields.txt_address1).val(),
 	                address_line_2: $(fields.txt_address2).val(),
 	                address_city: $(fields.txt_city).val(),
@@ -21090,7 +21131,7 @@
 	            }
 	            ChampionSocket.send(data).then(function (response) {
 	                if (response.error) {
-	                    $('#msg_form').removeClass('hidden').text(response.error.message);
+	                    $('#msg_form').removeClass(hidden_class).text(response.error.message);
 	                    btn_submit.removeAttr('disabled');
 	                } else {
 	                    var acc_info = response.new_account_real;
@@ -36018,7 +36059,7 @@
 	'use strict';
 
 	var moment = __webpack_require__(320);
-	var Utility = __webpack_require__(306);
+	var Utility = __webpack_require__(303);
 
 	var DatePicker = function DatePicker(component_selector, select_type) {
 	    this.component_selector = component_selector;
@@ -36171,14 +36212,15 @@
 
 	var ChampionSocket = __webpack_require__(308);
 	var Client = __webpack_require__(301);
-	var Utility = __webpack_require__(306);
-	var default_redirect_url = __webpack_require__(304).default_redirect_url;
+	var Utility = __webpack_require__(303);
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
 	var Validation = __webpack_require__(318);
 
 	var ChampionNewVirtualAccount = function () {
 	    'use strict';
 
 	    var form_selector = '#frm_new_account_virtual';
+	    var hidden_class = 'invisible';
 
 	    var container = void 0,
 	        btn_submit = void 0;
@@ -36207,7 +36249,7 @@
 	            var $ddl_residence = container.find(fields.ddl_residence);
 	            Utility.dropDownFromObject($ddl_residence, response.residence_list);
 	            container.find('#residence_loading').remove();
-	            $ddl_residence.removeClass('hidden');
+	            $ddl_residence.removeClass(hidden_class);
 	        });
 	    };
 
@@ -36219,8 +36261,8 @@
 
 	    var submit = function submit(e) {
 	        e.preventDefault();
-	        btn_submit.attr('disabled', 'disabled');
 	        if (Validation.validate(form_selector)) {
+	            btn_submit.attr('disabled', 'disabled');
 	            var data = {
 	                new_account_virtual: 1,
 	                verification_code: $(fields.txt_verification_code).val(),
@@ -36232,7 +36274,7 @@
 	            }
 	            ChampionSocket.send(data).then(function (response) {
 	                if (response.error) {
-	                    $('#msg_form').removeClass('hidden').text(response.error.message);
+	                    $('#msg_form').removeClass(hidden_class).text(response.error.message);
 	                    btn_submit.removeAttr('disabled');
 	                } else {
 	                    var acc_info = response.new_account_virtual;
@@ -36260,7 +36302,7 @@
 	var Client = __webpack_require__(301);
 	var Validation = __webpack_require__(318);
 	var ChampionSocket = __webpack_require__(308);
-	var url_for = __webpack_require__(304).url_for;
+	var url_for = __webpack_require__(306).url_for;
 
 	var LostPassword = function () {
 	    'use strict';
@@ -36324,14 +36366,14 @@
 	var ChampionSocket = __webpack_require__(308);
 	var Login = __webpack_require__(312);
 	var DatePicker = __webpack_require__(431).DatePicker;
-	var Utility = __webpack_require__(306);
+	var Utility = __webpack_require__(303);
 	var moment = __webpack_require__(320);
 
 	var ResetPassword = function () {
 	    'use strict';
 
-	    var form_selector = '#frm_reset_password',
-	        hiddenClass = 'invisible';
+	    var form_selector = '#frm_reset_password';
+	    var hidden_class = 'invisible';
 
 	    var container = void 0,
 	        btn_submit = void 0,
@@ -36360,7 +36402,7 @@
 	    };
 
 	    var haveRealAccountHandler = function haveRealAccountHandler() {
-	        container.find('#dob_row').toggleClass(hiddenClass);
+	        container.find('#dob_row').toggleClass(hidden_class);
 	    };
 
 	    var submit = function submit(e) {
@@ -36376,10 +36418,10 @@
 	            }
 	            ChampionSocket.send(data).then(function (response) {
 	                btn_submit.prop('disabled', true);
-	                $(form_selector).addClass(hiddenClass);
+	                $(form_selector).addClass(hidden_class);
 	                if (response.error) {
-	                    $('p.notice-msg').addClass(hiddenClass);
-	                    $('#reset-error').removeClass(hiddenClass);
+	                    $('p.notice-msg').addClass(hidden_class);
+	                    $('#reset-error').removeClass(hidden_class);
 
 	                    var resetErrorTemplate = '[_1]' + ' Please click the link below to restart the password recovery process. ' + 'If you require further assistance, please contact our Customer Support.';
 
@@ -36437,25 +36479,27 @@
 	var Cashier = function () {
 	    'use strict';
 
+	    var hidden_class = 'invisible';
+
 	    var load = function load() {
 	        ChampionSocket.wait('authorize').then(function () {
 	            var cashierContainer = $('.fx-cashier');
 	            if (Client.is_logged_in() && Client.is_virtual()) {
-	                cashierContainer.find('#fx-virtual').removeClass('hidden');
-	                $('#deposit-btn, #withdraw-btn').addClass('hidden');
+	                cashierContainer.find('#fx-virtual').removeClass(hidden_class);
+	                $('#deposit-btn, #withdraw-btn').addClass(hidden_class);
 	                if (Client.get('balance') > 1000) {
 	                    disableButton($('#VRT_topup_link'));
 	                }
 	            } else if (Client.is_logged_in() && !Client.is_virtual()) {
-	                cashierContainer.find('#fx-virtual').addClass('hidden');
-	                $('#deposit-btn, #withdraw-btn').removeClass('hidden');
+	                cashierContainer.find('#fx-virtual').addClass(hidden_class);
+	                $('#deposit-btn, #withdraw-btn').removeClass(hidden_class);
 	                ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
 	                    if (!response.error && response.cashier_password === 1) {
 	                        disableButton($('#deposit-btn, #withdraw-btn'));
 	                    }
 	                });
 	            } else {
-	                $('#deposit-btn, #withdraw-btn').addClass('hidden');
+	                $('#deposit-btn, #withdraw-btn').addClass(hidden_class);
 	            }
 	        });
 	    };
@@ -36528,7 +36572,7 @@
 	        if (form === views.lock_cashier) {
 	            Validation.init(form_selector, [{ selector: fields.txt_lock_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_lock_password }]] }]);
 	        } else {
-	            Validation.init(form_selector, [{ selector: fields.txt_unlock_password, validations: ['req', 'password'] }]);
+	            Validation.init(form_selector, [{ selector: fields.txt_unlock_password, validations: ['req'] }]);
 	        }
 	    };
 
@@ -36583,13 +36627,15 @@
 	var CashierPaymentMethods = function () {
 	    'use strict';
 
+	    var hidden_class = 'invisible';
+
 	    var load = function load() {
 	        ChampionSocket.wait('authorize').then(function () {
 	            var container = $('.fx-payment-methods');
 	            if (!Client.is_logged_in()) {
-	                container.find('#btn-open-account').removeClass('hidden');
+	                container.find('#btn-open-account').removeClass(hidden_class);
 	            } else if (!Client.is_virtual()) {
-	                container.find('#btn-deposit, #btn-withdraw').removeClass('hidden');
+	                container.find('#btn-deposit, #btn-withdraw').removeClass(hidden_class);
 	                ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
 	                    if (!response.error && response.cashier_password === 1) {
 	                        container.find('#btn-deposit, #btn-withdraw').addClass('button-disabled');
@@ -36618,6 +36664,8 @@
 	var CashierTopUpVirtual = function () {
 	    'use strict';
 
+	    var hidden_class = 'invisible';
+
 	    var viewError = void 0,
 	        viewSuccess = void 0;
 
@@ -36634,10 +36682,11 @@
 	            topup_virtual: '1'
 	        };
 	        ChampionSocket.send(data).then(function (response) {
+	            $('#topup_loading').remove();
 	            if (response.error) {
-	                viewError.removeClass('hidden').find('.notice-msg').text(response.error.message);
+	                viewError.removeClass(hidden_class).find('.notice-msg').text(response.error.message);
 	            } else {
-	                viewSuccess.removeClass('hidden').find('.notice-msg').text('[_1] [_2] has been credited to your Virtual money account [_3]', [response.topup_virtual.currency, response.topup_virtual.amount, Client.get('loginid')]);
+	                viewSuccess.removeClass(hidden_class).find('.success-msg').text('[_1] [_2] has been credited to your Virtual money account [_3]'.replace('[_1]', response.topup_virtual.currency).replace('[_2]', response.topup_virtual.amount).replace('[_3]', Client.get('loginid')));
 	            }
 	        });
 	    };
@@ -36716,7 +36765,7 @@
 	        $form = $(form_selector + ':visible');
 	        btn_submit = $form.find(fields.btn_submit);
 	        btn_submit.on('click', submit);
-	        Validation.init(form_selector, [{ selector: fields.txt_old_password, validations: ['req', 'password'] }, { selector: fields.txt_new_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_new_password }]] }]);
+	        Validation.init(form_selector, [{ selector: fields.txt_old_password, validations: ['req'] }, { selector: fields.txt_new_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_new_password }]] }]);
 	    };
 
 	    var unload = function unload() {
@@ -36881,8 +36930,8 @@
 	var ChampionSocket = __webpack_require__(308);
 	var Client = __webpack_require__(301);
 	var formatMoney = __webpack_require__(310).formatMoney;
-	var url_for = __webpack_require__(304).url_for;
-	var isEmptyObject = __webpack_require__(306).isEmptyObject;
+	var url_for = __webpack_require__(306).url_for;
+	var isEmptyObject = __webpack_require__(303).isEmptyObject;
 
 	var MetaTraderConfig = function () {
 	    'use strict';
@@ -37068,10 +37117,10 @@
 	    };
 
 	    var validations = {
-	        new_account: [{ selector: fields.new_account.txt_name.id, validations: ['req', 'letter_symbol', ['length', { min: 2, max: 30 }]] }, { selector: fields.new_account.txt_main_pass.id, validations: ['req', 'password'] }, { selector: fields.new_account.txt_re_main_pass.id, validations: ['req', ['compare', { to: fields.new_account.txt_main_pass.id }]] }, { selector: fields.new_account.txt_investor_pass.id, validations: ['req', 'password', ['not_equal', { to: fields.new_account.txt_main_pass.id, name1: 'Main password', name2: 'Investor password' }]] }, { selector: fields.new_account.ddl_leverage.id, validations: ['req'] }, { selector: fields.new_account.chk_tnc.id, validations: ['req'] }],
-	        password_change: [{ selector: fields.password_change.txt_old_password.id, validations: ['req'] }, { selector: fields.password_change.txt_new_password.id, validations: ['req', 'password', ['not_equal', { to: fields.password_change.txt_old_password.id, name1: 'Current password', name2: 'New password' }]] }, { selector: fields.password_change.txt_re_new_password.id, validations: ['req', ['compare', { to: fields.password_change.txt_new_password.id }]] }],
-	        deposit: [{ selector: fields.deposit.txt_amount.id, validations: ['req', ['number', { type: 'float', min: 1, max: 20000 }]] }],
-	        withdrawal: [{ selector: fields.withdrawal.txt_main_pass.id, validations: ['req'] }, { selector: fields.withdrawal.txt_amount.id, validations: ['req', ['number', { type: 'float', min: 1, max: 20000 }]] }]
+	        new_account: [{ selector: fields.new_account.txt_name.id, validations: ['req', 'letter_symbol', ['length', { min: 2, max: 30 }]] }, { selector: fields.new_account.txt_main_pass.id, validations: ['req', ['password', 'mt']] }, { selector: fields.new_account.txt_re_main_pass.id, validations: ['req', ['compare', { to: fields.new_account.txt_main_pass.id }]] }, { selector: fields.new_account.txt_investor_pass.id, validations: ['req', ['password', 'mt'], ['not_equal', { to: fields.new_account.txt_main_pass.id, name1: 'Main password', name2: 'Investor password' }]] }, { selector: fields.new_account.ddl_leverage.id, validations: ['req'] }, { selector: fields.new_account.chk_tnc.id, validations: ['req'] }],
+	        password_change: [{ selector: fields.password_change.txt_old_password.id, validations: ['req'] }, { selector: fields.password_change.txt_new_password.id, validations: ['req', ['password', 'mt'], ['not_equal', { to: fields.password_change.txt_old_password.id, name1: 'Current password', name2: 'New password' }]] }, { selector: fields.password_change.txt_re_new_password.id, validations: ['req', ['compare', { to: fields.password_change.txt_new_password.id }]] }],
+	        deposit: [{ selector: fields.deposit.txt_amount.id, validations: ['req', ['number', { type: 'float', min: 1, max: 20000, decimals: '0, 2' }]] }],
+	        withdrawal: [{ selector: fields.withdrawal.txt_main_pass.id, validations: ['req'] }, { selector: fields.withdrawal.txt_amount.id, validations: ['req', ['number', { type: 'float', min: 1, max: 20000, decimals: '0, 2' }]] }]
 	    };
 
 	    return {
@@ -37092,7 +37141,7 @@
 
 	var Validation = __webpack_require__(318);
 	var formatMoney = __webpack_require__(310).formatMoney;
-	var showLoadingImage = __webpack_require__(306).showLoadingImage;
+	var showLoadingImage = __webpack_require__(303).showLoadingImage;
 	var MetaTraderConfig = __webpack_require__(442);
 
 	var MetaTraderUI = function () {
@@ -37106,7 +37155,7 @@
 	        $main_msg = void 0,
 	        submit = void 0;
 
-	    var hidden_class = 'hidden';
+	    var hidden_class = 'invisible';
 
 	    var types_info = MetaTraderConfig.types_info;
 	    var actions_info = MetaTraderConfig.actions_info;
@@ -37166,6 +37215,15 @@
 	            $acc_item.find('.has-account').removeClass(hidden_class);
 	        } else {
 	            $acc_item.find('.no-account').removeClass(hidden_class).find('.info').html($templates.find('#' + acc_type));
+
+	            // Display account creation form if url has a hash like: #create_champion_cent
+	            var hash = window.location.hash;
+	            if (hash && hash === '#create_' + acc_type) {
+	                $acc_item.find('.act_new_account').click();
+	                // remove hash from url
+	                var url = window.location.href.split('#')[0];
+	                window.history.replaceState({ url: url }, null, url);
+	            }
 	        }
 	    };
 
@@ -37311,25 +37369,24 @@
 	var Client = __webpack_require__(301);
 	var Header = __webpack_require__(309);
 	var ChampionSocket = __webpack_require__(308);
-	var default_redirect_url = __webpack_require__(304).default_redirect_url;
-	var url_for = __webpack_require__(304).url_for;
-	var url_for_static = __webpack_require__(304).url_for_static;
-	var template = __webpack_require__(306).template;
+	var default_redirect_url = __webpack_require__(306).default_redirect_url;
+	var url_for = __webpack_require__(306).url_for;
+	var url_for_static = __webpack_require__(306).url_for_static;
+	var template = __webpack_require__(303).template;
 
 	var TNCApproval = function () {
 	    'use strict';
 
-	    var hiddenClass = 'invisible';
-
+	    var hidden_class = 'invisible';
 	    var btn_accept = '#btn-accept';
 
 	    var load = function load() {
-	        $('#tnc-loading').addClass(hiddenClass);
+	        $('#tnc-loading').addClass(hidden_class);
 	        $('#tnc_image').attr('src', url_for_static('images/protection-icon.svg'));
-	        $('#tnc_approval').removeClass(hiddenClass);
+	        $('#tnc_approval').removeClass(hidden_class);
 	        var $tnc_msg = $('#tnc-message');
 	        var tnc_message = template($tnc_msg.html(), [Client.get('landing_company_fullname'), url_for('terms-and-conditions')]);
-	        $tnc_msg.html(tnc_message).removeClass(hiddenClass);
+	        $tnc_msg.html(tnc_message).removeClass(hidden_class);
 	        $(btn_accept).text('OK').on('click', function (e) {
 	            approveTNC(e);
 	        });
@@ -37345,7 +37402,7 @@
 	                });
 	                window.location.href = default_redirect_url();
 	            } else {
-	                $('#err_message').html(response.error.message).removeClass(hiddenClass);
+	                $('#err_message').html(response.error.message).removeClass(hidden_class);
 	            }
 	        });
 	    };
@@ -37371,17 +37428,20 @@
 	'use strict';
 
 	var ChampionSocket = __webpack_require__(308);
-	var url_for = __webpack_require__(304).url_for;
+	var url_for = __webpack_require__(306).url_for;
 	var Client = __webpack_require__(301);
 	var Validation = __webpack_require__(318);
 
 	var CashierDepositWithdraw = function () {
 	    'use strict';
 
+	    var hidden_class = 'invisible';
+	    var form_selector = '#form_withdraw';
+
 	    var $btn_submit = void 0,
 	        $form_withdraw = void 0,
-	        cashier_type = void 0,
-	        error_msg = void 0;
+	        $error_msg = void 0,
+	        cashier_type = void 0;
 
 	    var fields = {
 	        cashier_title: '#cashier_title',
@@ -37401,16 +37461,16 @@
 
 	        var $container = $('#cashier_deposit');
 	        $form_withdraw = $('#form_withdraw');
-	        error_msg = $container.find(fields.error_msg);
+	        $error_msg = $container.find(fields.error_msg);
 
 	        $(fields.cashier_title).html(cashier_type);
 	        if (cashier_type === 'withdraw') initForm();
 
 	        ChampionSocket.send({ cashier_password: '1' }).then(function (response) {
 	            if (response.error) {
-	                error_msg.removeClass('hidden').html(response.error.message);
+	                $error_msg.removeClass(hidden_class).html(response.error.message);
 	            } else if (response.cashier_password) {
-	                error_msg.removeClass('hidden').html('Your cashier is locked as per your request - to unlock it, please click <a href="[_1]">here</a>.'.replace('[_1]', url_for('/cashier/cashier-password')));
+	                $error_msg.removeClass(hidden_class).html('Your cashier is locked as per your request - to unlock it, please click <a href="[_1]">here</a>.'.replace('[_1]', url_for('/cashier/cashier-password')));
 	            } else {
 	                deposit_withdraw();
 	            }
@@ -37418,11 +37478,14 @@
 	    };
 
 	    var initForm = function initForm() {
-	        var form_selector = '#form_withdraw';
 	        $btn_submit = $form_withdraw.find(fields.btn_submit);
 	        $btn_submit.on('click', submit);
+	        $form_withdraw.removeClass(hidden_class);
 	        Validation.init(form_selector, [{ selector: fields.token, validations: ['req', 'email_token'] }]);
-	        verify_email();
+	        ChampionSocket.send({
+	            verify_email: Client.get('email'),
+	            type: 'payment_withdraw'
+	        });
 	    };
 
 	    var unload = function unload() {
@@ -37431,18 +37494,12 @@
 	        }
 	    };
 
-	    var verify_email = function verify_email() {
-	        $form_withdraw.removeClass('hidden');
-	        ChampionSocket.send({
-	            verify_email: Client.get('email'),
-	            type: 'payment_withdraw'
-	        });
-	    };
-
 	    var submit = function submit(e) {
 	        e.preventDefault();
-	        $form_withdraw.addClass('hidden');
-	        deposit_withdraw($(fields.token).val());
+	        if (Validation.validate(form_selector)) {
+	            $form_withdraw.addClass(hidden_class);
+	            deposit_withdraw($(fields.token).val());
+	        }
 	    };
 
 	    var deposit_withdraw = function deposit_withdraw(token) {
@@ -37451,36 +37508,36 @@
 
 	        ChampionSocket.send(req).then(function (response) {
 	            if (response.error) {
-	                error_msg.removeClass('hidden');
+	                $error_msg.removeClass(hidden_class);
 	                switch (response.error.code) {
 	                    case 'ASK_TNC_APPROVAL':
-	                        error_msg.html('Please accept the latest Terms and Conditions.');
+	                        $error_msg.html('Please accept the latest Terms and Conditions.');
 	                        break;
 	                    case 'ASK_FIX_DETAILS':
-	                        error_msg.html(response.error.details);
+	                        $error_msg.html(response.error.details);
 	                        break;
 	                    case 'ASK_AUTHENTICATE':
-	                        error_msg.html('Your account is not fully authenticated.');
+	                        $error_msg.html('Your account is not fully authenticated.');
 	                        break;
 	                    case 'ASK_FINANCIAL_RISK_APPROVAL':
-	                        error_msg.html('Financial Risk approval is required. Please contact <a href="[_1]">customer support</a> for more information.'.replace('[_1]', url_for('/contact')));
+	                        $error_msg.html('Financial Risk approval is required. Please contact <a href="[_1]">customer support</a> for more information.'.replace('[_1]', url_for('/contact')));
 	                        break;
 	                    case 'ASK_CURRENCY':
 	                        // set account currency to USD if not set // TODO: remove this after currency set by default in backend
 	                        ChampionSocket.send({ set_account_currency: 'USD' }).then(function (res) {
 	                            if (res.error) {
-	                                error_msg.html(res.error.message);
+	                                $error_msg.html(res.error.message);
 	                            } else {
 	                                deposit_withdraw();
 	                            }
 	                        });
 	                        break;
 	                    default:
-	                        error_msg.html(response.error.message);
+	                        $error_msg.html(response.error.message);
 	                }
 	            } else {
-	                $('#error_msg').addClass('hidden');
-	                $('#' + cashier_type + '_iframe_container').removeClass('hidden').find('iframe').attr('src', response.cashier).end();
+	                $('#error_msg').addClass(hidden_class);
+	                $('#' + cashier_type + '_iframe_container').removeClass(hidden_class).find('iframe').attr('src', response.cashier).end();
 	            }
 	        });
 	    };
@@ -37507,6 +37564,12 @@
 
 	    var load = function load() {
 	        Slider.init();
+	        var hash = window.location.hash.substring(1);
+	        if (hash === 'signup') {
+	            setTimeout(function () {
+	                $.scrollTo($('#verify-email-form'), 500);
+	            }, 500);
+	        }
 	    };
 
 	    var unload = function unload() {
@@ -37532,7 +37595,7 @@
 	var Slider = function () {
 	    var init = function init() {
 	        $(function () {
-	            $(document).find('.slider').slick({
+	            $(document).find('#slider').slick({
 	                infinite: false,
 	                dots: true,
 	                arrows: false,
@@ -37542,12 +37605,14 @@
 	                autoplay: true
 	            });
 	            positionFooterAndDots();
+	            $('#slider_wrapper').removeClass('loading-state');
+	            $('#slider_loading').remove();
 	        });
 	    };
 
 	    var destroy = function destroy() {
 	        $('#slider-dots').empty();
-	        $('.slider').slick('unslick');
+	        $('#slider').slick('unslick');
 	    };
 
 	    var positionFooterAndDots = function positionFooterAndDots() {
@@ -40237,7 +40302,7 @@
 	'use strict';
 
 	var Client = __webpack_require__(301);
-	var showLoadingImage = __webpack_require__(306).showLoadingImage;
+	var showLoadingImage = __webpack_require__(303).showLoadingImage;
 	var FinancialAssessment = __webpack_require__(451);
 	var PersonalDetails = __webpack_require__(452);
 
@@ -40301,8 +40366,8 @@
 	var Header = __webpack_require__(309);
 	var ChampionSocket = __webpack_require__(308);
 	var State = __webpack_require__(302).State;
-	var isEmptyObject = __webpack_require__(306).isEmptyObject;
-	var showLoadingImage = __webpack_require__(306).showLoadingImage;
+	var isEmptyObject = __webpack_require__(303).isEmptyObject;
+	var showLoadingImage = __webpack_require__(303).showLoadingImage;
 	var Validation = __webpack_require__(318);
 
 	var FinancialAssessment = function () {
@@ -40312,7 +40377,10 @@
 	    var hidden_class = 'invisible';
 
 	    var financial_assessment = {},
-	        arr_validation = [];
+	        arr_validation = [],
+	        $btn_submit = void 0,
+	        $msg_form = void 0,
+	        $msg_success = void 0;
 
 	    var load = function load() {
 	        showLoadingImage($('<div/>', { id: 'loading', class: 'center-text' }).insertAfter('#heading'));
@@ -40321,6 +40389,10 @@
 	            submitForm();
 	            return false;
 	        });
+
+	        $btn_submit = $(form_selector).find('#submit');
+	        $msg_form = $(form_selector).find('#msg_form');
+	        $msg_success = $(form_selector).find('#msg_success');
 
 	        ChampionSocket.wait('get_financial_assessment').then(function (response) {
 	            handleForm(response);
@@ -40354,22 +40426,22 @@
 	    };
 
 	    var submitForm = function submitForm() {
-	        $('#submit').attr('disabled', 'disabled');
+	        $btn_submit.attr('disabled', 'disabled');
 
 	        if (Validation.validate(form_selector)) {
 	            var _ret = function () {
-	                var hasChanged = false;
+	                var has_changed = false;
 	                Object.keys(financial_assessment).forEach(function (key) {
 	                    var $key = $('#' + key);
 	                    if ($key.length && $key.val() !== financial_assessment[key]) {
-	                        hasChanged = true;
+	                        has_changed = true;
 	                    }
 	                });
-	                if (Object.keys(financial_assessment).length === 0) hasChanged = true;
-	                if (!hasChanged) {
+	                if (Object.keys(financial_assessment).length === 0) has_changed = true;
+	                if (!has_changed) {
 	                    showFormMessage('You did not change anything.', false);
 	                    setTimeout(function () {
-	                        $('#submit').removeAttr('disabled');
+	                        $btn_submit.removeAttr('disabled');
 	                    }, 1000);
 	                    return {
 	                        v: void 0
@@ -40377,12 +40449,12 @@
 	                }
 
 	                var data = { set_financial_assessment: 1 };
-	                showLoadingImage($('#msg_form'));
-	                $('#assessment_form').find('select').each(function () {
+	                showLoadingImage($msg_form);
+	                $(form_selector).find('select').each(function () {
 	                    financial_assessment[$(this).attr('id')] = data[$(this).attr('id')] = $(this).val();
 	                });
 	                ChampionSocket.send(data).then(function (response) {
-	                    $('#submit').removeAttr('disabled');
+	                    $btn_submit.removeAttr('disabled');
 	                    if ('error' in response) {
 	                        showFormMessage('Sorry, an error occurred while processing your request.', false);
 	                    } else {
@@ -40397,38 +40469,33 @@
 	            if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	        } else {
 	            setTimeout(function () {
-	                $('#submit').removeAttr('disabled');
+	                $btn_submit.removeAttr('disabled');
 	            }, 1000);
 	        }
 	    };
 
-	    var hideLoadingImg = function hideLoadingImg(show_form) {
+	    var hideLoadingImg = function hideLoadingImg() {
 	        $('#loading').remove();
-	        if (typeof show_form === 'undefined') {
-	            show_form = true;
-	        }
-	        if (show_form) {
-	            $('#assessment_form').removeClass(hidden_class);
-	        }
+	        $(form_selector).removeClass(hidden_class);
 	    };
 
 	    var showFormMessage = function showFormMessage(msg, isSuccess) {
+	        $msg_form.removeClass(hidden_class).css('display', '').html('');
 	        if (isSuccess) {
-	            $.scrollTo($('h1#heading'), 500, { offset: -10 });
-	            $('#assessment_form').addClass(hidden_class);
-	            $('#msg_success').removeClass(hidden_class);
+	            $msg_success.removeClass(hidden_class);
 	            ChampionSocket.send({ get_account_status: 1 }).then(function (response_status) {
 	                if ($.inArray('authenticated', response_status.get_account_status.status) === -1) {
 	                    $('#msg_authenticate').removeClass(hidden_class);
 	                }
 	            });
 	        } else {
-	            $('#msg_form').html(msg).delay(5000).fadeOut(1000);
+	            $msg_form.html(msg).delay(5000).fadeOut(1000);
 	        }
 	    };
 
 	    var unload = function unload() {
 	        $(form_selector).off('submit');
+	        $('#msg_success').addClass(hidden_class);
 	    };
 
 	    return {
@@ -40446,6 +40513,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var Client = __webpack_require__(301);
 	var ChampionSocket = __webpack_require__(308);
@@ -40469,7 +40538,6 @@
 	        $(form_selector).on('submit', function (event) {
 	            event.preventDefault();
 	            submitForm();
-	            return false;
 	        });
 
 	        ChampionSocket.send({ get_settings: 1 }).then(function (response) {
@@ -40540,29 +40608,38 @@
 	        });
 	    };
 
+	    var isChanged = function isChanged(data) {
+	        return Object.keys(editable_fields).some(function (key) {
+	            return key in data && editable_fields[key] !== data[key];
+	        });
+	    };
+
 	    var populateResidence = function populateResidence(response) {
 	        var residence_list = response.residence_list,
 	            $place_of_birth = $(form_selector + ' #place_of_birth'),
 	            $tax_residence = $(form_selector + ' #tax_residence');
 
 	        if (residence_list && residence_list.length > 0) {
-	            var option = '';
+	            var options = '';
 	            Object.keys(residence_list).forEach(function (res) {
 	                var value = residence_list[res].value;
 	                var text = residence_list[res].text;
-	                option += '<option value=' + value + '>' + text + '</option>';
+	                options += '<option value=' + value + '>' + text + '</option>';
 	            });
-	            $place_of_birth.append(option);
-	            $tax_residence.append(option);
+	            $place_of_birth.html(options);
+	            $('.select2').remove();
+	            $tax_residence.html(options).promise().done(function () {
+	                setTimeout(function () {
+	                    $tax_residence.select2().val(tax_residence_values).trigger('change').removeClass('invisible');
+	                }, 500);
+	            });
 	            $place_of_birth.val(place_of_birth_value || residence);
 	        }
-
-	        $tax_residence.select2().val(tax_residence_values).trigger('change').removeClass('invisible');
 	    };
 
 	    var populateStates = function populateStates(response) {
-	        var states_list = response.states_list,
-	            $address_state = $(form_selector + ' #address_state');
+	        var states_list = response.states_list;
+	        var $address_state = $(form_selector + ' #address_state');
 
 	        if (states_list && states_list.length > 0) {
 	            var option = '<option value=\'\'>Please select</option>';
@@ -40574,28 +40651,23 @@
 	            $address_state.append(option);
 	        } else {
 	            $address_state.replaceWith('<input/>', { id: '#address_state'.replace('#', ''), name: 'address_state', type: 'text', maxlength: '35' });
+	            $address_state = $(form_selector + ' #address_state');
 	        }
+	        $address_state.val(get_settings_data.address_state);
 
 	        Validation.init(form_selector, getValidations());
 	    };
 
 	    var getValidations = function getValidations() {
-	        var validations = [];
-
-	        validations = [{ selector: '#address_line_1', validations: ['req', 'general', ['length', { min: 1, max: 70 }]] }, { selector: '#address_line_2', validations: ['general', ['length', { min: 0, max: 70 }]] }, { selector: '#address_city', validations: ['req', 'letter_symbol', ['length', { min: 1, max: 35 }]] }, { selector: '#address_state', validations: $('#address_state').prop('nodeName') === 'SELECT' ? '' : ['letter_symbol'] }, { selector: '#address_postcode', validations: ['postcode', ['length', { min: 0, max: 20 }]] }, { selector: '#phone', validations: ['phone', ['length', { min: 6, max: 35 }]] }, { selector: '#place_of_birth', validations: '' }, { selector: '#tax_residence', validations: '' }];
-	        var tax_id_validation = { selector: '#tax_identification_number', validations: ['postcode', ['length', { min: 0, max: 20 }]] };
-
-	        tax_id_validation.validations[1][1].min = 1;
-	        tax_id_validation.validations.unshift('req');
-
-	        validations.push(tax_id_validation);
-
-	        return validations;
+	        return [{ selector: '#address_line_1', validations: ['req', 'address', ['length', { min: 1, max: 70 }]] }, { selector: '#address_line_2', validations: ['address', ['length', { min: 0, max: 70 }]] }, { selector: '#address_city', validations: ['req', 'letter_symbol', ['length', { min: 1, max: 35 }]] }, { selector: '#address_state', validations: $('#address_state').prop('nodeName') === 'SELECT' ? '' : ['letter_symbol'] }, { selector: '#address_postcode', validations: ['postcode', ['length', { min: 0, max: 20 }]] }, { selector: '#phone', validations: ['phone', ['length', { min: 6, max: 35, exclude: /^\+/ }]] }, { selector: '#place_of_birth', validations: '' }, { selector: '#tax_residence', validations: '' }, { selector: '#tax_identification_number', validations: ['postcode', ['length', { min: 0, max: 20 }]] }];
 	    };
 
 	    var submitForm = function submitForm() {
+	        var $msg = $('#error-update-details');
+	        $msg.empty();
+
 	        if (Validation.validate(form_selector)) {
-	            (function () {
+	            var _ret = function () {
 	                var req = { set_settings: 1 };
 	                Object.keys(get_settings_data).forEach(function (key) {
 	                    var $frm_el = $(form_selector + ' #' + key);
@@ -40606,15 +40678,31 @@
 	                        }
 	                    }
 	                });
+
+	                if (!isChanged(req)) {
+	                    showMessage($msg, 'You did not change anything.');
+	                    return {
+	                        v: void 0
+	                    };
+	                }
+
 	                ChampionSocket.send(req).then(function (response) {
-	                    if (response.error) {
-	                        $('#error-update-details').removeClass('hidden').html(response.error.message);
-	                    } else {
-	                        $('#error-update-details').removeClass('hidden').html('Success');
+	                    var is_error = response.set_settings !== 1;
+	                    showMessage($msg, is_error ? response.error.message : 'Your settings have been updated successfully.', !is_error);
+	                    if (!is_error) {
+	                        ChampionSocket.send({ get_settings: 1 }, true).then(function (data) {
+	                            getSettingsResponse(data.get_settings);
+	                        });
 	                    }
 	                });
-	            })();
+	            }();
+
+	            if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
 	        }
+	    };
+
+	    var showMessage = function showMessage($msg_el, msg_text, is_success) {
+	        $msg_el.attr('class', is_success ? 'success-msg' : 'error-msg').css('display', 'block').html(msg_text).delay(5000).fadeOut(1000);
 	    };
 
 	    var unload = function unload() {
@@ -46368,7 +46456,7 @@
 
 	var Client = __webpack_require__(301);
 
-	var ChampionSettings = function () {
+	var ChampionSecurity = function () {
 	    'use strict';
 
 	    var securityContainer = void 0;
@@ -46386,7 +46474,312 @@
 	    };
 	}();
 
-	module.exports = ChampionSettings;
+	module.exports = ChampionSecurity;
+
+/***/ },
+/* 455 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(308);
+	var moment = __webpack_require__(320);
+
+	var LoginHistory = function () {
+	    'use strict';
+
+	    var hidden_class = 'invisible';
+
+	    var load = function load() {
+	        var req = {
+	            login_history: 1,
+	            limit: 50
+	        };
+
+	        ChampionSocket.send(req).then(function (response) {
+	            $('.barspinner').addClass(hidden_class);
+	            if (response.error) {
+	                $('#error-msg').html(response.error.message);
+	            } else {
+	                handleResponse(response);
+	            }
+	        });
+	    };
+
+	    var handleResponse = function handleResponse(response) {
+	        var histories = response.login_history;
+	        var length = histories.length;
+	        var parsed_data = [];
+	        for (var i = 0; i < length; i++) {
+	            var data = parse(histories[i]);
+	            parsed_data.push(data);
+	        }
+	        render(parsed_data);
+	    };
+
+	    var render = function render(data) {
+	        var rows = data.map(function (history) {
+	            return '<tr><td>' + history.time + '</td>\n                 <td>' + history.action + '</td>\n                 <td>' + history.browser.name + ' ' + history.browser.version + '</td>\n                 <td>' + history.ip_addr + '</td>\n                 <td>' + history.status + '</td></tr>';
+	        }).join('');
+
+	        var header = '<th>Date and time</th>\n                        <th>Action</th>\n                        <th>Browser</th>\n                        <th>IP address</th>\n                        <th>Status</th>';
+
+	        var table = '<table><tr>' + header + '</tr>' + rows + '</table>';
+
+	        $('#fx-login-history').append(table);
+	    };
+
+	    var parseUA = function parseUA(user_agent) {
+	        // Table of UA-values (and precedences) from:
+	        //  https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
+	        // Regexes stolen from:
+	        //  https://github.com/biggora/express-useragent/blob/master/lib/express-useragent.js
+	        var lookup = [{ name: 'Edge', regex: /Edge\/([\d\w\.\-]+)/i }, { name: 'SeaMonkey', regex: /seamonkey\/([\d\w\.\-]+)/i }, { name: 'Opera', regex: /(?:opera|opr)\/([\d\w\.\-]+)/i }, { name: 'Chromium', regex: /(?:chromium|crios)\/([\d\w\.\-]+)/i }, { name: 'Chrome', regex: /chrome\/([\d\w\.\-]+)/i }, { name: 'Safari', regex: /version\/([\d\w\.\-]+)/i }, { name: 'IE', regex: /msie\s([\d\.]+[\d])/i }, { name: 'IE', regex: /trident\/\d+\.\d+;.*[rv:]+(\d+\.\d)/i }, { name: 'Firefox', regex: /firefox\/([\d\w\.\-]+)/i }];
+	        for (var i = 0; i < lookup.length; i++) {
+	            var info = lookup[i];
+	            var match = user_agent.match(info.regex);
+	            if (match !== null) {
+	                return {
+	                    name: info.name,
+	                    version: match[1]
+	                };
+	            }
+	        }
+	        return null;
+	    };
+
+	    var parse = function parse(response) {
+	        var env = response.environment;
+	        var ip_address = env.split(' ')[2].split('=')[1];
+	        var user_agent = env.match('User_AGENT=(.+) LANG')[1];
+	        var utc_time = moment.unix(response.time).utc().format('YYYY-MM-DD HH:mm:ss').replace(' ', '\n');
+	        var status = response.status === 1 ? 'Successful' : 'Failed';
+	        return {
+	            time: utc_time + ' GMT',
+	            action: response.action,
+	            status: status,
+	            browser: parseUA(user_agent),
+	            ip_addr: ip_address
+	        };
+	    };
+
+	    var unload = function unload() {
+	        $('#fx-login-history').empty(); // cleanup
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = LoginHistory;
+
+/***/ },
+/* 456 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(308);
+	var DatePicker = __webpack_require__(431).DatePicker;
+	var moment = __webpack_require__(320);
+
+	var TradingTimes = function () {
+	    'use strict';
+
+	    var today = moment.utc().format('YYYY-MM-DD'),
+	        hidden_class = 'invisible';
+
+	    var active_symbols = void 0;
+
+	    var load = function load() {
+	        var date_picker = new DatePicker('#trading-date'); // create datepicker
+	        date_picker.show({
+	            minDate: 'today',
+	            maxDate: 365
+	        });
+
+	        var $date = $('#trading-date').val(today);
+	        $date.change(function () {
+	            unload();
+	            getTradingTimes($date.val());
+	        });
+
+	        ChampionSocket.send({ active_symbols: 'brief' }).then(function (response) {
+	            $('.barspinner').addClass(hidden_class);
+	            if (response.error) {
+	                $('#error-msg').html(response.error.message);
+	            } else {
+	                active_symbols = response.active_symbols.slice(0);
+	                getTradingTimes('today');
+	            }
+	        });
+	    };
+
+	    var getTradingTimes = function getTradingTimes(date) {
+	        ChampionSocket.send({ trading_times: date || 'today' }).then(function (response) {
+	            $('.barspinner').addClass(hidden_class);
+	            if (response.error) {
+	                $('#error-msg').html(response.error.message);
+	            } else {
+	                createTable(response.trading_times);
+	            }
+	        });
+	    };
+
+	    var createTable = function createTable(data) {
+	        var submarket_subheader = '<tr><th class="asset">Asset</th> \n                 <th class="opens">Opens</th>\n                 <th class="closes">Closes</th>\n                 <th class="settles">Settles</th>\n                 <th class="upcomingevents">Upcoming events</th></tr>'; // constant subheader
+
+	        var markets = data.markets.slice(0);
+	        var tabs = createTabs(markets);
+	        var market_tabs = '<ul>' + tabs + '</ul>'; // create market tabs, wrap tab items in <ul>
+	        var market_contents = markets.map(function (market, index) {
+	            var market_table = market.submarkets.map(function (submarket) {
+	                var submarket_header = createTableHeader(submarket.name); // create header row
+	                var submarket_symbols = createTableRow(submarket.symbols); // create symbol rows
+	                return '<table>\n                            ' + submarket_header + '\n                            ' + submarket_subheader + '\n                            ' + submarket_symbols + '\n                        </table>'; // create market table
+	            }).join('');
+	            return '<div id="market_' + index++ + '">\n                        ' + market_table + '\n                    </div>'; // create market contents, wrap market table in <div>
+	        }).join('');
+
+	        $('#fx-trading-times').html('' + market_tabs + market_contents).tabs();
+	    };
+
+	    var createTabs = function createTabs(tabs) {
+	        return tabs.map(function (tab, index) {
+	            return '<li><a href="#market_' + index++ + '">' + tab.name + '</a></li>';
+	        }).join('');
+	    };
+
+	    var createTableHeader = function createTableHeader(title) {
+	        return '<tr><th colspan="5" class="center-text">' + title + '</th></tr>';
+	    };
+
+	    var createTableRow = function createTableRow(symbols) {
+	        return symbols.map(function (symbol) {
+	            if (getSymbolInfo(symbol, active_symbols)) {
+	                return '<tr><td class="asset">' + symbol.name + '</td>\n                            <td class="opens">' + symbol.times.open.join('<br>') + '</td>\n                            <td class="closes">' + symbol.times.close.join('<br>') + '</td>\n                            <td class="settles">' + symbol.times.settlement + '</td>\n                            <td class="upcomingevents">' + createEventsText(symbol.events) + '</td></tr>';
+	            }
+	            return '';
+	        }).join('');
+	    };
+
+	    var createEventsText = function createEventsText(events) {
+	        var result = '';
+	        for (var i = 0; i < events.length; i++) {
+	            if (i) result += '<br>';
+	            result += events[i].descrip + ': ' + events[i].dates;
+	        }
+	        return result.length > 0 ? result : '--';
+	    };
+
+	    var getSymbolInfo = function getSymbolInfo(symbol) {
+	        return active_symbols.filter(function (obj) {
+	            return obj.symbol === symbol;
+	        });
+	    };
+
+	    var unload = function unload() {
+	        $('#fx-trading-times').empty().tabs('destroy'); // return to pre-init state
+	        $('.barspinner').removeClass(hidden_class);
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = TradingTimes;
+
+/***/ },
+/* 457 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(308);
+
+	var Limits = function () {
+	    'use strict';
+
+	    var $trading_limits = void 0,
+	        $withdrawal_limits = void 0;
+
+	    var hidden_class = 'invisible';
+
+	    var load = function load() {
+	        $trading_limits = $('#fx-trading-limits');
+	        $withdrawal_limits = $('#fx-withdrawal-limits');
+
+	        ChampionSocket.send({ get_limits: 1 }).then(function (response) {
+	            if (response.error) {
+	                $('#error-msg').html(response.error.message);
+	            } else {
+	                handleResponse(response.get_limits);
+	            }
+	        });
+	    };
+
+	    var handleResponse = function handleResponse(data) {
+	        // Trading limits
+	        var trading_limits_header = '<tr><th>Item</th><th>Limits</th></tr><tr>';
+	        var trading_limits_contents = '<tr><td>Maximum number of open positions</td>\n                         <td>' + data.open_positions + '</td></tr>\n                     <tr><td>Maximum account cash balance</td>\n                         <td>' + formatNumbers(data.account_balance) + '</td></tr>\n                     <tr><td>Maximum aggregate payouts on open positions</td>\n                         <td>' + formatNumbers(data.payout) + '</td></tr>\n                     <tr><td>Maximum aggregate payouts on open positions per symbol and contract type</td>\n                         <td>' + formatNumbers(data.payout_per_symbol_and_contract_type) + '</td></tr>';
+	        $trading_limits.append('<table>' + trading_limits_header + trading_limits_contents + '</table><br>');
+
+	        var market_specific = data.market_specific;
+	        var market_specific_header = '<tr><th>Maximum daily turnover</th><th>Limits</th></tr>';
+	        var market_specific_contents = '';
+	        Object.keys(market_specific).forEach(function (market) {
+	            var submarkets = market_specific[market];
+	            var market_header = '<tr><td class=\'market\' colspan=\'2\'>' + market + '</td></tr>';
+	            var market_rows = submarkets.map(function (submarket) {
+	                return '<tr><td class=\'submarket\'>' + submarket.name + '</td>\n                      <td class=\'limit\'>' + formatNumbers(submarket.turnover_limit) + '</td></tr>';
+	            }).join('');
+	            market_specific_contents += '' + market_header + market_rows;
+	        });
+
+	        var hint = '<p class="hint">Stated limits are subject to change without prior notice.</p>';
+	        $trading_limits.append('<table>' + market_specific_header + market_specific_contents + '</table>' + hint);
+
+	        // Withdrawal limits
+	        var withdrawal_msg = '';
+	        if (data.lifetime_limit === 99999999 && data.num_of_days_limit === 99999999) {
+	            withdrawal_msg = '<p>Your account is fully authenticated and your withdrawal limits have been lifted.</p>';
+	        } else {
+	            var days_limit = data.num_of_days_limit;
+	            var withdrawn = data.withdrawal_since_inception_monetary;
+	            var remainder = data.remainder;
+
+	            withdrawal_msg = '<p>Your withdrawal limit is &dollar;' + days_limit + '.</p>\n                              <p>You have already withdrawn &dollar;' + withdrawn + '.</p>\n                              <p>Therefore your current immediate maximum withdrawal \n                                 (subject to your account having sufficient funds) is &dollar;' + remainder + '.</p>';
+	        }
+	        $withdrawal_limits.append(withdrawal_msg);
+
+	        $('.barspinner').addClass(hidden_class);
+	        $('#fx-limits').removeClass(hidden_class);
+	    };
+
+	    var formatNumbers = function formatNumbers(num, decimal_points) {
+	        num = String(num || 0).replace(/,/g, '') * 1;
+	        return num.toFixed(decimal_points).toString().replace(/(^|[^\w.])(\d{4,})/g, function ($0, $1, $2) {
+	            return $1 + $2.replace(/\d(?=(?:\d\d\d)+(?!\d))/g, '$&,');
+	        });
+	    };
+
+	    var unload = function unload() {
+	        $trading_limits.empty();
+	        $withdrawal_limits.empty();
+	        $('.barspinner').removeClass(hidden_class);
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = Limits;
 
 /***/ }
 /******/ ]);

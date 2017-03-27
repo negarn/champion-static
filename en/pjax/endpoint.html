@@ -4,36 +4,27 @@
     <div class="wrapper" id="champion-content">
         <div class="fx-section">
     <div class="container">
-        <h1>Change API Endpoint</h1>
-        <form id="frm_endpoint">
-            <fieldset>
-                <legend>Details</legend>
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_server_url">Server</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input type="text" class="form-control" id="txt_server_url" maxlength="30" />
-                        <div class="hint">e.g. ws.binaryws.com</div>
-                        <p class="errorfield" id="error-server_url" style="display:none"></p>
-                    </div>
-                </div>
-                <div class="row form-row">
-                    <div class="col-xs-4">
-                        <label for="txt_app_id">OAuth App ID (Optional)</label>
-                    </div>
-                    <div class="col-xs-8">
-                        <input type="text" class="form-control" id="txt_app_id" maxlength="5" />
-                        <p class="errorfield" id="error-app_id" style="display:none"></p>
-                    </div>
-                </div>
-            </fieldset>
+        <h1 class="main-title" >Change API Endpoint</h1>
 
-            <div class="row">
-                <div class="col-xs-8 offset-md-4">
-                    <button id="btn_set_endpoint" type="submit">Submit</button>
-                    <button class="button-secondary" id="btn_reset_endpoint">Reset to Original Settings</button>
-                </div>
+        <form id="frm_endpoint">
+            <div class="form-row ">
+    <label for="txt_server_url">Server</label>
+    
+                <input type="text" id="txt_server_url" maxlength="30" />
+    <p class="hint">e.g. ws.binaryws.com</p>
+</div>
+
+            <div class="form-row ">
+    <label for="txt_app_id">OAuth App ID (Optional)</label>
+    
+                <input type="text" id="txt_app_id" maxlength="5" />
+    
+</div>
+
+            <div class="submit-row ">
+    <p id="msg_form" class="error-msg invisible"></p>
+    <button id="btn_submit" type="submit">Submit</button> 
+                <button class="button-secondary" id="btn_reset">Reset to Original Settings</button>
             </div>
         </form>
     </div>
