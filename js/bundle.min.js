@@ -46635,10 +46635,10 @@
 	        var tabs = createTabs(markets);
 	        var market_tabs = '<ul>' + tabs + '</ul>'; // create market tabs, wrap tab items in <ul>
 	        var market_contents = markets.map(function (market, index) {
+	            if (market.name === 'Volatility Indices') {
+	                return false;
+	            }
 	            var market_table = market.submarkets.map(function (submarket) {
-	                if (submarket.name === 'Volatility Indices') {
-	                    return false;
-	                }
 	                var submarket_header = createTableHeader(submarket.name); // create header row
 	                var submarket_symbols = createTableRow(submarket.symbols); // create symbol rows
 	                return '<table>\n                            ' + submarket_header + '\n                            ' + submarket_subheader + '\n                            ' + submarket_symbols + '\n                        </table>'; // create market table
