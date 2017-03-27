@@ -46636,7 +46636,7 @@
 	        var market_tabs = '<ul>' + tabs + '</ul>'; // create market tabs, wrap tab items in <ul>
 	        var market_contents = markets.map(function (market, index) {
 	            if (market.name === 'Volatility Indices') {
-	                return false;
+	                return null;
 	            }
 	            var market_table = market.submarkets.map(function (submarket) {
 	                var submarket_header = createTableHeader(submarket.name); // create header row
@@ -46651,7 +46651,7 @@
 
 	    var createTabs = function createTabs(tabs) {
 	        return tabs.map(function (tab, index) {
-	            return '<li><a href="#market_' + index++ + '">' + tab.name + '</a></li>';
+	            return tab.name === 'Volatility Indices' ? null : '<li><a href="#market_' + index++ + '">' + tab.name + '</a></li>';
 	        }).join('');
 	    };
 
