@@ -845,6 +845,10 @@ img.float-right {
   display: none;
 }
 
+img.responsive {
+  max-width: 100%;
+}
+
 .fx-advisors {
   background: url("../images/symbols/advisors.svg");
 }
