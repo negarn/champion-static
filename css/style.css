@@ -1139,8 +1139,9 @@ iframe {
   height: 45px;
 }
 
-.has-tabs .ui-tabs-panel {
-  padding: 0;
+body .has-tabs .ui-tabs-panel {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 /* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
