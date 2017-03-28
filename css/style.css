@@ -1139,6 +1139,10 @@ iframe {
   height: 45px;
 }
 
+.has-tabs .ui-tabs-panel {
+  padding: 0;
+}
+
 /* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
 #int_bank_wire, #local_bank_transfer, #western_union, #citadel, #visa,
 #mastercard, #cuo-credit-card, #moneybrokers, #neteller, #moneta,
