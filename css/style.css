@@ -833,6 +833,11 @@ img.float-right {
   margin-right: auto !important;
 }
 
+.middle-align {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
 .no-gutters {
   padding-left: 0 !important;
   padding-right: 0 !important;
