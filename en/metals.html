@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-    <title>Cashier Password | Champion-FX.com</title>
+    <title>Metals | Champion-FX.com</title>
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
@@ -176,50 +176,43 @@
 
     <main class="page-content" aria-label="Content" id="champion-container">
         <div class="wrapper" id="champion-content">
-            <div class="fx-section container">
-    <h1 class="main-title" >Cashier password</h1>
-
-    <form id="form_lock_cashier" class="invisible">
-        <h3 class="underline-title">Lock cashier</h3>
-        <p>An additional password can be used to restrict access to the cashier.</p>
-
-        <div class="form-row ">
-    <label for="txt_lock_password">New password</label>
-    
-                <input type="password" id="txt_lock_password" maxlength="25"  />
-    <p class="hint">Minimum of six lower and uppercase letters with numbers</p>
+            <div class="primary-color-dark cfd-header">
+    <div class="fx-panel center-text container">
+        <h1 class="content-inverse-color">Metals</h1>
+        <p class="content-inverse-color">Trade precious metal pairs such as gold, silver, platinum, and palladium with leverage of up to 1:1,000 on our MetaTrader 5 platform.</p>
+        <div class="offset-lg-4 offset-md-2">
+            <form id="verify-email-form" class="frm-verify-email">
+    <div class="row signup-box">
+        <div class="col">
+            <input class="clean-input secondary-input" autocomplete="off" name="email" id="email" maxlength="50" placeholder="Enter your email">
+            <button class="button" id="btn-verify-email" type="submit">Create Free Account</button>
+            <span class="error-msg hint color-white center-text invisible" id="signup_error"></span>
+        </div>
+    </div>
+</form>
+        </div>
+    </div>
 </div>
 
-        <div class="form-row ">
-    <label for="txt_re_password">Verify new password</label>
-    
-                <input type="password" id="txt_re_password" maxlength="25"  />
-    
-</div>
+<div class="row">
+    <div class="col-sm" id="content">
+        <div class="has-tabs invisible">
+            <ul class="row container center-align">
+                <li class="col-sm"><a href="#what-is-metals">What is metals trading?</a></li>
+                <li class="col-sm"><a href="#how-to-trade-metals">How to trade metals</a></li>
+                <li class="col-sm"><a href="#metals-margin-policy">Metals margin policy</a></li>
+                <li class="col-sm"><a href="#metals-contract-specs">Metals contract specifications</a></li>
+            </ul>
 
-        <div class="submit-row ">
-    <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Update</button> </div>
-    </form>
+            <div id="what-is-metals"></div>
 
-    <form id="form_unlock_cashier" class="invisible">
-        <h3 class="underline-title">Unlock cashier</h3>
-        <p>Your cashier is locked as per your request - to unlock it, please enter the password.</p>
+            <div id="how-to-trade-metals"></div>
 
-        <div class="form-row ">
-    <label for="txt_unlock_password">Cashier password</label>
-    
-                <input type="password" id="txt_unlock_password" maxlength="25"  />
-    
-</div>
+            <div id="metals-margin-policy"></div>
 
-        <div class="submit-row ">
-    <p id="msg_form" class="error-msg invisible"></p>
-    <button id="btn_submit" type="submit">Unlock cashier</button> </div>
-    </form>
-
-    <p class="notice-msg center-text invisible"></p>
-
+            <div id="metals-contract-specs"></div>
+        </div>
+    </div>
 </div>
         </div>
     </main>
