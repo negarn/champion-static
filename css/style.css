@@ -319,6 +319,10 @@ h1.main-title {
   background-image: url("../images/forex.png");
 }
 
+.cfd-header {
+  background-image: url("../images/CFDs.png");
+}
+
 .fx-home-header {
   width: 100%;
   /* for IE 6 */
