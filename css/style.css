@@ -1144,6 +1144,10 @@ body .has-tabs .ui-tabs-panel {
   padding-right: 0;
 }
 
+#indices-cfd-contract-specs table th {
+  max-width: 180px;
+}
+
 /* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
 #int_bank_wire, #local_bank_transfer, #western_union, #citadel, #visa,
 #mastercard, #cuo-credit-card, #moneybrokers, #neteller, #moneta,
