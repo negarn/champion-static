@@ -1117,6 +1117,9 @@ iframe {
 #header .top-nav-menu ul li a {
   padding: 10px 15px;
 }
+#header .top-nav-menu ul li a.active {
+  border-bottom: none;
+}
 
 .main-nav > li > ul {
   box-sizing: content-box;
