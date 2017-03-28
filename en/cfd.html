@@ -388,7 +388,75 @@
                 </div>
             </div>
 
-            <div id="indices-cfd-margin-policy"></div>
+            <div id="indices-cfd-margin-policy">
+                <div class="container">
+                    <h2>Indices CFD margin policy</h2>
+                    <p>Learn more about our margin policy to gain a better understanding of how indices trading works.</p>
+
+                    <div class="separator fill-bg-color"></div>
+
+                    <div class="row">
+                        <div class="col-sm">
+                            <h3>What is margin?</h3>
+                            <p>Margin allows you to trade on leverage – giving you the same level of market exposure using much less capital.</p>
+                            <p>With leverage, you can purchase 100 units of the same asset at a fraction of the cost.</p>
+                        </div>
+                        <div class="col-sm">
+                            <div class="box bordered">
+                                <h4>For example</h4>
+                                <div class="separator primary-color"></div>
+                                <p>If you wanted to purchase 100 units of a particular asset trading at USD 50 per unit through a traditional broker, it would cost you USD 5,000 for this transaction.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator fill-bg-color"></div>
+
+                    <div class="row">
+                        <div class="col-sm">
+                            <h3>How is margin calculated?</h3>
+                            <p>The margin for indices is calculated as follows:</p>
+                            <div class="box fill-bg-color">
+                                <h4>Volume (trade size) x price x margin rate = Margin</h4>
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="box bordered">
+                                <h4>For example</h4>
+                                <div class="separator primary-color"></div>
+                                <p>If you buy 1 Volume of an underlying asset at a price of USD 20,000 and a margin rate of 0.01, the margin required to purchase that one lot will be calculated as follows:</p>
+                                <div class="box fill-bg-color">
+                                    <h4>1 * 20000 * 0.01 = USD 200</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator fill-bg-color"></div>
+
+                    <div class="center-text">
+                        <h3>What’s a margin call and how do we apply it?</h3>
+                        <p>When your account equity is unable to cover the margin requirement, your account will be placed under margin call. This state does not affect your ability to open new positions.</p>
+                    </div>
+                </div>
+
+                <div class="fx-divider"></div>
+
+                <div class="fill-bg-color">
+                    <h2>What’s a stop out level and how do we apply it?</h2>
+                    <div class="lg-padding">If your account is placed under margin call for an extended period of time, it will reach the stop out level where it’s unable to sustain an open position. This will lead to your pending orders being deleted, and open positions being forcibly closed (also known as forced liquidation).</div>
+                    <div class="lg-padding">Once your account hits the forced liquidation level, your orders and positions are forcibly closed according to the following sequence:</div>
+                    <div class="lg-padding">
+                        <ul class="bullet">
+                            <li>We analyse your pending orders.</li>
+                            <li>We delete an order with the largest margin reserved.</li>
+                            <li>If your margin level is still under the stop out level, your next order will be deleted. However, orders without margin requirements will not be deleted.</li>
+                            <li>If your margin level is still under the stop out level, we will close an open position with the largest loss.</li>
+                            <li>We will continue to close open positions until your margin level becomes higher than the stop out level.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
             <div id="indices-cfd-contract-specs"></div>
         </div>
