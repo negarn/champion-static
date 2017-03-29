@@ -265,6 +265,102 @@
                 <div class="container">
                     <h2>Metals margin policy</h2>
                     <p>We explain our margin policy to give you a better understanding of how metals trading works.</p>
+                    <div class="lg-padding row no-gutters">
+                        <div class="col-sm">
+                            <h3>What is margin?</h3>
+                            <p>Margin allows you to trade on leverage –– giving you the same level of market exposure using much less capital.</p>
+                            <p>With leverage, you can purchase 100 units of the same asset at a fraction of the cost.</p>
+                        </div>
+                        <div class="col-sm">
+                            <div class="box bordered">
+                                <h4>For example</h4>
+                                <div class="separator primary-color"></div>
+                                <p>If you wanted to purchase 100 units of a particular asset, with USD as the base currency and at a price of 50 per unit through a traditional broker, it would cost you USD 5,000 for this transaction.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator fill-bg-color"></div>
+
+                    <h2 class="center-text">How is margin calculated?</h2>
+
+                    <div class="fx-divider"></div>
+
+                    <div class="col-xs-10 push-xs-1 no-gutters">
+                        <div class="row">
+                            <div class="center-text">
+                                <div class="box fill-bg-color">
+                                    <h4>Required Margin</h4>
+                                </div>
+                            </div>
+                            <div class="col-xs-1 middle-align center-text">
+                                <div class="center-text">
+                                    <img class="fx-xs" src="/champion-static/images/mt5/equal_icon.svg">
+                                </div>
+                            </div>
+                            <div class="center-text">
+                                <div class="box fill-bg-color">
+                                    <h4>Trade Size (0z) / Leverage</h4>
+                                </div>
+                            </div>
+                            <div class="col-xs-1 middle-align center-text">
+                                <div class="center-text">
+                                    <img class="fx-xxs" src="/champion-static/images/mt5/multiply_icon.svg">
+                                </div>
+                            </div>
+                            <div class="center-text">
+                                <div class="box fill-bg-color">
+                                    <h4>Market Price</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fx-divider"></div>
+
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="box bordered">
+                                <h4>Example:</h4>
+                                <div class="separator primary-color"></div>
+                                <ul class="bullet">
+                                    <li>Trading 1 lot (100 Oz) of GOLD using 1:300 leverage with an account denominated in USD.</li>
+                                    <li>Trade size = 100 Oz</li>
+                                    <li>Market price = 1250.15</li>
+                                    <li>Required Margin: 100 / 300 x 1250.15 = $416.71</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm middle-align">
+                            <p>Without margin the same size will cost you</p>
+                            <div class="box fill-bg-color">
+                                <h4>(100 x 1250.15 = $125,015</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="separator fill-bg-color"></div>
+
+                    <div class="center-text">
+                        <h2>What’s a margin call and how do we apply it?</h2>
+                        <p>When your account equity is unable to cover the margin requirement, your account will be placed under margin call. This state does not affect your ability to open new positions.</p>
+
+                        <div class="fx-divider"></div>
+
+                        <h2>What’s a stop out level and how do we apply it?</h2>
+                        <p>If your account is placed under margin call for an extended period of time, it will reach the stop out level where it’s unable to sustain an open position. This will lead to your pending orders being deleted, and open positions being forcibly closed (also known as forced liquidation).</p>
+                        <p>Once your account hits the forced liquidation level, your orders and positions are forcibly closed in the following order:</p>
+                    </div>
+
+                    <div class="col-xs-10 push-xs-1">
+                        <ul class="bullet">
+                            <li>We analyse your pending orders.</li>
+                            <li>We delete an order with the largest margin reserved.</li>
+                            <li>If your margin level is still under the stop out level, your next order will be deleted. However, orders without margin requirements will not be deleted.</li>
+                            <li>If your margin level is still under the stop out level, we will close an open position with the largest loss.</li>
+                            <li>We will continue to close open positions until your margin level becomes higher than the stop out level.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
