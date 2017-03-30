@@ -36356,11 +36356,7 @@
 	                if (oldValue && oldValue === date) return false;
 	                $(that.component_selector).trigger('change', [duration]);
 	            } else if (that.select_type === 'date') {
-	                if (that.setValue === 'attr') {
-	                    $(this).val('');
-	                } else {
-	                    $(this).val(date_text);
-	                }
+	                $(this).val(date_text);
 	                if (oldValue && oldValue === date) return false;
 	                $(that.component_selector).trigger('change', [date_text]);
 	            }
@@ -36379,10 +36375,7 @@
 	    },
 	    checkWidth: function checkWidth(config, component_selector, that) {
 	        var $selector = $(component_selector);
-	        if ($(window).width() < 770 && that.noNative) {
-	            that.hide($selector);
-	            $selector.attr('type', 'number');
-	        } else if ($(window).width() < 770 && Utility.checkInput('date', 'not-a-date') && $selector.attr('data-picker') !== 'native' && !that.noNative) {
+	        if ($(window).width() < 770 && Utility.checkInput('date', 'not-a-date') && $selector.attr('data-picker') !== 'native') {
 	            that.hide($selector);
 	            $selector.attr({ type: 'date', 'data-picker': 'native' }).val($selector.attr('data-value'));
 	            if ($selector.attr('readonly')) {
