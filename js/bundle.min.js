@@ -37604,7 +37604,7 @@
 	                    ChampionSocket.send({ logout: 1 });
 	                }
 	                if (response.error.message) {
-	                    $('#error-msg').html(response.error.message);
+	                    $('#msg_error').html(response.error.message);
 	                    $form.addClass(hidden_class);
 	                }
 	                return;
