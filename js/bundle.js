@@ -35642,7 +35642,9 @@
 
 	        var setTimeOut = function setTimeOut() {
 	            timeout = setTimeout(displayWarning, remained - warning);
-	            timeout_logout = setTimeout(ChampionSocket.send({ logout: 1 }), remained);
+	            timeout_logout = setTimeout(function () {
+	                ChampionSocket.send({ logout: 1 });
+	            }, remained);
 	        };
 
 	        // limit of setTimeout is this number
