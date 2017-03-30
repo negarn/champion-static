@@ -712,7 +712,7 @@ a:hover {
   width: 44em;
   text-align: center;
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 5px;
   max-height: 80vh;
   overflow: auto;
 }
@@ -817,11 +817,17 @@ ul.no-padding, ul.no-padding li {
       -ms-flex-align: center;
           align-items: center;
   min-width: 1vw;
+  margin-top: 1px !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
 }
 .has-tabs li.col-sm a {
   white-space: normal;
   text-align: center;
   width: 100%;
+}
+.has-tabs li.col-sm.ui-tabs-active a {
+  padding-bottom: 1px !important;
 }
 
 img.float-right {
@@ -1161,6 +1167,11 @@ body .has-tabs .ui-tabs-panel {
   max-width: 180px;
 }
 
+#fx-profile .ui-tabs-nav, #fx-profile .ui-tabs-panel {
+  width: auto;
+  float: none;
+}
+
 #ui-timepicker-div, #ui-timepicker-div:before, #ui-timepicker-div:after, #ui-datepicker-div, #ui-datepicker-div:before, #ui-datepicker-div:after {
   transition: none;
 }
@@ -1378,7 +1389,7 @@ button .barspinner.white {
   margin: 0;
   position: relative;
   vertical-align: middle;
-  width: 280px !important;
+  width: 350px !important;
 }
 .select2-container .select2-selection--single, .select2-container .select2-selection--multiple {
   box-sizing: border-box;
@@ -1426,7 +1437,7 @@ button .barspinner.white {
 .select2-dropdown {
   background-color: #fff;
   border: 1px solid #F2F2F2;
-  border-radius: 2px;
+  border-radius: 5px;
   box-sizing: border-box;
   display: block;
   position: absolute;
@@ -1516,7 +1527,7 @@ button .barspinner.white {
 .select2-container--default .select2-selection--single {
   background-color: #fff;
   border: 1px solid #F2F2F2;
-  border-radius: 2px;
+  border-radius: 5px;
 }
 .select2-container--default .select2-selection--single .select2-selection__rendered {
   color: #000;
@@ -1585,8 +1596,8 @@ button .barspinner.white {
 }
 .select2-container--default .select2-selection--multiple {
   background-color: #fff;
-  border: 1px solid #F2F2F2;
-  border-radius: 2px;
+  border: 1px solid #004385;
+  border-radius: 5px;
   cursor: text;
 }
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
@@ -1615,7 +1626,7 @@ button .barspinner.white {
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
   background-color: #F2F2F2;
   border: 1px solid #DEDEDE;
-  border-radius: 2px;
+  border-radius: 5px;
   cursor: default;
   float: left;
   margin-right: 5px;
@@ -1651,7 +1662,7 @@ button .barspinner.white {
   padding: 6px;
 }
 .select2-container--default.select2-container--focus .select2-selection--multiple {
-  border: solid 1px #F2F2F2;
+  border: solid 1px #004385;
   outline: 0;
 }
 .select2-container--default .select2-search--dropdown .select2-search__field {
@@ -1720,7 +1731,7 @@ button .barspinner.white {
 .select2-container--classic .select2-selection--single {
   background-color: #F2F2F2;
   border: 1px solid #F2F2F2;
-  border-radius: 2px;
+  border-radius: 5px;
   outline: 0;
   background-image: linear-gradient(to bottom, #fff 50%, #DEDEDE 100%);
   background-repeat: repeat-x;
@@ -1819,7 +1830,7 @@ button .barspinner.white {
 .select2-container--classic .select2-selection--multiple {
   background-color: #fff;
   border: 1px solid #F2F2F2;
-  border-radius: 2px;
+  border-radius: 5px;
   cursor: text;
   outline: 0;
 }
@@ -1837,7 +1848,7 @@ button .barspinner.white {
 .select2-container--classic .select2-selection--multiple .select2-selection__choice {
   background-color: #F2F2F2;
   border: 1px solid #DEDEDE;
-  border-radius: 2px;
+  border-radius: 5px;
   cursor: default;
   float: left;
   margin-right: 5px;
@@ -2058,6 +2069,9 @@ button .barspinner.white {
   border-radius: 100%;
   background: #F2F2F2;
 }
+.slick-dots li.slick-active button {
+  background: #004385;
+}
 
 .slider-footer {
   position: absolute;
@@ -2106,7 +2120,10 @@ button .barspinner.white {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  height: 100%;
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  height: 100px;
   margin: 0;
   background-position: center center;
   max-width: 80px;

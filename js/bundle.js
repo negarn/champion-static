@@ -18519,9 +18519,6 @@
 	            get_settings: function get_settings(response) {
 	                GTM.eventHandler(response.get_settings);
 	            },
-	            mt5_login_list: function mt5_login_list(response) {
-	                MetaTrader.responseLoginList(response);
-	            },
 	            get_self_exclusion: function get_self_exclusion(response) {
 	                SessionDurationLimit.exclusionResponseHandler(response);
 	            }
@@ -18739,9 +18736,6 @@
 	        if (country_code) {
 	            Client.set('residence', country_code);
 	            ChampionSocket.send({ landing_company: country_code });
-	        }
-	        if (!/user\/metatrader\.html/i.test(window.location.pathname)) {
-	            ChampionSocket.send({ mt5_login_list: 1 });
 	        }
 
 	        $('#btn_logout').click(function () {
@@ -34930,14 +34924,7 @@
 	        };
 
 	        if (Client.is_logged_in()) {
-	            (function () {
-	                data_layer_info.visitorId = Client.get('loginid');
-
-	                var mt5_logins = JSON.parse(Client.get('mt5_logins') || '{}');
-	                Object.keys(mt5_logins).forEach(function (account_type) {
-	                    data_layer_info['mt5_' + account_type] = mt5_logins[account_type];
-	                });
-	            })();
+	            data_layer_info.visitorId = Client.get('loginid');
 	        }
 
 	        $.extend(true, data_layer_info, data);
@@ -36401,9 +36388,9 @@
 	            changeYear: true
 	        };
 
-	        config = $.extend(config, options);
+	        $.extend(config, options);
 
-	        var set_date = function set_date(date) {
+	        var setDate = function setDate(date) {
 	            var new_date = void 0;
 	            if (typeof options[date] === 'number') {
 	                new_date = new Date();
@@ -36416,12 +36403,12 @@
 	            if (options.minDate === 'today') {
 	                config.minDate = today;
 	            } else {
-	                set_date('minDate');
+	                setDate('minDate');
 	            }
 	        }
 
 	        if (options.maxDate !== undefined) {
-	            set_date('maxDate');
+	            setDate('maxDate');
 	        }
 
 	        var that = this;
@@ -37096,7 +37083,6 @@
 
 	var MetaTraderConfig = __webpack_require__(444);
 	var MetaTraderUI = __webpack_require__(445);
-	var Client = __webpack_require__(301);
 	var ChampionSocket = __webpack_require__(413);
 	var Validation = __webpack_require__(431);
 
@@ -37109,37 +37095,29 @@
 
 	    var load = function load() {
 	        ChampionSocket.send({ mt5_login_list: 1 }).then(function (response) {
-	            responseLoginList(response, true);
+	            responseLoginList(response);
 	        });
 	        MetaTraderUI.init(submit);
 	    };
 
-	    var responseLoginList = function responseLoginList(response, is_metatrader_page) {
-	        var mt5_logins = {};
+	    var responseLoginList = function responseLoginList(response) {
 	        if (response.mt5_login_list && response.mt5_login_list.length > 0) {
 	            response.mt5_login_list.map(function (obj) {
 	                var acc_type = getAccountType(obj.group);
 	                if (acc_type) {
 	                    // ignore old accounts which are not linked to any group
-	                    mt5_logins[acc_type === 'demo' ? 'demo' : types_info[acc_type].account_type + '_' + types_info[acc_type].mt5_account_type] = obj.login;
-	                    if (is_metatrader_page) {
-	                        types_info[acc_type].account_info = { login: obj.login };
-	                        getAccountDetails(obj.login, acc_type);
-	                    }
-	                }
-	            });
-
-	            Client.set('mt5_logins', JSON.stringify(mt5_logins));
-	        }
-
-	        if (is_metatrader_page) {
-	            // Update types with no account
-	            Object.keys(types_info).forEach(function (acc_type) {
-	                if (!types_info[acc_type].account_info) {
-	                    MetaTraderUI.updateAccount(acc_type);
+	                    types_info[acc_type].account_info = { login: obj.login };
+	                    getAccountDetails(obj.login, acc_type);
 	                }
 	            });
 	        }
+
+	        // Update types with no account
+	        Object.keys(types_info).forEach(function (acc_type) {
+	            if (!types_info[acc_type].account_info) {
+	                MetaTraderUI.updateAccount(acc_type);
+	            }
+	        });
 	    };
 
 	    var getAccountDetails = function getAccountDetails(login, acc_type) {
@@ -37212,8 +37190,7 @@
 	    };
 
 	    return {
-	        load: load,
-	        responseLoginList: responseLoginList
+	        load: load
 	    };
 	}();
 
@@ -37281,23 +37258,12 @@
 	                });
 	            },
 	            onSuccess: function onSuccess(response, acc_type) {
-	                // Update mt5_logins in localStorage
-	                var new_login = response.mt5_new_account.login;
-	                var mt5_logins = JSON.parse(Client.get('mt5_logins') || '{}');
-	                mt5_logins[acc_type] = new_login;
-	                Client.set('mt5_logins', JSON.stringify(mt5_logins));
-
-	                // Push GTM
 	                var gtm_data = {
 	                    event: 'mt5_new_account',
 	                    url: window.location.href,
-	                    mt5_date_joined: Math.floor(Date.now() / 1000),
-	                    mt5_account_type: types_info[acc_type].account_type,
-	                    mt5_login_id: new_login
+	                    mt5_date_joined: Math.floor(Date.now() / 1000)
 	                };
-	                if (response.echo_req.mt5_account_type) {
-	                    gtm_data.mt5_sub_account = response.echo_req.mt5_account_type;
-	                }
+	                gtm_data['mt5_' + (types_info[acc_type].mt5_account_type || 'demo') + '_id'] = response.mt5_new_account.login;
 	                if (acc_type === 'demo' && !Client.is_virtual()) {
 	                    gtm_data.visitorId = Client.get('loginid_array').find(function (login) {
 	                        return !login.real;
@@ -38460,7 +38426,7 @@
 	    var positionFooterAndDots = function positionFooterAndDots() {
 	        var height = -$('.slider-footer').innerHeight();
 	        var dotsMargin = height - 40;
-	        if (window.matchMedia('(min-width: 797px)').matches) {
+	        if (window.matchMedia('(min-width: 767px)').matches) {
 	            /*eslint-disable */
 	            setTimeout(function () {
 	                $('.slider-footer').css({
