@@ -37585,7 +37585,7 @@
 	    var error_class = 'errorfield';
 	    var hidden_class = 'invisible';
 
-	    var onLoad = function onLoad() {
+	    var load = function load() {
 	        $form = $(form_id);
 
 	        fields = {};
@@ -37771,7 +37771,7 @@
 	    };
 
 	    return {
-	        onLoad: onLoad
+	        load: load
 	    };
 	}();
 
