@@ -18482,15 +18482,16 @@
 	var Authenticate = __webpack_require__(440);
 	var ChangePassword = __webpack_require__(441);
 	var MetaTrader = __webpack_require__(442);
-	var ChampionSettings = __webpack_require__(445);
-	var TNCApproval = __webpack_require__(446);
-	var CashierDepositWithdraw = __webpack_require__(447);
-	var Home = __webpack_require__(448);
-	var ChampionProfile = __webpack_require__(451);
-	var ChampionSecurity = __webpack_require__(455);
-	var LoginHistory = __webpack_require__(456);
-	var TradingTimes = __webpack_require__(457);
-	var Limits = __webpack_require__(458);
+	var SelfExclusion = __webpack_require__(445);
+	var ChampionSettings = __webpack_require__(448);
+	var TNCApproval = __webpack_require__(449);
+	var CashierDepositWithdraw = __webpack_require__(450);
+	var Home = __webpack_require__(451);
+	var ChampionProfile = __webpack_require__(454);
+	var ChampionSecurity = __webpack_require__(458);
+	var LoginHistory = __webpack_require__(459);
+	var TradingTimes = __webpack_require__(460);
+	var Limits = __webpack_require__(461);
 
 	var Champion = function () {
 	    'use strict';
@@ -18566,6 +18567,7 @@
 	            'lost-password': { module: LostPassword, not_authenticated: true },
 	            'payment-methods': { module: CashierPaymentMethods },
 	            'reset-password': { module: ResetPassword, not_authenticated: true },
+	            'self-exclusion': { module: SelfExclusion, is_authenticated: true, only_real: true },
 	            'tnc-approval': { module: TNCApproval, is_authenticated: true, only_real: true },
 	            'top-up-virtual': { module: CashierTopUpVirtual, is_authenticated: true, only_virtual: true },
 	            'trading-times': { module: TradingTimes },
@@ -37561,6 +37563,516 @@
 
 	'use strict';
 
+	var moment = __webpack_require__(310);
+	var Client = __webpack_require__(301);
+	var FormManager = __webpack_require__(446);
+	var ChampionSocket = __webpack_require__(302);
+	var dateValueChanged = __webpack_require__(306).dateValueChanged;
+	var DatePicker = __webpack_require__(432).DatePicker;
+	var TimePicker = __webpack_require__(447);
+
+	var SelfExclusion = function () {
+	    'use strict';
+
+	    var $form = void 0,
+	        fields = void 0,
+	        self_exclusion_data = void 0;
+
+	    var form_id = '#frm_self_exclusion';
+	    var timeout_date_id = '#timeout_until_date';
+	    var timeout_time_id = '#timeout_until_time';
+	    var exclude_until_id = '#exclude_until';
+	    var error_class = 'errorfield';
+	    var hidden_class = 'invisible';
+
+	    var onLoad = function onLoad() {
+	        $form = $(form_id);
+
+	        fields = {};
+	        $form.find('input').each(function () {
+	            fields[this.name] = '';
+	        });
+
+	        initDatePicker();
+	        getData();
+	    };
+
+	    var getData = function getData() {
+	        ChampionSocket.send({ get_self_exclusion: 1 }).then(function (response) {
+	            if (response.error) {
+	                if (response.error.code === 'ClientSelfExclusion') {
+	                    ChampionSocket.send({ logout: 1 });
+	                }
+	                if (response.error.message) {
+	                    $('#error-msg').html(response.error.message);
+	                    $form.addClass(hidden_class);
+	                }
+	                return;
+	            }
+
+	            $('.barspinner').addClass(hidden_class);
+	            self_exclusion_data = response.get_self_exclusion;
+	            $.each(self_exclusion_data, function (key, value) {
+	                fields[key] = value;
+	                $form.find('#' + key).val(value);
+	            });
+	            $form.removeClass(hidden_class);
+	            bindValidation();
+	        });
+	    };
+
+	    var bindValidation = function bindValidation() {
+	        var validations = [{ request_field: 'set_self_exclusion', value: 1 }];
+
+	        $form.find('input[type="text"]').each(function () {
+	            var id = $(this).attr('id');
+
+	            if (/(timeout_until|exclude_until)/.test(id)) return;
+
+	            var checks = [];
+	            var options = { min: 0 };
+	            if (id in self_exclusion_data) {
+	                checks.push('req');
+	                options.max = self_exclusion_data[id];
+	            } else {
+	                options.allow_empty = true;
+	            }
+	            checks.push(['number', options]);
+
+	            if (id === 'session_duration_limit') {
+	                checks.push(['custom', { func: validSessionDuration, message: 'Session duration limit cannot be more than 6 weeks.' }]);
+	            }
+
+	            validations.push({
+	                selector: '#' + id,
+	                validations: checks,
+	                exclude_if_empty: 1
+	            });
+	        });
+
+	        validations.push({
+	            selector: timeout_date_id,
+	            request_field: 'timeout_until',
+	            re_check_field: timeout_time_id,
+	            exclude_if_empty: 1,
+	            value: getTimeout,
+	            validations: [['custom', { func: function func() {
+	                    return $(timeout_time_id).val() ? $(timeout_date_id).val().length : true;
+	                }, message: 'This field is required.' }], ['custom', { func: validDate, message: 'Please select a valid date.' }], ['custom', { func: function func(value) {
+	                    return !value.length || toMoment(value).isAfter(moment().subtract(1, 'days'), 'day');
+	                }, message: 'Time out must be after today.' }], ['custom', { func: function func(value) {
+	                    return !value.length || toMoment(value).isBefore(moment().add(6, 'weeks'));
+	                }, message: 'Time out cannot be more than 6 weeks.' }]]
+	        }, {
+	            selector: timeout_time_id,
+	            exclude_request: 1,
+	            re_check_field: timeout_date_id,
+	            validations: [['custom', { func: function func() {
+	                    return $(timeout_date_id).val() && toMoment($(timeout_date_id).val()).isSame(moment(), 'day') ? $(timeout_time_id).val().length : true;
+	                }, message: 'This field is required.' }], ['custom', { func: function func(value) {
+	                    return !value.length || !$(timeout_date_id).val() || getTimeout() > moment().valueOf() / 1000;
+	                }, message: 'Time out cannot be in the past.' }], ['custom', { func: validTime, message: 'Please select a valid time.' }]]
+	        }, {
+	            selector: exclude_until_id,
+	            exclude_if_empty: 1,
+	            value: function value() {
+	                return dateFormat(exclude_until_id);
+	            },
+	            validations: [['custom', { func: validDate, message: 'Please select a valid date.' }], ['custom', { func: function func(value) {
+	                    return !value.length || toMoment(value).isAfter(moment().add(6, 'months'));
+	                }, message: 'Exclude time cannot be less than 6 months.' }], ['custom', { func: function func(value) {
+	                    return !value.length || toMoment(value).isBefore(moment().add(5, 'years'));
+	                }, message: 'Exclude time cannot be for more than 5 years.' }]]
+	        });
+
+	        FormManager.init(form_id, validations);
+	        FormManager.handleSubmit({
+	            form_selector: form_id,
+	            fnc_response_handler: setExclusionResponse,
+	            fnc_additional_check: additionalCheck,
+	            enable_button: true
+	        });
+	    };
+
+	    var validSessionDuration = function validSessionDuration(value) {
+	        return +value <= moment.duration(6, 'weeks').as('minutes');
+	    };
+	    var validDate = function validDate(value) {
+	        return !value.length || moment(new Date(value), 'YYYY-MM-DD', true).isValid();
+	    };
+	    var validTime = function validTime(value) {
+	        return !value.length || moment(value, 'HH:mm', true).isValid();
+	    };
+
+	    var toMoment = function toMoment(value) {
+	        return moment(new Date(value));
+	    };
+	    var dateFormat = function dateFormat(elm_id) {
+	        return $(elm_id).val() ? toMoment($(elm_id).val()).format('YYYY-MM-DD') : '';
+	    };
+	    var getTimeout = function getTimeout() {
+	        return $(timeout_date_id).val() ? moment((dateFormat(timeout_date_id) + ' ' + $(timeout_time_id).val()).trim()).valueOf() / 1000 : '';
+	    };
+
+	    var initDatePicker = function initDatePicker() {
+	        // timeout_until
+	        new TimePicker(timeout_time_id).show();
+	        new DatePicker(timeout_date_id).show({
+	            minDate: 'today',
+	            maxDate: 6 * 7 });
+
+	        // exclude_until
+	        new DatePicker(exclude_until_id).show({
+	            minDate: moment().add(6, 'months').add(1, 'day').toDate(),
+	            maxDate: 5 * 365 });
+
+	        $(timeout_date_id + ', ' + exclude_until_id).change(function () {
+	            dateValueChanged(this, 'date');
+	        });
+	    };
+
+	    var additionalCheck = function additionalCheck(data) {
+	        var is_changed = Object.keys(data).some(function (key) {
+	            return (// using != in next line since response types is inconsistent
+	                key !== 'set_self_exclusion' && (!(key in self_exclusion_data) || self_exclusion_data[key] != data[key]) // eslint-disable-line eqeqeq
+
+	            );
+	        });
+	        if (!is_changed) {
+	            showFormMessage('You did not change anything.', false);
+	        }
+
+	        var is_confirmed = true;
+	        if ('timeout_until' in data || 'exclude_until' in data) {
+	            is_confirmed = window.confirm('When you click "OK" you will be excluded from trading on the site until the selected date.');
+	        }
+
+	        return is_changed && is_confirmed;
+	    };
+
+	    var setExclusionResponse = function setExclusionResponse(response) {
+	        if (response.error) {
+	            var error_msg = response.error.message;
+	            var error_fld = response.error.field;
+	            if (error_fld) {
+	                $('#' + error_fld).siblings('.error-msg').removeClass(hidden_class).html(error_msg);
+	            } else {
+	                showFormMessage(error_msg, false);
+	            }
+	            return;
+	        }
+	        showFormMessage('Your changes have been updated.', true);
+	        Client.set('session_start', moment().unix()); // used to handle session duration limit
+	        getData();
+	    };
+
+	    var showFormMessage = function showFormMessage(msg, is_success) {
+	        $('#msg_form').attr('class', is_success ? 'success-msg' : error_class).html(is_success ? '<ul class="checked"><li>' + msg + '</li></ul>' : msg).css('display', 'block').delay(5000).fadeOut(1000);
+	    };
+
+	    return {
+	        onLoad: onLoad
+	    };
+	}();
+
+	module.exports = SelfExclusion;
+
+/***/ },
+/* 446 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(302);
+	var isEmptyObject = __webpack_require__(306).isEmptyObject;
+	var showLoadingImage = __webpack_require__(306).showLoadingImage;
+	var Validation = __webpack_require__(430);
+
+	var FormManager = function () {
+	    'use strict';
+
+	    var forms = {};
+
+	    var initForm = function initForm(form_selector, fields) {
+	        var $form = $(form_selector + ':visible');
+	        var $btn = $form.find('button[type="submit"]');
+	        if ($form.length) {
+	            forms[form_selector] = {
+	                $btn_submit: $btn,
+	                can_submit: true
+	            };
+	            if (Array.isArray(fields) && fields.length) {
+	                forms[form_selector].fields = fields;
+
+	                fields.forEach(function (field) {
+	                    if (field.selector) {
+	                        field.$ = $form.find(field.selector);
+	                        if (!field.$.length) return;
+	                    }
+
+	                    field.form = form_selector;
+	                });
+	            }
+	        }
+	        // handle firefox
+	        $btn.removeAttr('disabled');
+	        Validation.init(form_selector, fields);
+	    };
+
+	    var getFormData = function getFormData(form_selector) {
+	        var data = {};
+	        var fields = forms[form_selector].fields;
+	        if (!fields) return data;
+	        var key = void 0,
+	            $selector = void 0,
+	            val = void 0,
+	            value = void 0,
+	            native = void 0;
+
+	        fields.forEach(function (field) {
+	            if (!field.exclude_request) {
+	                $selector = $(field.form).find(field.selector);
+	                if ($selector.is(':visible') || field.value) {
+	                    val = $selector.val();
+	                    key = field.request_field || field.selector;
+	                    native = $selector.attr('data-picker') === 'native';
+
+	                    // prioritise data-value
+	                    // if label, take the text
+	                    // if checkbox, take checked value
+	                    // otherwise take the value
+	                    value = field.value ? typeof field.value === 'function' ? field.value() : field.value : native ? val : $selector.attr('data-value') || (/lbl_/.test(key) ? field.value || $selector.text() : $selector.is(':checkbox') ? $selector.is(':checked') ? 1 : 0 : Array.isArray(val) ? val.join(',') : val || '');
+
+	                    if (!(field.exclude_if_empty && val.length === 0)) {
+	                        key = key.replace(/lbl_|#|\./g, '');
+	                        if (field.parent_node) {
+	                            if (!data[field.parent_node]) {
+	                                data[field.parent_node] = {};
+	                            }
+	                            data[field.parent_node][key] = value;
+	                        } else {
+	                            data[key] = value;
+	                        }
+	                    }
+	                }
+	            }
+	        });
+	        return data;
+	    };
+
+	    var disableButton = function disableButton($btn) {
+	        if ($btn.length && !$btn.find('.barspinner').length) {
+	            $btn.attr('disabled', 'disabled');
+	            var $btn_text = $('<span/>', { text: $btn.text(), class: 'invisible' });
+	            showLoadingImage($btn, 'white');
+	            $btn.append($btn_text);
+	        }
+	    };
+
+	    var enableButton = function enableButton($btn) {
+	        if ($btn.length && $btn.find('.barspinner').length) {
+	            $btn.removeAttr('disabled').html($btn.find('span').text());
+	        }
+	    };
+
+	    var handleSubmit = function handleSubmit(options) {
+	        var form = void 0,
+	            $btn_submit = void 0,
+	            can_submit = void 0;
+
+	        var onSuccess = function onSuccess() {
+	            var response = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+	            if (typeof options.fnc_response_handler === 'function') {
+	                if (options.enable_button || 'error' in response) {
+	                    enableButton($btn_submit);
+	                    form.can_submit = true;
+	                }
+	                options.fnc_response_handler(response);
+	            }
+	        };
+
+	        $(options.form_selector).off('submit').on('submit', function (evt) {
+	            evt.preventDefault();
+	            form = forms[options.form_selector];
+	            $btn_submit = form.$btn_submit;
+	            can_submit = form.can_submit;
+	            if (!can_submit) return;
+	            if (Validation.validate(options.form_selector)) {
+	                var req = $.extend({}, options.obj_request, getFormData(options.form_selector));
+	                if (typeof options.fnc_additional_check === 'function' && !options.fnc_additional_check(req)) {
+	                    return;
+	                }
+	                disableButton($btn_submit);
+	                form.can_submit = false;
+	                if (isEmptyObject(req)) {
+	                    onSuccess();
+	                } else {
+	                    ChampionSocket.send(req).then(function (response) {
+	                        onSuccess(response);
+	                    });
+	                }
+	            }
+	        });
+	    };
+
+	    return {
+	        init: initForm,
+	        handleSubmit: handleSubmit
+	    };
+	}();
+
+	module.exports = FormManager;
+
+/***/ },
+/* 447 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var moment = __webpack_require__(310);
+	var checkInput = __webpack_require__(306).checkInput;
+
+	var TimePicker = function TimePicker(component_selector) {
+	    this.component_selector = component_selector;
+	};
+
+	TimePicker.prototype = {
+	    show: function show(min_time, max_time) {
+	        this.checkWidth(this.config(min_time, max_time), this.component_selector, this);
+	        var that = this;
+	        $(window).resize(function () {
+	            that.checkWidth(that.config_data, that.component_selector, that);
+	        });
+	    },
+	    hide: function hide() {
+	        if ($(this.component_selector + '.hasTimepicker').length > 0) {
+	            $(this.component_selector).timepicker('destroy').removeAttr('data-picker');
+	        }
+	        $(this.component_selector).off('keydown');
+	    },
+	    create: function create(config) {
+	        var that = this;
+	        $(this.component_selector).keydown(function (e) {
+	            if (e.which === 13) {
+	                e.preventDefault();
+	                e.stopPropagation();
+	                $(this).timepicker('setTime', $(this).val());
+	                $(this).timepicker('hide');
+	                $(this).blur();
+	                $(that).trigger('enter_pressed');
+	                return false;
+	            }
+	            return true;
+	        }).timepicker(config);
+	    },
+	    time_now: function time_now() {
+	        return moment.utc(window.time);
+	    },
+	    config: function config(min_time, max_time) {
+	        var that = this;
+	        var time_now = this.time_now();
+
+	        var config = {
+	            hourText: 'Hour',
+	            minuteText: 'Minute',
+	            amPmText: ['AM', 'PM']
+	        };
+	        if (min_time) {
+	            min_time = min_time === 'now' ? time_now : moment.utc(min_time);
+	            if (min_time.isBefore(time_now)) {
+	                min_time = time_now;
+	            }
+	            config.minTime = { hour: parseInt(min_time.hour()), minute: parseInt(min_time.minute()) };
+	        }
+	        if (max_time) {
+	            max_time = moment.utc(max_time);
+	            config.maxTime = { hour: parseInt(max_time.hour()), minute: parseInt(max_time.minute()) };
+	        }
+
+	        config.onSelect = function (time) {
+	            var oldValue = $(that.component_selector).attr('data-value');
+	            if (!time.match(/^(:?[0-3]\d):(:?[0-5]\d):(:?[0-5]\d)$/)) {
+	                time_now = that.time_now();
+	                var invalid = time.match(/([a-z0-9]*):([a-z0-9]*):?([a-z0-9]*)?/);
+	                var hour = time_now.format('hh'),
+	                    minute = time_now.format('mm'),
+	                    second = time_now.format('ss');
+
+	                if (typeof invalid[1] !== 'undefined' && isFinite(invalid[1])) {
+	                    hour = parseInt(invalid[1]);
+	                    if (hour < 10) {
+	                        hour = '0' + hour;
+	                    }
+	                }
+	                if (typeof invalid[2] !== 'undefined' && isFinite(invalid[2])) {
+	                    minute = parseInt(invalid[2]);
+	                    if (parseInt(minute) < 10) {
+	                        minute = '0' + minute;
+	                    }
+	                }
+	                if (typeof invalid[3] !== 'undefined' && isFinite(invalid[3])) {
+	                    second = parseInt(invalid[3]);
+	                    if (second < 10) {
+	                        second = '0' + second;
+	                    }
+	                }
+
+	                var new_time = moment(time_now.format('YYYY-MM-DD') + ' ' + hour + ':' + minute + ':' + second).format('HH:mm');
+
+	                if (oldValue && oldValue === new_time) return false;
+
+	                $(this).val(new_time);
+	                $(this).attr('data-value', new_time);
+	                $(that.component_selector).trigger('change', [new_time]);
+	            } else {
+	                if (oldValue && oldValue === time) return false;
+	                $(this).attr('data-value', time);
+	                $(that.component_selector).trigger('change', [time]);
+	            }
+	            return true;
+	        };
+
+	        this.config_data = config;
+
+	        return config;
+	    },
+	    getTime: function getTime(time) {
+	        var hour = ('0' + time.hour).slice(-2),
+	            minute = ('0' + time.minute).slice(-2),
+	            second = '00';
+	        return [hour, minute, second].join(':');
+	    },
+	    checkWidth: function checkWidth(config, component_selector, that) {
+	        var $selector = $(that.component_selector);
+	        if ($(window).width() < 770 && checkInput('time', 'not-a-time') && $selector.attr('data-picker') !== 'native') {
+	            that.hide($selector);
+	            $selector.attr({ type: 'time', 'data-picker': 'native' });
+	            var minTime = config.minTime;
+	            if (minTime) {
+	                $selector.attr('min', that.getTime(minTime));
+	            }
+	            var maxTime = config.maxTime;
+	            if (maxTime) {
+	                $selector.attr('max', that.getTime(maxTime));
+	            }
+	        } else if ($(window).width() > 769 && $selector.attr('data-picker') !== 'jquery' || $(window).width() < 770 && !checkInput('time', 'not-a-time')) {
+	            $selector.attr({ type: 'text', 'data-picker': 'jquery' });
+	            $selector.removeAttr('min');
+	            $selector.removeAttr('max');
+	            that.create(config);
+	        }
+	    }
+	};
+
+	module.exports = TimePicker;
+
+/***/ },
+/* 448 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var Client = __webpack_require__(301);
 
 	var ChampionSettings = function () {
@@ -37586,7 +38098,7 @@
 	module.exports = ChampionSettings;
 
 /***/ },
-/* 446 */
+/* 449 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37647,7 +38159,7 @@
 	module.exports = TNCApproval;
 
 /***/ },
-/* 447 */
+/* 450 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37777,12 +38289,12 @@
 	module.exports = CashierDepositWithdraw;
 
 /***/ },
-/* 448 */
+/* 451 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Slider = __webpack_require__(449);
+	var Slider = __webpack_require__(452);
 
 	var Home = function () {
 	    'use strict';
@@ -37810,12 +38322,12 @@
 	module.exports = Home;
 
 /***/ },
-/* 449 */
+/* 452 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	__webpack_require__(450);
+	__webpack_require__(453);
 
 	var Slider = function () {
 	    var init = function init() {
@@ -37883,7 +38395,7 @@
 	module.exports = Slider;
 
 /***/ },
-/* 450 */
+/* 453 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
@@ -40521,15 +41033,15 @@
 	});
 
 /***/ },
-/* 451 */
+/* 454 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Client = __webpack_require__(301);
 	var showLoadingImage = __webpack_require__(306).showLoadingImage;
-	var FinancialAssessment = __webpack_require__(452);
-	var PersonalDetails = __webpack_require__(453);
+	var FinancialAssessment = __webpack_require__(455);
+	var PersonalDetails = __webpack_require__(456);
 
 	var Profile = function () {
 	    'use strict';
@@ -40581,7 +41093,7 @@
 	module.exports = Profile;
 
 /***/ },
-/* 452 */
+/* 455 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -40734,7 +41246,7 @@
 	module.exports = FinancialAssessment;
 
 /***/ },
-/* 453 */
+/* 456 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -40745,7 +41257,7 @@
 	var ChampionSocket = __webpack_require__(302);
 	var Validation = __webpack_require__(430);
 	var moment = __webpack_require__(310);
-	__webpack_require__(454);
+	__webpack_require__(457);
 
 	var PersonalDetails = function () {
 	    'use strict';
@@ -40943,7 +41455,7 @@
 	module.exports = PersonalDetails;
 
 /***/ },
-/* 454 */
+/* 457 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var require;var require;/*!
@@ -46674,7 +47186,7 @@
 
 
 /***/ },
-/* 455 */
+/* 458 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46702,7 +47214,7 @@
 	module.exports = ChampionSecurity;
 
 /***/ },
-/* 456 */
+/* 459 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46801,7 +47313,7 @@
 	module.exports = LoginHistory;
 
 /***/ },
-/* 457 */
+/* 460 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46922,7 +47434,7 @@
 	module.exports = TradingTimes;
 
 /***/ },
-/* 458 */
+/* 461 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
