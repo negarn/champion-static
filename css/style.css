@@ -1172,6 +1172,10 @@ body .has-tabs .ui-tabs-panel {
   border-radius: 0;
 }
 
+#ui-timepicker-div .ui-state-default, #ui-timepicker-div .ui-widget-content .ui-state-default {
+  width: 80%;
+}
+
 /* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
 #int_bank_wire, #local_bank_transfer, #western_union, #citadel, #visa,
 #mastercard, #cuo-credit-card, #moneybrokers, #neteller, #moneta,
