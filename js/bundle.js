@@ -18462,36 +18462,37 @@
 	var LoggedIn = __webpack_require__(424);
 	var Login = __webpack_require__(421);
 	var ChampionRouter = __webpack_require__(425);
+	var SessionDurationLimit = __webpack_require__(426);
 	var ChampionSocket = __webpack_require__(302);
 	var default_redirect_url = __webpack_require__(308).default_redirect_url;
 	var url_for = __webpack_require__(308).url_for;
 	var Utility = __webpack_require__(306);
-	var ClientType = __webpack_require__(426);
+	var ClientType = __webpack_require__(427);
 	var ChampionContact = __webpack_require__(299);
-	var ChampionEndpoint = __webpack_require__(427);
-	var MT5 = __webpack_require__(428);
-	var ChampionSignup = __webpack_require__(429);
-	var ChampionNewReal = __webpack_require__(431);
-	var ChampionNewVirtual = __webpack_require__(433);
-	var LostPassword = __webpack_require__(434);
-	var ResetPassword = __webpack_require__(435);
-	var Cashier = __webpack_require__(436);
-	var CashierPassword = __webpack_require__(437);
-	var CashierPaymentMethods = __webpack_require__(438);
-	var CashierTopUpVirtual = __webpack_require__(439);
-	var Authenticate = __webpack_require__(440);
-	var ChangePassword = __webpack_require__(441);
-	var MetaTrader = __webpack_require__(442);
-	var SelfExclusion = __webpack_require__(445);
-	var ChampionSettings = __webpack_require__(448);
-	var TNCApproval = __webpack_require__(449);
-	var CashierDepositWithdraw = __webpack_require__(450);
-	var Home = __webpack_require__(451);
-	var ChampionProfile = __webpack_require__(454);
-	var ChampionSecurity = __webpack_require__(458);
-	var LoginHistory = __webpack_require__(459);
-	var TradingTimes = __webpack_require__(460);
-	var Limits = __webpack_require__(461);
+	var ChampionEndpoint = __webpack_require__(428);
+	var MT5 = __webpack_require__(429);
+	var ChampionSignup = __webpack_require__(430);
+	var ChampionNewReal = __webpack_require__(432);
+	var ChampionNewVirtual = __webpack_require__(434);
+	var LostPassword = __webpack_require__(435);
+	var ResetPassword = __webpack_require__(436);
+	var Cashier = __webpack_require__(437);
+	var CashierPassword = __webpack_require__(438);
+	var CashierPaymentMethods = __webpack_require__(439);
+	var CashierTopUpVirtual = __webpack_require__(440);
+	var Authenticate = __webpack_require__(441);
+	var ChangePassword = __webpack_require__(442);
+	var MetaTrader = __webpack_require__(443);
+	var SelfExclusion = __webpack_require__(446);
+	var ChampionSettings = __webpack_require__(449);
+	var TNCApproval = __webpack_require__(450);
+	var CashierDepositWithdraw = __webpack_require__(451);
+	var Home = __webpack_require__(452);
+	var ChampionProfile = __webpack_require__(455);
+	var ChampionSecurity = __webpack_require__(459);
+	var LoginHistory = __webpack_require__(460);
+	var TradingTimes = __webpack_require__(461);
+	var Limits = __webpack_require__(462);
 
 	var Champion = function () {
 	    'use strict';
@@ -18520,6 +18521,9 @@
 	            },
 	            mt5_login_list: function mt5_login_list(response) {
 	                MetaTrader.responseLoginList(response);
+	            },
+	            get_self_exclusion: function get_self_exclusion(response) {
+	                SessionDurationLimit.exclusionResponseHandler(response);
 	            }
 	        }, Client.is_logged_in());
 	        ChampionRouter.init(container, '#champion-content');
@@ -18728,6 +18732,7 @@
 	        ChampionSocket.send({ get_settings: 1 });
 	        ChampionSocket.send({ get_account_status: 1 });
 	        ChampionSocket.send({ get_financial_assessment: 1 });
+	        if (!authorize.is_virtual) ChampionSocket.send({ get_self_exclusion: 1 });
 	        var country_code = response.authorize.country;
 	        if (country_code) {
 	            Client.set('residence', country_code);
@@ -18924,7 +18929,7 @@
 
 	    var buffered = [];
 	    var registered_callbacks = {};
-	    var no_duplicate_requests = ['authorize', 'get_account_status', 'get_financial_assessment', 'get_settings', 'residence_list', 'website_status'];
+	    var no_duplicate_requests = ['authorize', 'get_account_status', 'get_financial_assessment', 'get_settings', 'residence_list', 'website_status', 'get_self_exclusion'];
 	    var default_calls = {};
 
 	    var init = function init(defaults, is_logged_in) {
@@ -35605,6 +35610,81 @@
 
 	'use strict';
 
+	var moment = __webpack_require__(310);
+	var Client = __webpack_require__(301);
+	var template = __webpack_require__(306).template;
+
+	var SessionDurationLimit = function () {
+	    'use strict';
+
+	    var warning = void 0,
+	        timeout_before = void 0,
+	        timeout = void 0,
+	        timeout_logout = void 0;
+
+	    var init = function init() {
+	        clearTimeout(timeout_before);
+	        clearTimeout(timeout);
+	        clearTimeout(timeout_logout);
+	        $('#session_limit').remove();
+
+	        warning = 10 * 1000; // milliseconds before limit to display the warning message
+
+	        var limit = Client.get('session_duration_limit') * 1;
+	        var now = moment().unix();
+	        var start = Client.get('session_start') * 1;
+	        var mathLimit = Math.pow(2, 31) - 1;
+	        var remained = (limit + start - now) * 1000;
+	        if (remained < 0) remained = warning;
+
+	        var setTimeOut = function setTimeOut() {
+	            timeout = setTimeout(displayWarning, remained - warning);
+	            timeout_logout = setTimeout(Client.do_logout, remained);
+	        };
+
+	        // limit of setTimeout is this number
+	        if (remained > mathLimit) {
+	            remained %= mathLimit;
+	            timeout_before = setTimeout(init, remained);
+	        } else {
+	            setTimeOut();
+	        }
+	    };
+
+	    var exclusionResponseHandler = function exclusionResponseHandler(response) {
+	        if (response.error || !response.get_self_exclusion) {
+	            return;
+	        }
+
+	        var limit = response.get_self_exclusion.session_duration_limit * 60;
+	        if (isNaN(limit) || limit <= 0) return;
+
+	        Client.set('session_duration_limit', limit);
+	        window.addEventListener('storage', init, false);
+
+	        init();
+	    };
+
+	    var displayWarning = function displayWarning() {
+	        $('body').append($('<div id=\'session_limit\' class=\'lightbox\'><div><div><div class=\'limit_message\'>' + template('Your session duration limit will end in [_1] seconds.', [warning / 1000]) + '</div></div></div></div>'));
+	        $('#session_limit').click(function () {
+	            $(this).remove();
+	        });
+	    };
+
+	    return {
+	        exclusionResponseHandler: exclusionResponseHandler
+	    };
+	}();
+
+	module.exports = SessionDurationLimit;
+
+/***/ },
+/* 427 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	__webpack_require__(307);
 	var Client = __webpack_require__(301);
 	var Login = __webpack_require__(421);
@@ -35638,7 +35718,7 @@
 	module.exports = ClientType;
 
 /***/ },
-/* 427 */
+/* 428 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35703,7 +35783,7 @@
 	module.exports = ChampionEndpoint;
 
 /***/ },
-/* 428 */
+/* 429 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -35723,7 +35803,7 @@
 	module.exports = MT5;
 
 /***/ },
-/* 429 */
+/* 430 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35731,7 +35811,7 @@
 	var ChampionSocket = __webpack_require__(302);
 	var ChampionRouter = __webpack_require__(425);
 	var url_for = __webpack_require__(308).url_for;
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 	var Client = __webpack_require__(301);
 
 	var ChampionSignup = function () {
@@ -35810,7 +35890,7 @@
 	module.exports = ChampionSignup;
 
 /***/ },
-/* 430 */
+/* 431 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36076,7 +36156,7 @@
 	module.exports = Validation;
 
 /***/ },
-/* 431 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36086,8 +36166,8 @@
 	var Client = __webpack_require__(301);
 	var Utility = __webpack_require__(306);
 	var default_redirect_url = __webpack_require__(308).default_redirect_url;
-	var Validation = __webpack_require__(430);
-	var DatePicker = __webpack_require__(432).DatePicker;
+	var Validation = __webpack_require__(431);
+	var DatePicker = __webpack_require__(433).DatePicker;
 
 	var ChampionNewRealAccount = function () {
 	    'use strict';
@@ -36240,7 +36320,7 @@
 	module.exports = ChampionNewRealAccount;
 
 /***/ },
-/* 432 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36404,7 +36484,7 @@
 	};
 
 /***/ },
-/* 433 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36413,7 +36493,7 @@
 	var Client = __webpack_require__(301);
 	var Utility = __webpack_require__(306);
 	var default_redirect_url = __webpack_require__(308).default_redirect_url;
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 
 	var ChampionNewVirtualAccount = function () {
 	    'use strict';
@@ -36493,13 +36573,13 @@
 	module.exports = ChampionNewVirtualAccount;
 
 /***/ },
-/* 434 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Client = __webpack_require__(301);
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 	var ChampionSocket = __webpack_require__(302);
 	var url_for = __webpack_require__(308).url_for;
 
@@ -36555,16 +36635,16 @@
 	module.exports = LostPassword;
 
 /***/ },
-/* 435 */
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Client = __webpack_require__(301);
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 	var ChampionSocket = __webpack_require__(302);
 	var Login = __webpack_require__(421);
-	var DatePicker = __webpack_require__(432).DatePicker;
+	var DatePicker = __webpack_require__(433).DatePicker;
 	var Utility = __webpack_require__(306);
 	var moment = __webpack_require__(310);
 
@@ -36667,7 +36747,7 @@
 	module.exports = ResetPassword;
 
 /***/ },
-/* 436 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36715,7 +36795,7 @@
 	module.exports = Cashier;
 
 /***/ },
-/* 437 */
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36723,7 +36803,7 @@
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	var ChampionSocket = __webpack_require__(302);
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 
 	var CashierPassword = function () {
 	    'use strict';
@@ -36815,7 +36895,7 @@
 	module.exports = CashierPassword;
 
 /***/ },
-/* 438 */
+/* 439 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36852,7 +36932,7 @@
 	module.exports = CashierPaymentMethods;
 
 /***/ },
-/* 439 */
+/* 440 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36899,7 +36979,7 @@
 	module.exports = CashierTopUpVirtual;
 
 /***/ },
-/* 440 */
+/* 441 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36936,13 +37016,13 @@
 	module.exports = Authenticate;
 
 /***/ },
-/* 441 */
+/* 442 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var ChampionSocket = __webpack_require__(302);
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 
 	var ChangePassword = function () {
 	    'use strict';
@@ -37004,16 +37084,16 @@
 	module.exports = ChangePassword;
 
 /***/ },
-/* 442 */
+/* 443 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var MetaTraderConfig = __webpack_require__(443);
-	var MetaTraderUI = __webpack_require__(444);
+	var MetaTraderConfig = __webpack_require__(444);
+	var MetaTraderUI = __webpack_require__(445);
 	var Client = __webpack_require__(301);
 	var ChampionSocket = __webpack_require__(302);
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 
 	var MetaTrader = function () {
 	    'use strict';
@@ -37135,7 +37215,7 @@
 	module.exports = MetaTrader;
 
 /***/ },
-/* 443 */
+/* 444 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37373,15 +37453,15 @@
 	module.exports = MetaTraderConfig;
 
 /***/ },
-/* 444 */
+/* 445 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var MetaTraderConfig = __webpack_require__(443);
+	var MetaTraderConfig = __webpack_require__(444);
 	var formatMoney = __webpack_require__(423).formatMoney;
 	var showLoadingImage = __webpack_require__(306).showLoadingImage;
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 
 	var MetaTraderUI = function () {
 	    'use strict';
@@ -37570,18 +37650,18 @@
 	module.exports = MetaTraderUI;
 
 /***/ },
-/* 445 */
+/* 446 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var moment = __webpack_require__(310);
 	var Client = __webpack_require__(301);
-	var FormManager = __webpack_require__(446);
+	var FormManager = __webpack_require__(447);
 	var ChampionSocket = __webpack_require__(302);
 	var dateValueChanged = __webpack_require__(306).dateValueChanged;
-	var DatePicker = __webpack_require__(432).DatePicker;
-	var TimePicker = __webpack_require__(447);
+	var DatePicker = __webpack_require__(433).DatePicker;
+	var TimePicker = __webpack_require__(448);
 
 	var SelfExclusion = function () {
 	    'use strict';
@@ -37609,28 +37689,38 @@
 	        getData();
 	    };
 
-	    var getData = function getData() {
-	        ChampionSocket.send({ get_self_exclusion: 1 }).then(function (response) {
-	            if (response.error) {
-	                if (response.error.code === 'ClientSelfExclusion') {
-	                    ChampionSocket.send({ logout: 1 });
-	                }
-	                if (response.error.message) {
-	                    $('#msg_error').html(response.error.message);
-	                    $form.addClass(hidden_class);
-	                }
-	                return;
-	            }
-
-	            $('.barspinner').addClass(hidden_class);
-	            self_exclusion_data = response.get_self_exclusion;
-	            $.each(self_exclusion_data, function (key, value) {
-	                fields[key] = value;
-	                $form.find('#' + key).val(value);
+	    var getData = function getData(send_anyway) {
+	        if (send_anyway) {
+	            ChampionSocket.send({ get_self_exclusion: 1 }, true).then(function (response) {
+	                handleResponse(response);
 	            });
-	            $form.removeClass(hidden_class);
-	            bindValidation();
+	        } else {
+	            ChampionSocket.wait('get_self_exclusion').then(function (response) {
+	                handleResponse(response);
+	            });
+	        }
+	    };
+
+	    var handleResponse = function handleResponse(response) {
+	        if (response.error) {
+	            if (response.error.code === 'ClientSelfExclusion') {
+	                ChampionSocket.send({ logout: 1 });
+	            }
+	            if (response.error.message) {
+	                $('#msg_error').html(response.error.message);
+	                $form.addClass(hidden_class);
+	            }
+	            return;
+	        }
+
+	        $('.barspinner').addClass(hidden_class);
+	        self_exclusion_data = response.get_self_exclusion;
+	        $.each(self_exclusion_data, function (key, value) {
+	            fields[key] = value;
+	            $form.find('#' + key).val(value);
 	        });
+	        $form.removeClass(hidden_class);
+	        bindValidation();
 	    };
 
 	    var bindValidation = function bindValidation() {
@@ -37775,7 +37865,7 @@
 	        }
 	        showFormMessage('Your changes have been updated.', true);
 	        Client.set('session_start', moment().unix()); // used to handle session duration limit
-	        getData();
+	        getData(true);
 	    };
 
 	    var showFormMessage = function showFormMessage(msg, is_success) {
@@ -37790,7 +37880,7 @@
 	module.exports = SelfExclusion;
 
 /***/ },
-/* 446 */
+/* 447 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37798,7 +37888,7 @@
 	var ChampionSocket = __webpack_require__(302);
 	var isEmptyObject = __webpack_require__(306).isEmptyObject;
 	var showLoadingImage = __webpack_require__(306).showLoadingImage;
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 
 	var FormManager = function () {
 	    'use strict';
@@ -37935,7 +38025,7 @@
 	module.exports = FormManager;
 
 /***/ },
-/* 447 */
+/* 448 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38078,7 +38168,7 @@
 	module.exports = TimePicker;
 
 /***/ },
-/* 448 */
+/* 449 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38108,7 +38198,7 @@
 	module.exports = ChampionSettings;
 
 /***/ },
-/* 449 */
+/* 450 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38169,7 +38259,7 @@
 	module.exports = TNCApproval;
 
 /***/ },
-/* 450 */
+/* 451 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38177,7 +38267,7 @@
 	var ChampionSocket = __webpack_require__(302);
 	var url_for = __webpack_require__(308).url_for;
 	var Client = __webpack_require__(301);
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 
 	var CashierDepositWithdraw = function () {
 	    'use strict';
@@ -38299,12 +38389,12 @@
 	module.exports = CashierDepositWithdraw;
 
 /***/ },
-/* 451 */
+/* 452 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Slider = __webpack_require__(452);
+	var Slider = __webpack_require__(453);
 
 	var Home = function () {
 	    'use strict';
@@ -38332,12 +38422,12 @@
 	module.exports = Home;
 
 /***/ },
-/* 452 */
+/* 453 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	__webpack_require__(453);
+	__webpack_require__(454);
 
 	var Slider = function () {
 	    var init = function init() {
@@ -38405,7 +38495,7 @@
 	module.exports = Slider;
 
 /***/ },
-/* 453 */
+/* 454 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
@@ -41043,15 +41133,15 @@
 	});
 
 /***/ },
-/* 454 */
+/* 455 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Client = __webpack_require__(301);
 	var showLoadingImage = __webpack_require__(306).showLoadingImage;
-	var FinancialAssessment = __webpack_require__(455);
-	var PersonalDetails = __webpack_require__(456);
+	var FinancialAssessment = __webpack_require__(456);
+	var PersonalDetails = __webpack_require__(457);
 
 	var Profile = function () {
 	    'use strict';
@@ -41103,7 +41193,7 @@
 	module.exports = Profile;
 
 /***/ },
-/* 455 */
+/* 456 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41115,7 +41205,7 @@
 	var State = __webpack_require__(305).State;
 	var isEmptyObject = __webpack_require__(306).isEmptyObject;
 	var showLoadingImage = __webpack_require__(306).showLoadingImage;
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 
 	var FinancialAssessment = function () {
 	    'use strict';
@@ -41256,7 +41346,7 @@
 	module.exports = FinancialAssessment;
 
 /***/ },
-/* 456 */
+/* 457 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41265,9 +41355,9 @@
 
 	var Client = __webpack_require__(301);
 	var ChampionSocket = __webpack_require__(302);
-	var Validation = __webpack_require__(430);
+	var Validation = __webpack_require__(431);
 	var moment = __webpack_require__(310);
-	__webpack_require__(457);
+	__webpack_require__(458);
 
 	var PersonalDetails = function () {
 	    'use strict';
@@ -41465,7 +41555,7 @@
 	module.exports = PersonalDetails;
 
 /***/ },
-/* 457 */
+/* 458 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var require;var require;/*!
@@ -47196,7 +47286,7 @@
 
 
 /***/ },
-/* 458 */
+/* 459 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47224,7 +47314,7 @@
 	module.exports = ChampionSecurity;
 
 /***/ },
-/* 459 */
+/* 460 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47323,13 +47413,13 @@
 	module.exports = LoginHistory;
 
 /***/ },
-/* 460 */
+/* 461 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var ChampionSocket = __webpack_require__(302);
-	var DatePicker = __webpack_require__(432).DatePicker;
+	var DatePicker = __webpack_require__(433).DatePicker;
 	var moment = __webpack_require__(310);
 
 	var TradingTimes = function () {
@@ -47444,7 +47534,7 @@
 	module.exports = TradingTimes;
 
 /***/ },
-/* 461 */
+/* 462 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
