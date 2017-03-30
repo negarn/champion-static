@@ -35612,6 +35612,7 @@
 
 	var moment = __webpack_require__(310);
 	var Client = __webpack_require__(301);
+	var ChampionSocket = __webpack_require__(302);
 	var template = __webpack_require__(306).template;
 
 	var SessionDurationLimit = function () {
@@ -35639,7 +35640,7 @@
 
 	        var setTimeOut = function setTimeOut() {
 	            timeout = setTimeout(displayWarning, remained - warning);
-	            timeout_logout = setTimeout(Client.do_logout, remained);
+	            timeout_logout = setTimeout(ChampionSocket.send({ logout: 1 }), remained);
 	        };
 
 	        // limit of setTimeout is this number
