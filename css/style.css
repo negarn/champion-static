@@ -1176,6 +1176,11 @@ body .has-tabs .ui-tabs-panel {
   width: 80%;
 }
 
+button .barspinner.white {
+  height: 13px;
+  margin: 3px auto;
+}
+
 /* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
 #int_bank_wire, #local_bank_transfer, #western_union, #citadel, #visa,
 #mastercard, #cuo-credit-card, #moneybrokers, #neteller, #moneta,
