@@ -36315,9 +36315,28 @@
 	            changeMonth: true,
 	            changeYear: true
 	        };
-	        $.extend(config, options);
-	        if (options.minDate) {
-	            config.minDate = options.minDate === 'today' ? today : options.minDate;
+
+	        config = $.extend(config, options);
+
+	        var set_date = function set_date(date) {
+	            var new_date = void 0;
+	            if (typeof options[date] === 'number') {
+	                new_date = new Date();
+	                new_date.setDate(today.getDate() + Number(options[date]));
+	            }
+	            config[date] = new_date || options[date];
+	        };
+
+	        if (options.minDate !== undefined) {
+	            if (options.minDate === 'today') {
+	                config.minDate = today;
+	            } else {
+	                set_date('minDate');
+	            }
+	        }
+
+	        if (options.maxDate !== undefined) {
+	            set_date('maxDate');
 	        }
 
 	        var that = this;
@@ -36356,7 +36375,7 @@
 	        var year = date.getFullYear();
 	        var month = Utility.padLeft(date.getMonth() + 1, 2, '0');
 	        var day = Utility.padLeft(date.getDate(), 2, '0');
-	        return year + '-' + month + '-' + day;
+	        return [year, month, day].join('-');
 	    },
 	    checkWidth: function checkWidth(config, component_selector, that) {
 	        var $selector = $(component_selector);
@@ -36369,10 +36388,10 @@
 	            if ($selector.attr('readonly')) {
 	                $selector.attr('data-readonly', 'readonly').removeAttr('readonly');
 	            }
-	            if (config.minDate) {
+	            if (config.minDate !== undefined) {
 	                $selector.attr('min', that.getDate(config.minDate));
 	            }
-	            if (config.maxDate) {
+	            if (config.maxDate !== undefined) {
 	                $selector.attr('max', that.getDate(config.maxDate));
 	            }
 	        } else if ($(window).width() > 769 && $selector.attr('data-picker') !== 'jquery' || $(window).width() < 770 && !Utility.checkInput('date', 'not-a-date')) {
@@ -37826,8 +37845,7 @@
 	        var key = void 0,
 	            $selector = void 0,
 	            val = void 0,
-	            value = void 0,
-	            native = void 0;
+	            value = void 0;
 
 	        fields.forEach(function (field) {
 	            if (!field.exclude_request) {
@@ -37835,13 +37853,12 @@
 	                if ($selector.is(':visible') || field.value) {
 	                    val = $selector.val();
 	                    key = field.request_field || field.selector;
-	                    native = $selector.attr('data-picker') === 'native';
 
 	                    // prioritise data-value
 	                    // if label, take the text
 	                    // if checkbox, take checked value
 	                    // otherwise take the value
-	                    value = field.value ? typeof field.value === 'function' ? field.value() : field.value : native ? val : $selector.attr('data-value') || (/lbl_/.test(key) ? field.value || $selector.text() : $selector.is(':checkbox') ? $selector.is(':checked') ? 1 : 0 : Array.isArray(val) ? val.join(',') : val || '');
+	                    value = field.value ? typeof field.value === 'function' ? field.value() : field.value : $selector.attr('data-value') || (/lbl_/.test(key) ? field.value || $selector.text() : $selector.is(':checkbox') ? $selector.is(':checked') ? 1 : 0 : Array.isArray(val) ? val.join(',') : val || '');
 
 	                    if (!(field.exclude_if_empty && val.length === 0)) {
 	                        key = key.replace(/lbl_|#|\./g, '');
