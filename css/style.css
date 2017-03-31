@@ -1192,7 +1192,7 @@ button .barspinner.white {
   margin: 3px auto;
 }
 
-ul.bullet {
+.slick-slide ul.bullet {
   padding: 1.25em 0 1.25em 1.25em;
   margin: 0;
 }
