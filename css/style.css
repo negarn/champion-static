@@ -1080,12 +1080,10 @@ iframe {
 
 .fx-no-deposit {
   background: url("../images/symbols/nd_icon.svg");
-  margin-left: 0 !important;
 }
 
 .fx-test-platform {
   background: url("../images/symbols/tp_icon.svg");
-  margin-left: 0 !important;
 }
 
 .fx-xlg, .fx-lg, .fx-md, .fx-sm, .fx-xs, .fx-xxs {
