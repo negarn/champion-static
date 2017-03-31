@@ -1196,6 +1196,9 @@ button .barspinner.white {
   padding: 1.25em 0 1.25em 1.25em;
   margin: 0;
 }
+.slick-slide a:focus {
+  outline: none;
+}
 
 /* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
 #int_bank_wire, #local_bank_transfer, #western_union, #citadel, #visa,
