@@ -34918,8 +34918,7 @@
 	        var data_layer_info = {
 	            language: getLanguage(),
 	            pageTitle: pageTitle(),
-	            pjax: State.get('is_loaded_by_pjax'),
-	            url: document.URL,
+	            pjax: !!State.get('is_loaded_by_pjax'),
 	            event: 'page_load'
 	        };
 
@@ -34948,7 +34947,7 @@
 	    };
 
 	    var pageTitle = function pageTitle() {
-	        var t = /^.+[:-]\s*(.+)$/.exec(document.title);
+	        var t = /^(.+)\s*\|\s*.+$/.exec(document.title);
 	        return t && t[1] ? t[1] : document.title;
 	    };
 
@@ -34970,7 +34969,6 @@
 	            visitorId: Client.get('loginid'),
 	            bom_country: get_settings.country,
 	            bom_email: get_settings.email,
-	            url: window.location.href,
 	            bom_today: Math.floor(Date.now() / 1000),
 	            event: is_new_account ? 'new_account' : 'log_in'
 	        };
@@ -37206,6 +37204,7 @@
 	var formatMoney = __webpack_require__(423).formatMoney;
 	var GTM = __webpack_require__(420);
 	var ChampionSocket = __webpack_require__(413);
+	var State = __webpack_require__(416).State;
 	var url_for = __webpack_require__(419).url_for;
 	var isEmptyObject = __webpack_require__(417).isEmptyObject;
 
@@ -37260,8 +37259,8 @@
 	            onSuccess: function onSuccess(response, acc_type) {
 	                var gtm_data = {
 	                    event: 'mt5_new_account',
-	                    url: window.location.href,
-	                    mt5_date_joined: Math.floor(Date.now() / 1000)
+	                    bom_email: Client.get('email'),
+	                    bom_country: State.get(['response', 'get_settings', 'get_settings', 'country'])
 	                };
 	                gtm_data['mt5_' + (types_info[acc_type].mt5_account_type || 'demo') + '_id'] = response.mt5_new_account.login;
 	                if (acc_type === 'demo' && !Client.is_virtual()) {
