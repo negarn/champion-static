@@ -38410,7 +38410,7 @@
 	                slidesToShow: 1,
 	                appendDots: $('#slider-dots'),
 	                lazyLoad: 'progressive',
-	                autoplay: true
+	                autoplay: false
 	            });
 	            positionFooterAndDots();
 	            $('#slider_wrapper').removeClass('loading-state');
