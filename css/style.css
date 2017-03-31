@@ -1192,6 +1192,11 @@ button .barspinner.white {
   margin: 3px auto;
 }
 
+ul.bullet {
+  padding: 1.25em 0 1.25em 1.25em;
+  margin: 0;
+}
+
 /* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
 #int_bank_wire, #local_bank_transfer, #western_union, #citadel, #visa,
 #mastercard, #cuo-credit-card, #moneybrokers, #neteller, #moneta,
