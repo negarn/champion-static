@@ -102,6 +102,31 @@ h1.main-title {
 .menu-container {
   margin: 0 15px;
 }
+.menu-container #mobile_menu_icon span {
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 12' width='32' height='32'%3E%3Cg fill='white'%3E%3Cpath d='M0 0h18v2h-18zM0 5h18v2h-18zM0 10h18v2h-18z'/%3E%3C/g%3E%3C/svg%3E") no-repeat;
+  width: 32px;
+  height: 32px;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: 10px;
+}
+.menu-container .menu-icon {
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 12' width='32' height='32'%3E%3Cg fill='black'%3E%3Cpath d='M0 0h18v2h-18zM0 5h18v2h-18zM0 10h18v2h-18z'/%3E%3C/g%3E%3C/svg%3E") no-repeat center;
+  height: 75px;
+}
+.menu-container #all-accounts li.has-sub, .menu-container #all-accounts li.has-sub ul, .menu-container #all-accounts li.has-sub li {
+  margin: 0;
+}
+.menu-container #all-accounts li.has-sub a {
+  line-height: 1.4em;
+  padding: 7px 0;
+}
+.menu-container #all-accounts li.has-sub ul {
+  padding: 0;
+}
+.menu-container #all-accounts li.has-sub ul a {
+  background: #DEDEDE;
+}
 
 @keyframes pulsing {
   0% {
@@ -885,6 +910,22 @@ iframe {
   margin-bottom: 3em;
 }
 
+.fx-refer-a-friend .box {
+  position: relative;
+}
+.fx-refer-a-friend .number {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  background: #004385;
+  color: #fff;
+  padding: 10px;
+  font-size: 22px;
+}
+
 .fx-advisors {
   background: url("../images/symbols/advisors.svg");
 }
@@ -1084,6 +1125,21 @@ iframe {
 
 .fx-test-platform {
   background: url("../images/symbols/tp_icon.svg");
+}
+
+.fx-earn {
+  background: url("../images/symbols/earn.svg");
+  margin-top: 10px;
+}
+
+.fx-form {
+  background: url("../images/symbols/form.svg");
+  margin-top: 10px;
+}
+
+.fx-email {
+  background: url("../images/symbols/email.svg");
+  margin-top: 10px;
 }
 
 .fx-xlg, .fx-lg, .fx-md, .fx-sm, .fx-xs, .fx-xxs {
@@ -2277,6 +2333,11 @@ button .barspinner.white {
 }
 @media (max-width: 1199px) {
   .hidden-lg-down {
+    display: none !important;
+  }
+}
+@media (min-width: 1200px) {
+  .hidden-lg-up {
     display: none !important;
   }
 }

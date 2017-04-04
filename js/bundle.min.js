@@ -35079,24 +35079,31 @@
 	    };
 
 	    var userMenu = function userMenu() {
+	        var $all_accounts = $('#all-accounts');
+	        $all_accounts.find('li.has-sub > a').off('click').on('click', function (e) {
+	            e.stopPropagation();
+	            $(this).siblings('ul').toggleClass(hidden_class);
+	        });
+
 	        if (!Client.is_logged_in()) {
-	            $('#main-login, #main-signup').removeClass(hidden_class);
+	            $('#main-login, #header .logged-out').removeClass(hidden_class);
 	            return;
 	        }
+
 	        if (!Client.is_virtual()) {
 	            displayAccountStatus();
 	        }
-	        $('#main-logout').removeClass(hidden_class);
-	        $('#main-signup').addClass(hidden_class);
-	        var all_accounts = $('#all-accounts');
+	        $('#main-logout').removeAttr('class');
+	        $('#header .logged-in').removeClass(hidden_class);
+	        $all_accounts.find('.account > a').removeClass('menu-icon');
 	        var language = $('#select_language');
 	        $('.nav-menu').unbind('click').on('click', function (e) {
 	            e.stopPropagation();
 	            Utility.animateDisappear(language);
-	            if (+all_accounts.css('opacity') === 1) {
-	                Utility.animateDisappear(all_accounts);
+	            if (+$all_accounts.css('opacity') === 1) {
+	                Utility.animateDisappear($all_accounts);
 	            } else {
-	                Utility.animateAppear(all_accounts);
+	                Utility.animateAppear($all_accounts);
 	            }
 	        });
 	        var loginid_select = '';
@@ -37770,7 +37777,7 @@
 	        return +value <= moment.duration(6, 'weeks').as('minutes');
 	    };
 	    var validDate = function validDate(value) {
-	        return !value.length || moment(new Date(value), 'YYYY-MM-DD', true).isValid();
+	        return !value.length || /^\d{4}-\d{2}-\d{2}$/.test(value) && moment(new Date(value), 'YYYY-MM-DD', true).isValid();
 	    };
 	    var validTime = function validTime(value) {
 	        return !value.length || moment(value, 'HH:mm', true).isValid();

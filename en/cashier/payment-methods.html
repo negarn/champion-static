@@ -18,11 +18,11 @@
     <meta name="description" content="ChampionFX Static" />
     <link rel="icon" type="image/png" sizes="16x16" href="/champion-static/images/favicons/CFX_favicon16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/champion-static/images/favicons/CFX_favicon32.png" />
-     <link rel="stylesheet" href="/champion-static/css/flex.min.css?gigq6wn2" />
-     <link rel="stylesheet" href="/champion-static/css/style.min.css?gigq6wn2" />
-     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?gigq6wn2" />
-      <script src="/champion-static/js/bundle.js?gigq6wn2" type="text/javascript"></script>
-     <script src="https://style.champion-fx.com/binary.js?gigq6wn2" type="text/javascript"></script>
+     <link rel="stylesheet" href="/champion-static/css/flex.min.css?a9wky9rl" />
+     <link rel="stylesheet" href="/champion-static/css/style.min.css?a9wky9rl" />
+     <link rel="stylesheet" href="https://style.champion-fx.com/binary.css?a9wky9rl" />
+      <script src="/champion-static/js/bundle.js?a9wky9rl" type="text/javascript"></script>
+     <script src="https://style.champion-fx.com/binary.js?a9wky9rl" type="text/javascript"></script>
      
 </head>
 <body>
@@ -82,9 +82,10 @@
                 </div>
             </div>
             <div class="col-md-2 push-md-7 col-sm-6 col-xs-6 vertical-center">
-                <div id="main-logout" class="invisible">
+                <div id="main-logout" class="hidden-lg-up">
                     <ul id="main-account" class="nav-menu main-nav">
-                        <li class="account">
+                        <li id="mobile_menu_icon" class="logged-out vertical-center hidden-lg-up invisible"><span></span></li>
+                        <li class="account logged-in invisible">
                             <a href="javascript:;">
                                 <div class="main-account">
                                     <div class="account-type"></div>
@@ -97,7 +98,7 @@
                     </ul>
                     <ul id="all-accounts" class="nav-menu main-nav">
                         <li class="account">
-                            <a href="javascript:;">
+                            <a href="javascript:;" class="menu-icon">
                                 <div class="main-account">
                                     <div class="account-type"></div>
                                     <div class="account-id"></div>
@@ -106,36 +107,47 @@
                                 <div class="nav-caret"></div>
                             </a>
                             <ul>
-                                <a class="link" href="/champion-static/en/user/settings.html">
+                                <a class="link invisible logged-out" href="/champion-static/en/home.html#signup">
+                                    <li>Sign Up</li>
+                                </a>
+                                <a class="link invisible logged-in" href="/champion-static/en/user/settings.html">
                                     <li class="topMenuSettings">Settings</li>
                                 </a>
                                 <div class="separator-line-thin-gray"></div>
-                                <a class="link" href="/champion-static/en/cashier.html">
+                                <a class="link invisible logged-in" href="/champion-static/en/cashier.html">
                                     <li class="topMenuCashier">Cashier</li>
                                 </a>
-                                <div class="separator-line-thin-gray"></div>
-                                <a href="/champion-static/en/about-us.html" class="hidden-sm-up">
+                                <div class="separator-line-thin-gray invisible logged-in"></div>
+                                <a href="/champion-static/en/about-us.html" class="hidden-lg-up">
                                     <li>About</li>
                                 </a>
-                                <a href="/champion-static/en/forex.html" class="hidden-sm-up">
-                                    <li>MT5</li>
-                                </a>
-                                <a href="/champion-static/en/binary-options.html" class="hidden-sm-up">
+                                <li class="hidden-lg-up has-sub">
+                                    <a href="javascript:;">MT5</a>
+                                    <ul class="invisible">
+                                        <li><a href="/champion-static/en/forex.html">Forex</a></li>
+                                        <li><a href="/champion-static/en/cfd.html">CFDs</a></li>
+                                        <li><a href="/champion-static/en/metals.html">Metals</a></li>
+                                    </ul>
+                                </li>
+                                <a href="/champion-static/en/binary-options.html" class="hidden-lg-up">
                                     <li>Binary Options</li>
                                 </a>
-                                <a href="/champion-static/en/partnerships.html" class="hidden-sm-up">
+                                <a href="/champion-static/en/trading-platform.html" class="hidden-lg-up">
+                                    <li>Trading Platforms</li>
+                                </a>
+                                <a href="/champion-static/en/partnerships.html" class="hidden-lg-up">
                                     <li>Partnerships</li>
                                 </a>
-                                <div class="separator-line-thin-gray hidden-sm-up"></div>
+                                <div class="separator-line-thin-gray hidden-lg-up invisible logged-in"></div>
                                 <div class="login-id-list"></div>
-                                <a href="javascript:;" id="btn_logout" class="logout">
+                                <a href="javascript:;" id="btn_logout" class="logout invisible logged-in">
                                     <li>Sign out</li>
                                 </a>
                             </ul>
                         </li>
                     </ul>
                 </div>
-                <div id="main-signup" class="invisible">
+                <div id="main-signup" class="logged-out invisible hidden-lg-down">
                     <ul class="signup-button">
                         <li class="">
                             <a class="button-secondary" href="/champion-static/en/home.html#signup"><span>Sign Up</span></a>
@@ -143,7 +155,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-md-7 pull-md-2 hidden-sm-down vertical-center">
+            <div class="col-md-7 pull-md-2 hidden-lg-down vertical-center">
                 <ul class="top-nav-menu">
                     <li>
                         <a href="/champion-static/en/about-us.html" class="nav-dropdown-toggle">About</a>
@@ -376,7 +388,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             </div>
             <div class="row">
                 <div class="col-sm">
-                    ChampionFX is not available to residents of Afghanistan, Bosnia and Herzegovina, Costa Rica, any European Union country, Guyana, Hong Kong, Iran, Iraq, Japan, Jersey, Malaysia, North Korea, Syria, Uganda, USA, Vanuatu, and Yemen.
+                    ChampionFX is not available to residents of Afghanistan, Australia, Bosnia and Herzegovina, Costa Rica, any European Union country, Guyana, Hong Kong, Iran, Iraq, Japan, Jersey, Malaysia, North Korea, Syria, Uganda, USA, Vanuatu, and Yemen.
                 </div>
             </div>
         </div>
