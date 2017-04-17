@@ -1231,6 +1231,9 @@ body .has-tabs .ui-tabs-panel {
   max-width: 180px;
 }
 
+#fx-profile.ui-tabs-vertical {
+  width: auto;
+}
 #fx-profile .ui-tabs-nav, #fx-profile .ui-tabs-panel {
   width: auto;
   float: none;
@@ -1264,17 +1267,24 @@ button .barspinner.white {
   outline: none;
 }
 
-/* stylelint-disable selector-list-comma-newline-after, selector-list-comma-space-after */
-#int_bank_wire, #local_bank_transfer, #western_union, #citadel, #visa,
-#mastercard, #cuo-credit-card, #moneybrokers, #neteller, #moneta,
-#webmoney, #qiwi, #icbc, #fastpay, #perfect_money, #yandex, #paysafecard, #okpay {
-  width: 72px;
+#payment_methods h3 {
+  margin: 20px 0 0;
+}
+#payment_methods .payment-logo {
+  width: 73px;
   height: 57px;
-  background-image: url("../images/payment_methods_sprite_1.png");
-  position: absolute;
+  background-image: url("../images/payment_methods_sprite.png");
+}
+#payment_methods div {
+  -webkit-align-self: center;
+      -ms-flex-item-align: center;
+              -ms-grid-row-align: center;
+          align-self: center;
+}
+#payment_methods td {
+  vertical-align: middle;
 }
 
-/* stylelint-enable selector-list-comma-newline-after, selector-list-comma-space-after */
 #int_bank_wire {
   background-position: -7px -9px;
 }
@@ -1299,7 +1309,7 @@ button .barspinner.white {
   background-position: -421px -11px;
 }
 
-#cuo-credit-card {
+#cuo_credit_card {
   background-position: -108px -214px;
 }
 
@@ -1345,6 +1355,10 @@ button .barspinner.white {
 
 #okpay {
   background-position: -285px -426px;
+}
+
+#eco_payz {
+  background-position: -106px -499px;
 }
 
 #mt_account_management #accounts_list .acc-box {
