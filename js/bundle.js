@@ -18459,40 +18459,42 @@
 	var Client = __webpack_require__(301);
 	var GTM = __webpack_require__(420);
 	var Header = __webpack_require__(422);
-	var LoggedIn = __webpack_require__(424);
+	var LoggedIn = __webpack_require__(425);
 	var Login = __webpack_require__(421);
-	var ChampionRouter = __webpack_require__(425);
+	var ChampionRouter = __webpack_require__(424);
 	var SessionDurationLimit = __webpack_require__(426);
 	var ChampionSocket = __webpack_require__(413);
+	var State = __webpack_require__(416).State;
 	var default_redirect_url = __webpack_require__(419).default_redirect_url;
 	var url_for = __webpack_require__(419).url_for;
 	var Utility = __webpack_require__(417);
-	var ClientType = __webpack_require__(427);
+	var Cashier = __webpack_require__(427);
+	var CashierPassword = __webpack_require__(428);
+	var CashierDepositWithdraw = __webpack_require__(430);
+	var CashierPaymentMethods = __webpack_require__(431);
+	var CashierTopUpVirtual = __webpack_require__(432);
+	var ClientType = __webpack_require__(433);
 	var ChampionContact = __webpack_require__(299);
-	var ChampionEndpoint = __webpack_require__(428);
-	var MT5 = __webpack_require__(429);
-	var ChampionSignup = __webpack_require__(430);
-	var ChampionNewReal = __webpack_require__(432);
-	var ChampionNewVirtual = __webpack_require__(434);
-	var LostPassword = __webpack_require__(435);
-	var ResetPassword = __webpack_require__(436);
-	var Cashier = __webpack_require__(437);
-	var CashierPassword = __webpack_require__(438);
-	var CashierPaymentMethods = __webpack_require__(439);
-	var CashierTopUpVirtual = __webpack_require__(440);
-	var Authenticate = __webpack_require__(441);
-	var ChangePassword = __webpack_require__(442);
-	var MetaTrader = __webpack_require__(443);
-	var SelfExclusion = __webpack_require__(446);
-	var ChampionSettings = __webpack_require__(449);
-	var TNCApproval = __webpack_require__(450);
-	var CashierDepositWithdraw = __webpack_require__(451);
-	var Home = __webpack_require__(452);
-	var ChampionProfile = __webpack_require__(455);
-	var ChampionSecurity = __webpack_require__(459);
-	var LoginHistory = __webpack_require__(460);
-	var TradingTimes = __webpack_require__(461);
-	var Limits = __webpack_require__(462);
+	var ChampionEndpoint = __webpack_require__(434);
+	var Home = __webpack_require__(435);
+	var LostPassword = __webpack_require__(438);
+	var MT5 = __webpack_require__(439);
+	var ChampionNewReal = __webpack_require__(440);
+	var ChampionNewVirtual = __webpack_require__(442);
+	var ResetPassword = __webpack_require__(443);
+	var ChampionSignup = __webpack_require__(444);
+	var TradingPlatform = __webpack_require__(445);
+	var TradingTimes = __webpack_require__(446);
+	var Authenticate = __webpack_require__(447);
+	var ChangePassword = __webpack_require__(448);
+	var Limits = __webpack_require__(449);
+	var LoginHistory = __webpack_require__(450);
+	var MetaTrader = __webpack_require__(451);
+	var ChampionProfile = __webpack_require__(454);
+	var ChampionSecurity = __webpack_require__(458);
+	var SelfExclusion = __webpack_require__(459);
+	var ChampionSettings = __webpack_require__(462);
+	var TNCApproval = __webpack_require__(463);
 
 	var Champion = function () {
 	    'use strict';
@@ -18525,7 +18527,7 @@
 	        }, Client.is_logged_in());
 	        ChampionRouter.init(container, '#champion-content');
 	        if (!Client.is_logged_in()) {
-	            $('#main-login').find('a').on('click', function () {
+	            $('.btn-login').on('click', function () {
 	                Login.redirect_to_login();
 	            });
 	        } else {
@@ -18544,6 +18546,7 @@
 
 	    var afterContentChange = function afterContentChange(e, content) {
 	        var page = content.getAttribute('data-page');
+	        State.set('current_page', page);
 	        var pages_map = {
 	            authenticate: { module: Authenticate, is_authenticated: true, only_real: true },
 	            cashier: { module: Cashier },
@@ -18574,7 +18577,7 @@
 	            'trading-times': { module: TradingTimes },
 	            'types-of-accounts': { module: ClientType },
 	            'trading-platform': { module: ClientType },
-	            'metatrader-5': { module: ClientType },
+	            'metatrader-5': { module: TradingPlatform },
 	            'champion-trader': { module: ClientType }
 	        };
 	        if (page in pages_map) {
@@ -18723,10 +18726,6 @@
 	        set('balance', authorize.balance);
 	        client_object.values_set = true;
 
-	        if (authorize.is_virtual && !get('has_real')) {
-	            $('.upgrade-message').removeClass('invisible');
-	        }
-
 	        ChampionSocket.send({ balance: 1, subscribe: 1 });
 	        ChampionSocket.send({ get_settings: 1 });
 	        ChampionSocket.send({ get_account_status: 1 });
@@ -18739,7 +18738,7 @@
 	            ChampionSocket.send({ landing_company: country_code });
 	        }
 
-	        $('#btn_logout').click(function () {
+	        $('.btn-logout').click(function () {
 	            request_logout();
 	        });
 	    };
@@ -18880,7 +18879,8 @@
 	    };
 
 	    var getMT5AccountType = function getMT5AccountType(group) {
-	        return group ? /demo/.test(group) ? 'demo' : group.split('\\')[1] || '' : '';
+	        if (group === 'demo\\champion_virtual') group = 'demo\\champion_cent'; // TODO: remove this line (used for backward compatibility)
+	        return group ? group.replace('\\', '_') : '';
 	    };
 
 	    return {
@@ -34593,6 +34593,20 @@
 	    return typeof n === 'number' ? String(n) : n;
 	}
 
+	function slideIn(element) {
+	    element.addClass('slide-in').removeClass('slide-out').animate({ opacity: 1 }, 100);
+	    setPosition($('body'), 'fixed');
+	}
+
+	function slideOut(element) {
+	    element.addClass('slide-out').removeClass('slide-in');
+	    setPosition($('body'), 'relative');
+	}
+
+	function setPosition(element, type) {
+	    element.css({ position: type });
+	}
+
 	module.exports = {
 	    showLoadingImage: showLoadingImage,
 	    isEmptyObject: isEmptyObject,
@@ -34607,6 +34621,8 @@
 	    dateValueChanged: dateValueChanged,
 	    template: template,
 	    getPropertyValue: getPropertyValue,
+	    slideIn: slideIn,
+	    slideOut: slideOut,
 
 	    compareBigUnsignedInt: compareBigUnsignedInt
 	};
@@ -34878,7 +34894,7 @@
 	}
 
 	function default_redirect_url() {
-	    return url_for('user/settings');
+	    return url_for('user/metatrader');
 	}
 
 	function get_params() {
@@ -34992,9 +35008,9 @@
 	        if (is_login) {
 	            ChampionSocket.wait('mt5_login_list').then(function (response) {
 	                (response.mt5_login_list || []).forEach(function (obj) {
-	                    var acc_type = Client.getMT5AccountType(obj.group);
+	                    var acc_type = (Client.getMT5AccountType(obj.group) || '').replace('champion_', '').replace('real', 'financial'); // i.e. financial_cent, demo_cent
 	                    if (acc_type) {
-	                        data['mt5_' + acc_type.replace('champion_', '') + '_id'] = obj.login;
+	                        data['mt5_' + acc_type + '_id'] = obj.login;
 	                    }
 	                });
 	                pushDataLayer(data);
@@ -35004,9 +35020,26 @@
 	        }
 	    };
 
+	    var mt5NewAccount = function mt5NewAccount(response) {
+	        var acc_type = response.mt5_new_account.account_type + '_' + response.mt5_new_account.mt5_account_type;
+	        var gtm_data = {
+	            event: 'mt5_new_account',
+	            bom_email: Client.get('email'),
+	            bom_country: State.get(['response', 'get_settings', 'get_settings', 'country']),
+	            mt5_last_signup: acc_type };
+	        gtm_data['mt5_' + acc_type + '_id'] = response.mt5_new_account.login;
+	        if (/demo/.test(acc_type) && !Client.is_virtual()) {
+	            gtm_data.visitorId = Client.get('loginid_array').find(function (login) {
+	                return !login.real;
+	            }).id;
+	        }
+	        GTM.pushDataLayer(gtm_data);
+	    };
+
 	    return {
 	        pushDataLayer: pushDataLayer,
 	        eventHandler: eventHandler,
+	        mt5NewAccount: mt5NewAccount,
 	        setLoginFlag: function setLoginFlag() {
 	            if (isGtmApplicable()) localStorage.setItem('GTM_login', '1');
 	        }
@@ -35067,6 +35100,7 @@
 	var Client = __webpack_require__(301);
 	var formatMoney = __webpack_require__(423).formatMoney;
 	var GTM = __webpack_require__(420);
+	var ChampionRouter = __webpack_require__(424);
 	var ChampionSocket = __webpack_require__(413);
 	var State = __webpack_require__(416).State;
 	var url_for = __webpack_require__(419).url_for;
@@ -35078,10 +35112,11 @@
 	    'use strict';
 
 	    var hidden_class = 'invisible';
+	    var media_query = window.matchMedia('(max-width: 1199px)');
 
 	    var init = function init() {
 	        ChampionSocket.wait('authorize').then(function () {
-	            userMenu();
+	            widthChange(media_query);
 	        });
 	        $(function () {
 	            var window_path = window.location.pathname;
@@ -35095,25 +35130,70 @@
 	                    $(this).removeClass('active');
 	                }
 	            });
+	            media_query.addListener(widthChange);
 	        });
 	    };
 
-	    var userMenu = function userMenu() {
+	    var widthChange = function widthChange(mq) {
+	        if (mq.matches) {
+	            mobileMenu();
+	        } else {
+	            desktopMenu();
+	        }
+	        userMenu();
+	        if (!Client.is_logged_in()) {
+	            $('#top_group').removeClass('logged-in').find('.logged-out').removeClass(hidden_class);
+	        }
+	    };
+
+	    var mobileMenu = function mobileMenu() {
+	        var $menu_dropdown = $('.nav-menu-dropdown');
+
+	        $('#mobile-menu > ul').height($(window).innerHeight());
+	        $(window).on('orientationchange resize', function () {
+	            $('#mobile-menu > ul').height($(window).innerHeight());
+	        });
+
+	        $('.nav-menu:not(.selected-account)').unbind('click').on('click', function (e) {
+	            e.stopPropagation();
+	            if ($('.nav-menu-dropdown.slide-in').length) {
+	                Utility.slideOut($menu_dropdown);
+	            } else {
+	                Utility.slideIn($menu_dropdown);
+	            }
+	        });
+
+	        $(document).off('click.mobileMenu').on('click.mobileMenu', function (e) {
+	            e.stopPropagation();
+	            if ($('.nav-menu-dropdown.slide-in').length) {
+	                Utility.slideOut($menu_dropdown);
+	            }
+	        });
+
+	        $('.nav-dropdown-toggle').off('click').on('click', function (e) {
+	            e.stopPropagation();
+	            $(this).next().toggleClass(hidden_class);
+	        });
+
+	        if (!Client.is_logged_in()) {
+	            $('#topbar, #header').find('.logged-out').removeClass(hidden_class);
+	            return;
+	        }
+	        $('#topbar, #header').find('.logged-in').removeClass(hidden_class);
+	    };
+
+	    var desktopMenu = function desktopMenu() {
 	        var $all_accounts = $('#all-accounts');
 	        $all_accounts.find('li.has-sub > a').off('click').on('click', function (e) {
 	            e.stopPropagation();
 	            $(this).siblings('ul').toggleClass(hidden_class);
 	        });
 
-	        if (!Client.is_logged_in()) {
-	            $('#main-login, #header .logged-out').removeClass(hidden_class);
-	            return;
-	        }
+	        if (!Client.is_logged_in()) return;
 
-	        if (!Client.is_virtual()) {
-	            displayAccountStatus();
-	        }
-	        $('#main-logout').removeAttr('class');
+	        $(window).off('resize.updateBody').on('resize.updateBody', updateBody);
+	        updateBody();
+
 	        $('#header .logged-in').removeClass(hidden_class);
 	        $all_accounts.find('.account > a').removeClass('menu-icon');
 	        var language = $('#select_language');
@@ -35126,35 +35206,70 @@
 	                Utility.animateAppear($all_accounts);
 	            }
 	        });
+
+	        $(document).off('click.desktopMenu').on('click.desktopMenu', function (e) {
+	            e.stopPropagation();
+	            Utility.animateDisappear($all_accounts);
+	        });
+	    };
+
+	    var updateBody = function updateBody() {
+	        $('#champion-container').css('margin-top', $('#top_group').height());
+	    };
+
+	    var userMenu = function userMenu() {
+	        if (!Client.is_virtual()) {
+	            displayAccountStatus();
+	        }
+
 	        var loginid_select = '';
-	        var loginid_array = Client.get('loginid_array');
-	        for (var i = 0; i < loginid_array.length; i++) {
-	            var login = loginid_array[i];
+	        var is_mt_pages = State.get('is_mt_pages');
+	        Client.get('loginid_array').forEach(function (login) {
 	            if (!login.disabled) {
 	                var curr_id = login.id;
-	                var type = (login.real ? 'Real' : 'Virtual') + ' Account';
+	                var type = '(Binary ' + (login.real ? 'Real' : 'Virtual') + ' Account)';
+	                var icon = login.real ? 'fx-real-icon' : 'fx-virtual-icon';
+	                var is_current = curr_id === Client.get('loginid');
 
 	                // default account
-	                if (curr_id === Client.get('loginid')) {
-	                    $('.account-type').html(type);
-	                    $('.account-id').html(curr_id);
-	                } else {
-	                    loginid_select += '<a href="#" value="' + curr_id + '"><li>' + type + '<div>' + curr_id + '</div>\n                        </li></a><div class="separator-line-thin-gray"></div>';
+	                if (is_current) {
+	                    $('.main-account .account-type').html(type);
+	                    $('.main-account .account-id').html(curr_id);
+	                    loginid_select += '<div class="hidden-lg-up">\n                                        <span class="selected" href="javascript:;" value="' + curr_id + '">\n                                        <li><span class="nav-menu-icon pull-left ' + icon + '"></span>' + curr_id + '</li>\n                                        </span>\n                                       <div class="separator-line-thin-gray"></div></div>';
+	                } else if (is_mt_pages && login.real && Client.is_virtual()) {
+	                    switchLoginId(curr_id);
+	                    return;
 	                }
+	                var item_class = is_current ? 'mt-show' : '';
+	                loginid_select += '<a href="javascript:;" value="' + curr_id + '" class="' + item_class + '">\n                                        <li>\n                                            <span class="hidden-lg-up nav-menu-icon pull-left ' + icon + '"></span>\n                                            <div>' + curr_id + '</div>\n                                            <div class="hidden-lg-down account-type">' + type + '</div>\n                                        </li>\n                                   </a>\n                                   <div class="separator-line-thin-gray ' + item_class + '"></div>';
 	            }
-	        }
+	        });
 	        $('.login-id-list').html(loginid_select);
+	        $('#mobile-menu .mt-show').remove();
+	        setMetaTrader(is_mt_pages);
+	        if (!Client.has_real()) {
+	            $('#all-accounts .upgrade').removeClass(hidden_class);
+	        }
 	        $('.login-id-list a').off('click').on('click', function (e) {
 	            e.preventDefault();
 	            $(this).attr('disabled', 'disabled');
 	            switchLoginId($(this).attr('value'));
+	            if (State.get('is_mt_pages')) {
+	                State.remove('is_mt_pages');
+	                ChampionRouter.forward(url_for('user/settings'));
+	            }
 	        });
+	    };
+
+	    var setMetaTrader = function setMetaTrader(is_mt_pages) {
+	        $('#header, #footer').find('.mt-hide')[is_mt_pages ? 'addClass' : 'removeClass'](hidden_class);
+	        $('#header, #footer').find('.mt-show')[is_mt_pages ? 'removeClass' : 'addClass'](hidden_class);
 	    };
 
 	    var displayNotification = function displayNotification(message) {
 	        var $msg_notification = $('#msg_notification');
 	        $msg_notification.html(message);
-	        if ($msg_notification.is(':hidden')) $msg_notification.slideDown(500);
+	        if ($msg_notification.is(':hidden')) $msg_notification.slideDown(500, updateBody);
 	    };
 
 	    var hideNotification = function hideNotification() {
@@ -35225,7 +35340,7 @@
 	    };
 
 	    var switchLoginId = function switchLoginId(loginid) {
-	        if (!loginid || loginid.length === 0) {
+	        if (!loginid || loginid.length === 0 || loginid === Client.get('loginid')) {
 	            return;
 	        }
 	        var token = Client.get_token(loginid);
@@ -35257,7 +35372,7 @@
 	            return;
 	        }
 	        var view = formatMoney(balance, currency);
-	        $('.topMenuBalance').text(view).css('visibility', 'visible');
+	        $('.account-balance').text(view).css('visibility', 'visible');
 	    };
 
 	    return {
@@ -35324,101 +35439,6 @@
 
 	'use strict';
 
-	var Client = __webpack_require__(301);
-	var GTM = __webpack_require__(420);
-	var getLanguage = __webpack_require__(415).getLanguage;
-	var default_redirect_url = __webpack_require__(419).default_redirect_url;
-	var url_for = __webpack_require__(419).url_for;
-	var isEmptyObject = __webpack_require__(417).isEmptyObject;
-	var Cookies = __webpack_require__(414);
-
-	var LoggedIn = function () {
-	    'use strict';
-
-	    var load = function load() {
-	        var tokens = storeTokens();
-	        var loginid = Cookies.get('loginid'),
-	            redirect_url = void 0;
-
-	        if (!loginid) {
-	            (function () {
-	                // redirected to another domain (e.g. github.io) so those cookie are not accessible here
-	                var loginids = Object.keys(tokens);
-	                var loginid_list = '';
-	                loginids.map(function (id) {
-	                    loginid_list += '' + (loginid_list ? '+' : '') + id + ':' + (/^V/i.test(id) ? 'V' : 'R') + ':E'; // since there is not any data source to check, so assume all are enabled, disabled accounts will be handled on authorize
-	                });
-	                loginid = loginids[0];
-	                // set cookies
-	                Client.set_cookie('loginid', loginid);
-	                Client.set_cookie('loginid_list', loginid_list);
-	            })();
-	        }
-	        Client.set_cookie('token', tokens[loginid]);
-
-	        // set flags
-	        GTM.setLoginFlag();
-
-	        // redirect url
-	        redirect_url = sessionStorage.getItem('redirect_url');
-	        sessionStorage.removeItem('redirect_url');
-
-	        // redirect back
-	        var set_default = true;
-	        if (redirect_url) {
-	            var do_not_redirect = ['reset-password', 'lost-password', 'change-password', 'home'];
-	            var reg = new RegExp(do_not_redirect.join('|'), 'i');
-	            if (!reg.test(redirect_url) && url_for('') !== redirect_url) {
-	                set_default = false;
-	            }
-	        }
-	        if (set_default) {
-	            redirect_url = default_redirect_url();
-	            var lang_cookie = Cookies.get('language');
-	            var language = getLanguage();
-	            if (lang_cookie && lang_cookie !== language) {
-	                redirect_url = redirect_url.replace(new RegExp('/' + language + '/', 'i'), '/' + lang_cookie.toLowerCase() + '/');
-	            }
-	        }
-	        document.getElementById('loading_link').setAttribute('href', redirect_url);
-	        window.location.href = redirect_url;
-	    };
-
-	    var storeTokens = function storeTokens() {
-	        // Parse hash for loginids and tokens returned by OAuth
-	        var hash = (/acct1/i.test(window.location.hash) ? window.location.hash : window.location.search).substr(1).split('&');
-	        var tokens = {};
-	        for (var i = 0; i < hash.length; i += 2) {
-	            var loginid = getHashValue(hash[i], 'acct');
-	            var token = getHashValue(hash[i + 1], 'token');
-	            if (loginid && token) {
-	                tokens[loginid] = token;
-	            }
-	        }
-	        if (!isEmptyObject(tokens)) {
-	            Client.set('tokens', JSON.stringify(tokens));
-	        }
-	        return tokens;
-	    };
-
-	    var getHashValue = function getHashValue(source, key) {
-	        var match = new RegExp('^' + key);
-	        return source && source.length > 0 ? match.test(source.split('=')[0]) ? source.split('=')[1] : '' : '';
-	    };
-
-	    return {
-	        load: load
-	    };
-	}();
-
-	module.exports = LoggedIn;
-
-/***/ },
-/* 425 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
 	var getLanguage = __webpack_require__(415).getLanguage;
 	var State = __webpack_require__(416).State;
 
@@ -35476,7 +35496,7 @@
 	            params.container.trigger('champion:after', content);
 	        }
 
-	        $(document).find('#header a').on('click', handleClick);
+	        $(document).find('#header a, #topbar a').on('click', handleClick);
 	        $(document).on('click', 'a', handleClick);
 	        $(window).on('popstate', handlePopstate);
 	    };
@@ -35619,6 +35639,101 @@
 	module.exports = ChampionRouter;
 
 /***/ },
+/* 425 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(301);
+	var GTM = __webpack_require__(420);
+	var getLanguage = __webpack_require__(415).getLanguage;
+	var default_redirect_url = __webpack_require__(419).default_redirect_url;
+	var url_for = __webpack_require__(419).url_for;
+	var isEmptyObject = __webpack_require__(417).isEmptyObject;
+	var Cookies = __webpack_require__(414);
+
+	var LoggedIn = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        var tokens = storeTokens();
+	        var loginid = Cookies.get('loginid'),
+	            redirect_url = void 0;
+
+	        if (!loginid) {
+	            (function () {
+	                // redirected to another domain (e.g. github.io) so those cookie are not accessible here
+	                var loginids = Object.keys(tokens);
+	                var loginid_list = '';
+	                loginids.map(function (id) {
+	                    loginid_list += '' + (loginid_list ? '+' : '') + id + ':' + (/^V/i.test(id) ? 'V' : 'R') + ':E'; // since there is not any data source to check, so assume all are enabled, disabled accounts will be handled on authorize
+	                });
+	                loginid = loginids[0];
+	                // set cookies
+	                Client.set_cookie('loginid', loginid);
+	                Client.set_cookie('loginid_list', loginid_list);
+	            })();
+	        }
+	        Client.set_cookie('token', tokens[loginid]);
+
+	        // set flags
+	        GTM.setLoginFlag();
+
+	        // redirect url
+	        redirect_url = sessionStorage.getItem('redirect_url');
+	        sessionStorage.removeItem('redirect_url');
+
+	        // redirect back
+	        var set_default = true;
+	        if (redirect_url) {
+	            var do_not_redirect = ['reset-password', 'lost-password', 'change-password', 'home'];
+	            var reg = new RegExp(do_not_redirect.join('|'), 'i');
+	            if (!reg.test(redirect_url) && url_for('') !== redirect_url) {
+	                set_default = false;
+	            }
+	        }
+	        if (set_default) {
+	            redirect_url = default_redirect_url();
+	            var lang_cookie = Cookies.get('language');
+	            var language = getLanguage();
+	            if (lang_cookie && lang_cookie !== language) {
+	                redirect_url = redirect_url.replace(new RegExp('/' + language + '/', 'i'), '/' + lang_cookie.toLowerCase() + '/');
+	            }
+	        }
+	        document.getElementById('loading_link').setAttribute('href', redirect_url);
+	        window.location.href = redirect_url;
+	    };
+
+	    var storeTokens = function storeTokens() {
+	        // Parse hash for loginids and tokens returned by OAuth
+	        var hash = (/acct1/i.test(window.location.hash) ? window.location.hash : window.location.search).substr(1).split('&');
+	        var tokens = {};
+	        for (var i = 0; i < hash.length; i += 2) {
+	            var loginid = getHashValue(hash[i], 'acct');
+	            var token = getHashValue(hash[i + 1], 'token');
+	            if (loginid && token) {
+	                tokens[loginid] = token;
+	            }
+	        }
+	        if (!isEmptyObject(tokens)) {
+	            Client.set('tokens', JSON.stringify(tokens));
+	        }
+	        return tokens;
+	    };
+
+	    var getHashValue = function getHashValue(source, key) {
+	        var match = new RegExp('^' + key);
+	        return source && source.length > 0 ? match.test(source.split('=')[0]) ? source.split('=')[1] : '' : '';
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = LoggedIn;
+
+/***/ },
 /* 426 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -35702,114 +35817,39 @@
 
 	'use strict';
 
-	__webpack_require__(418);
+	var ChampionSocket = __webpack_require__(413);
 	var Client = __webpack_require__(301);
-	var Login = __webpack_require__(421);
 
-	var ClientType = function () {
+	var Cashier = function () {
 	    'use strict';
 
-	    var load = function load() {
-	        if (Client.is_logged_in()) {
-	            $('.virtual-signup').hide();
-	            if (Client.has_real()) {
-	                $('.real-signup').hide();
-	            }
-	        } else {
-	            $('#login-link').find('a').on('click', function () {
-	                Login.redirect_to_login();
-	            });
-	        }
-	    };
-
-	    var unload = function unload() {
-	        $('#login-link').find('a').off('click');
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ClientType;
-
-/***/ },
-/* 428 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var getAppId = __webpack_require__(413).getAppId;
-	var getServer = __webpack_require__(413).getServer;
-
-	var ChampionEndpoint = function () {
-	    'use strict';
-
-	    var $container = void 0,
-	        $txt_server_url = void 0,
-	        $txt_app_id = void 0,
-	        $btn_submit = void 0,
-	        $btn_reset = void 0;
+	    var hidden_class = 'invisible';
 
 	    var load = function load() {
-	        $container = $('#champion-container');
-	        $txt_server_url = $container.find('#txt_server_url');
-	        $txt_app_id = $container.find('#txt_app_id');
-	        $btn_submit = $container.find('#btn_submit');
-	        $btn_reset = $container.find('#btn_reset');
-
-	        $txt_server_url.val(getServer());
-	        $txt_app_id.val(getAppId());
-
-	        $btn_submit.on('click', function (e) {
-	            e.preventDefault();
-
-	            var server_url = ($txt_server_url.val() || '').trim().toLowerCase().replace(/[><()\"\']/g, '');
-	            if (server_url) {
-	                localStorage.setItem('config.server_url', server_url);
+	        ChampionSocket.wait('authorize').then(function () {
+	            var cashierContainer = $('.fx-cashier');
+	            if (Client.is_logged_in() && Client.is_virtual()) {
+	                cashierContainer.find('#fx-virtual').removeClass(hidden_class);
+	                $('#deposit-btn, #withdraw-btn').addClass(hidden_class);
+	                if (Client.get('balance') > 1000) {
+	                    disableButton($('#VRT_topup_link'));
+	                }
+	            } else if (Client.is_logged_in() && !Client.is_virtual()) {
+	                cashierContainer.find('#fx-virtual').addClass(hidden_class);
+	                $('#deposit-btn, #withdraw-btn').removeClass(hidden_class);
+	                ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
+	                    if (!response.error && response.cashier_password === 1) {
+	                        disableButton($('#deposit-btn, #withdraw-btn'));
+	                    }
+	                });
+	            } else {
+	                $('#deposit-btn, #withdraw-btn').addClass(hidden_class);
 	            }
-
-	            var app_id = ($txt_app_id.val() || '').trim();
-	            if (app_id && !isNaN(app_id)) {
-	                localStorage.setItem('config.app_id', parseInt(app_id));
-	            }
-
-	            window.location.reload();
-	        });
-
-	        $btn_reset.on('click', function (e) {
-	            e.preventDefault();
-	            localStorage.removeItem('config.server_url');
-	            localStorage.removeItem('config.app_id');
-	            window.location.reload();
 	        });
 	    };
 
-	    var unload = function unload() {
-	        $btn_submit.off('click');
-	        $btn_reset.off('click');
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ChampionEndpoint;
-
-/***/ },
-/* 429 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	var MT5 = function () {
-	    'use strict';
-
-	    var load = function load() {
-	        $('.has-tabs').tabs().removeClass('invisible');
+	    var disableButton = function disableButton($btn) {
+	        $btn.attr('href', 'javascr' + 'ipt:;').addClass('button-disabled');
 	    };
 
 	    return {
@@ -35817,82 +35857,95 @@
 	    };
 	}();
 
-	module.exports = MT5;
+	module.exports = Cashier;
 
 /***/ },
-/* 430 */
+/* 428 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var ChampionSocket = __webpack_require__(413);
-	var ChampionRouter = __webpack_require__(425);
-	var url_for = __webpack_require__(419).url_for;
-	var Validation = __webpack_require__(431);
-	var Client = __webpack_require__(301);
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-	var ChampionSignup = function () {
+	var ChampionSocket = __webpack_require__(413);
+	var Validation = __webpack_require__(429);
+
+	var CashierPassword = function () {
 	    'use strict';
 
-	    var form_selector = '.frm-verify-email';
-	    var signup_selector = '#signup';
+	    var btn_submit = void 0,
+	        form_type = void 0;
+
 	    var hidden_class = 'invisible';
 
-	    var is_active = false,
-	        $form = void 0,
-	        $input = void 0,
-	        $button = void 0;
+	    var fields = {
+	        txt_unlock_password: '#txt_unlock_password',
+	        txt_lock_password: '#txt_lock_password',
+	        txt_re_password: '#txt_re_password',
+	        btn_submit: '#btn_submit'
+	    };
+
+	    var views = {
+	        logged_out: 'logged_out',
+	        virtual: 'virtual',
+	        real: 'real',
+	        lock_cashier: 'lock',
+	        unlock_cashier: 'unlock'
+	    };
 
 	    var load = function load() {
-	        if (Client.is_logged_in() || /(new-account|terms-and-conditions|user|cashier)/.test(window.location.pathname)) {
-	            changeVisibility($(form_selector), 'hide');
-	        } else {
-	            changeVisibility($(form_selector), 'show');
-	            if ($(form_selector).length === 1) {
-	                changeVisibility($(signup_selector), 'show');
+	        ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
+	            if (response.error) return;
+	            if (response.cashier_password === 1) {
+	                form_type = views.unlock_cashier;
 	            } else {
-	                changeVisibility($(signup_selector), 'hide');
+	                form_type = views.lock_cashier;
 	            }
-	            eventHandler();
-	        }
+	            $('#form_' + form_type + '_cashier').removeClass(hidden_class);
+	            initForm(form_type);
+	        });
 	    };
 
-	    var changeVisibility = function changeVisibility($selector, action) {
-	        if (action === 'hide') {
-	            $selector.addClass(hidden_class);
+	    var initForm = function initForm(form) {
+	        var form_selector = '#form_' + form_type + '_cashier',
+	            $form = $(form_selector);
+
+	        btn_submit = $form.find(fields.btn_submit);
+	        btn_submit.on('click', submit);
+
+	        if (form === views.lock_cashier) {
+	            Validation.init(form_selector, [{ selector: fields.txt_lock_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_lock_password }]] }]);
 	        } else {
-	            $selector.removeClass(hidden_class);
+	            Validation.init(form_selector, [{ selector: fields.txt_unlock_password, validations: ['req'] }]);
 	        }
-	    };
-
-	    var eventHandler = function eventHandler() {
-	        $form = $(form_selector + ':visible');
-	        $input = $form.find('input');
-	        $button = $form.find('button');
-	        $button.off('click', submit).on('click', submit);
-	        is_active = true;
-	        Validation.init(form_selector, [{ selector: '#email', validations: ['req', 'email'], msg_element: '#signup_error' }]);
 	    };
 
 	    var unload = function unload() {
-	        if (is_active) {
-	            $button.off('click', submit);
-	            $input.val('');
+	        if (btn_submit) {
+	            btn_submit.off('click', submit);
 	        }
-	        is_active = false;
 	    };
 
 	    var submit = function submit(e) {
 	        e.preventDefault();
-	        if (is_active && Validation.validate(form_selector)) {
-	            ChampionSocket.send({
-	                verify_email: $input.val(),
-	                type: 'account_opening'
-	            }).then(function (response) {
-	                if (response.verify_email) {
-	                    ChampionRouter.forward(url_for('new-account/virtual'));
-	                } else if (response.error) {
-	                    $(form_selector + ':visible #signup_error').text(response.error.message).removeClass(hidden_class);
+
+	        var form_selector = '#form_' + form_type + '_cashier',
+	            $form = $(form_selector);
+
+	        if (Validation.validate(form_selector)) {
+	            var req_key = form_type + '_password',
+	                req_val = $('#txt_' + form_type + '_password').val();
+
+	            var data = _defineProperty({
+	                cashier_password: 1
+	            }, req_key, req_val);
+
+	            ChampionSocket.send(data).then(function (response) {
+	                if (response.error) {
+	                    $(form_selector + ' #msg_form').removeClass(hidden_class).text(response.error.message);
+	                } else {
+	                    $form.addClass(hidden_class);
+	                    $('.notice-msg').removeClass(hidden_class).text('Your settings have been updated successfully.');
 	                }
 	            });
 	        }
@@ -35904,10 +35957,10 @@
 	    };
 	}();
 
-	module.exports = ChampionSignup;
+	module.exports = CashierPassword;
 
 /***/ },
-/* 431 */
+/* 429 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35957,6 +36010,13 @@
 	                            $parent.append($('<div/>', { class: error_class + ' ' + hidden_class }));
 	                        }
 	                        field.$error = $parent.find('.' + error_class);
+	                        // Add indicator to required fields
+	                        if (field.validations.indexOf('req') >= 0) {
+	                            var $label = $parent.find('label');
+	                            if ($label.find('span.required').length === 0) {
+	                                $label.append($('<span/>', { class: 'required error-msg', text: '*' }));
+	                            }
+	                        }
 	                    }
 
 	                    var event = events_map[field.type];
@@ -36173,2088 +36233,7 @@
 	module.exports = Validation;
 
 /***/ },
-/* 432 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var moment = __webpack_require__(302);
-	var ChampionSocket = __webpack_require__(413);
-	var Client = __webpack_require__(301);
-	var Utility = __webpack_require__(417);
-	var default_redirect_url = __webpack_require__(419).default_redirect_url;
-	var Validation = __webpack_require__(431);
-	var DatePicker = __webpack_require__(433).DatePicker;
-
-	var ChampionNewRealAccount = function () {
-	    'use strict';
-
-	    var form_selector = '#frm_new_account_real';
-	    var hidden_class = 'invisible';
-
-	    var client_residence = void 0;
-
-	    var container = void 0,
-	        btn_submit = void 0,
-	        datePickerInst = void 0;
-
-	    var fields = {
-	        ddl_title: '#ddl_title',
-	        txt_fname: '#txt_fname',
-	        txt_lname: '#txt_lname',
-	        txt_birth_date: '#txt_birth_date',
-	        lbl_residence: '#lbl_residence',
-	        txt_address1: '#txt_address1',
-	        txt_address2: '#txt_address2',
-	        txt_city: '#txt_city',
-	        ddl_state: '#ddl_state',
-	        txt_state: '#txt_state',
-	        txt_postcode: '#txt_postcode',
-	        txt_phone: '#txt_phone',
-	        ddl_secret_question: '#ddl_secret_question',
-	        txt_secret_answer: '#txt_secret_answer',
-	        chk_not_pep: '#chk_not_pep',
-	        chk_tnc: '#chk_tnc',
-	        btn_submit: '#btn_submit'
-	    };
-
-	    var load = function load() {
-	        if (Client.has_real()) {
-	            window.location.href = default_redirect_url();
-	            return;
-	        }
-
-	        container = $('#champion-container');
-	        client_residence = Client.get('residence');
-	        displayResidence();
-	        populateState();
-	        attachDatePicker();
-
-	        btn_submit = container.find(fields.btn_submit);
-	        btn_submit.on('click dblclick', submit);
-	    };
-
-	    var unload = function unload() {
-	        if (btn_submit) {
-	            btn_submit.off('click', submit);
-	        }
-	        if (datePickerInst) {
-	            datePickerInst.hide();
-	        }
-	    };
-
-	    var initValidation = function initValidation() {
-	        Validation.init(form_selector, [{ selector: fields.txt_fname, validations: ['req', 'letter_symbol', ['min', { min: 2 }]] }, { selector: fields.txt_lname, validations: ['req', 'letter_symbol', ['min', { min: 2 }]] }, { selector: fields.txt_birth_date, validations: ['req'] }, { selector: fields.txt_address1, validations: ['req', 'address', ['length', { min: 1, max: 70 }]] }, { selector: fields.txt_address2, validations: ['address', ['length', { min: 0, max: 70 }]] }, { selector: fields.txt_city, validations: ['req', 'letter_symbol', ['length', { min: 1, max: 35 }]] }, { selector: fields.txt_state, validations: ['letter_symbol'] }, { selector: fields.txt_postcode, validations: ['postcode', ['length', { min: 0, max: 20 }]] }, { selector: fields.txt_phone, validations: ['req', 'phone', ['length', { min: 6, max: 35, exclude: /^\+/ }]] }, { selector: fields.ddl_secret_question, validations: ['req'] }, { selector: fields.txt_secret_answer, validations: ['req', 'general', ['length', { min: 4, max: 50 }]] }, { selector: fields.chk_tnc, validations: ['req'] }, { selector: fields.chk_not_pep, validations: ['req'] }]);
-	    };
-
-	    var displayResidence = function displayResidence() {
-	        ChampionSocket.send({ residence_list: 1 }).then(function (response) {
-	            container.find('#residence_loading').remove();
-	            var $lbl_residence = container.find(fields.lbl_residence);
-	            var country_obj = response.residence_list.find(function (r) {
-	                return r.value === client_residence;
-	            });
-	            if (country_obj) {
-	                $lbl_residence.text(country_obj.text);
-	                if (country_obj.phone_idd) {
-	                    $(fields.txt_phone).val('+' + country_obj.phone_idd);
-	                }
-	            }
-	            $lbl_residence.parent().removeClass(hidden_class);
-	        });
-	    };
-
-	    var populateState = function populateState() {
-	        ChampionSocket.send({ states_list: client_residence }).then(function (response) {
-	            var $ddl_state = container.find(fields.ddl_state);
-	            var states = response.states_list;
-	            container.find('#state_loading').remove();
-	            if (states && states.length) {
-	                Utility.dropDownFromObject($ddl_state, states);
-	                $ddl_state.removeClass(hidden_class);
-	            } else {
-	                $ddl_state.replaceWith($('<input/>', { type: 'text', id: fields.txt_state.replace('#', ''), class: 'text', maxlength: '35' }));
-	            }
-	            initValidation();
-	        });
-	    };
-
-	    var attachDatePicker = function attachDatePicker() {
-	        datePickerInst = new DatePicker(fields.txt_birth_date);
-	        datePickerInst.show({
-	            minDate: -100 * 365,
-	            maxDate: -18 * 365 - 5,
-	            yearRange: '-100:-18'
-	        });
-	        $(fields.txt_birth_date).attr('data-value', Utility.toISOFormat(moment())).change(function () {
-	            return Utility.dateValueChanged(this, 'date');
-	        }).val('');
-	    };
-
-	    var submit = function submit(e) {
-	        e.preventDefault();
-	        btn_submit.attr('disabled', 'disabled');
-	        if (Validation.validate(form_selector)) {
-	            var data = {
-	                new_account_real: 1,
-	                salutation: $(fields.ddl_title).val(),
-	                first_name: $(fields.txt_fname).val(),
-	                last_name: $(fields.txt_lname).val(),
-	                date_of_birth: $(fields.txt_birth_date).val(),
-	                residence: client_residence,
-	                address_line_1: $(fields.txt_address1).val(),
-	                address_line_2: $(fields.txt_address2).val(),
-	                address_city: $(fields.txt_city).val(),
-	                address_state: $(fields.ddl_state).val() || $(fields.txt_state).val(),
-	                address_postcode: $(fields.txt_postcode).val(),
-	                phone: $(fields.txt_phone).val(),
-	                secret_question: $(fields.ddl_secret_question).val(),
-	                secret_answer: $(fields.txt_secret_answer).val()
-	            };
-	            if (Client.get('affiliate_token')) {
-	                data.affiliate_token = Client.get('affiliate_token');
-	            }
-	            ChampionSocket.send(data).then(function (response) {
-	                if (response.error) {
-	                    $('#msg_form').removeClass(hidden_class).text(response.error.message);
-	                    btn_submit.removeAttr('disabled');
-	                } else {
-	                    var acc_info = response.new_account_real;
-	                    Client.process_new_account(Client.get('email'), acc_info.client_id, acc_info.oauth_token);
-	                    window.location.href = default_redirect_url();
-	                }
-	            });
-	        } else {
-	            btn_submit.removeAttr('disabled');
-	        }
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ChampionNewRealAccount;
-
-/***/ },
-/* 433 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var moment = __webpack_require__(302);
-	var Utility = __webpack_require__(417);
-
-	var DatePicker = function DatePicker(component_selector, select_type) {
-	    this.component_selector = component_selector;
-	    this.select_type = typeof select_type === 'undefined' ? 'date' : select_type;
-
-	    this.localizations = {};
-	    this.localizations.monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-	    this.localizations.monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-	    this.localizations.dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-	    this.localizations.dayNamesMin = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-
-	    this.localizations.nextText = 'Next';
-	    this.localizations.prevText = 'Previous';
-	};
-
-	DatePicker.prototype = {
-	    show: function show(options) {
-	        this.checkWidth(this.config(options), this.component_selector, this);
-	        var that = this;
-	        $(window).resize(function () {
-	            that.checkWidth(that.config_data, that.component_selector, that);
-	        });
-	    },
-	    hide: function hide() {
-	        if ($(this.component_selector + '.hasDatepicker').length > 0) {
-	            $(this.component_selector).datepicker('destroy').removeAttr('data-picker');
-	        }
-	        $(this.component_selector).off('keydown');
-	    },
-	    create: function create(config) {
-	        var that = this;
-	        $(this.component_selector).keydown(function (e) {
-	            if (e.which === 13) {
-	                e.preventDefault();
-	                e.stopPropagation();
-	                if (that.select_type === 'date') {
-	                    $(this).datepicker('setDate', $(this).val());
-	                }
-	                $(this).datepicker('hide');
-	                $(this).blur();
-	                $(that).trigger('enter_pressed');
-	                return false;
-	            }
-	            return true;
-	        }).datepicker(config);
-
-	        // Not possible to tell datepicker where to put it's
-	        // trigger calendar icon on the page, so we remove it
-	        // from the DOM and use our own one.
-	        $('button.ui-datepicker-trigger').remove();
-	    },
-	    config: function config(options) {
-	        var today = new Date();
-
-	        var config = {
-	            dateFormat: 'yy-mm-dd',
-	            monthNames: this.localizations.monthNames,
-	            monthNamesShort: this.localizations.monthNamesShort,
-	            dayNames: this.localizations.dayNames,
-	            dayNamesMin: this.localizations.dayNamesMin,
-	            nextText: this.localizations.nextText,
-	            prevText: this.localizations.prevText,
-	            changeMonth: true,
-	            changeYear: true
-	        };
-
-	        $.extend(config, options);
-
-	        var setDate = function setDate(date) {
-	            var new_date = void 0;
-	            if (typeof options[date] === 'number') {
-	                new_date = new Date();
-	                new_date.setDate(today.getDate() + Number(options[date]));
-	            }
-	            config[date] = new_date || options[date];
-	        };
-
-	        if (options.minDate !== undefined) {
-	            if (options.minDate === 'today') {
-	                config.minDate = today;
-	            } else {
-	                setDate('minDate');
-	            }
-	        }
-
-	        if (options.maxDate !== undefined) {
-	            setDate('maxDate');
-	        }
-
-	        var that = this;
-	        config.onSelect = function (date_text) {
-	            var day = date_text.split(' ')[0];
-	            var month = Utility.padLeft(Number($('.ui-datepicker-month').val()) + 1, 2, '0');
-	            var year = $('.ui-datepicker-year').val();
-	            var date = [year, month, day].join('-');
-	            var oldValue = $(this).attr('data-value');
-
-	            $(this).attr('data-value', date);
-	            if (that.select_type === 'diff') {
-	                var today_utc = moment.utc();
-	                var selected_date = moment.utc(date + ' 23:59:59');
-	                var duration = selected_date.diff(today_utc, 'days');
-	                $(this).val(duration);
-	                if (oldValue && oldValue === date) return false;
-	                $(that.component_selector).trigger('change', [duration]);
-	            } else if (that.select_type === 'date') {
-	                $(this).val(date_text);
-	                if (oldValue && oldValue === date) return false;
-	                $(that.component_selector).trigger('change', [date_text]);
-	            }
-	            return true;
-	        };
-
-	        this.config_data = config;
-
-	        return config;
-	    },
-	    getDate: function getDate(date) {
-	        var year = date.getFullYear();
-	        var month = Utility.padLeft(date.getMonth() + 1, 2, '0');
-	        var day = Utility.padLeft(date.getDate(), 2, '0');
-	        return [year, month, day].join('-');
-	    },
-	    checkWidth: function checkWidth(config, component_selector, that) {
-	        var $selector = $(component_selector);
-	        if ($(window).width() < 770 && Utility.checkInput('date', 'not-a-date') && $selector.attr('data-picker') !== 'native') {
-	            that.hide($selector);
-	            $selector.attr({ type: 'date', 'data-picker': 'native' }).val($selector.attr('data-value'));
-	            if ($selector.attr('readonly')) {
-	                $selector.attr('data-readonly', 'readonly').removeAttr('readonly');
-	            }
-	            if (config.minDate !== undefined) {
-	                $selector.attr('min', that.getDate(config.minDate));
-	            }
-	            if (config.maxDate !== undefined) {
-	                $selector.attr('max', that.getDate(config.maxDate));
-	            }
-	        } else if ($(window).width() > 769 && $selector.attr('data-picker') !== 'jquery' || $(window).width() < 770 && !Utility.checkInput('date', 'not-a-date')) {
-	            var value = $selector.attr('data-value');
-	            var format_value = value && that.select_type === 'date' ? Utility.toISOFormat(moment(value)) : $selector.val();
-	            $selector.attr({ type: 'text', 'data-picker': 'jquery' }).removeAttr('min').removeAttr('max').val(format_value);
-	            if ($selector.attr('data-readonly')) {
-	                $selector.attr('readonly', 'readonly').removeAttr('data-readonly');
-	            }
-	            that.create(config);
-	        }
-	    }
-	};
-
-	module.exports = {
-	    DatePicker: DatePicker
-	};
-
-/***/ },
-/* 434 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(413);
-	var Client = __webpack_require__(301);
-	var Utility = __webpack_require__(417);
-	var default_redirect_url = __webpack_require__(419).default_redirect_url;
-	var Validation = __webpack_require__(431);
-
-	var ChampionNewVirtualAccount = function () {
-	    'use strict';
-
-	    var form_selector = '#frm_new_account_virtual';
-	    var hidden_class = 'invisible';
-
-	    var container = void 0,
-	        btn_submit = void 0;
-
-	    var fields = {
-	        txt_verification_code: '#txt_verification_code',
-	        txt_password: '#txt_password',
-	        txt_re_password: '#txt_re_password',
-	        ddl_residence: '#ddl_residence',
-	        btn_submit: '#btn_submit'
-	    };
-
-	    var load = function load() {
-	        if (Client.redirect_if_login()) return;
-	        container = $('#champion-container');
-	        btn_submit = container.find(fields.btn_submit);
-	        btn_submit.on('click dblclick', submit);
-
-	        Validation.init(form_selector, [{ selector: fields.txt_verification_code, validations: ['req', 'email_token'] }, { selector: fields.txt_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_password }]] }, { selector: fields.ddl_residence, validations: ['req'] }]);
-
-	        populateResidence();
-	    };
-
-	    var populateResidence = function populateResidence() {
-	        ChampionSocket.send({ residence_list: 1 }).then(function (response) {
-	            var $ddl_residence = container.find(fields.ddl_residence);
-	            Utility.dropDownFromObject($ddl_residence, response.residence_list);
-	            container.find('#residence_loading').remove();
-	            $ddl_residence.removeClass(hidden_class);
-	        });
-	    };
-
-	    var unload = function unload() {
-	        if (btn_submit) {
-	            btn_submit.off('click', submit);
-	        }
-	    };
-
-	    var submit = function submit(e) {
-	        e.preventDefault();
-	        if (Validation.validate(form_selector)) {
-	            btn_submit.attr('disabled', 'disabled');
-	            var data = {
-	                new_account_virtual: 1,
-	                verification_code: $(fields.txt_verification_code).val(),
-	                client_password: $(fields.txt_password).val(),
-	                residence: $(fields.ddl_residence).val()
-	            };
-	            if (Client.get('affiliate_token')) {
-	                data.affiliate_token = Client.get('affiliate_token');
-	            }
-	            ChampionSocket.send(data).then(function (response) {
-	                if (response.error) {
-	                    $('#msg_form').removeClass(hidden_class).text(response.error.message);
-	                    btn_submit.removeAttr('disabled');
-	                } else {
-	                    var acc_info = response.new_account_virtual;
-	                    Client.process_new_account(acc_info.email, acc_info.client_id, acc_info.oauth_token, true);
-	                    window.location.href = default_redirect_url();
-	                }
-	            });
-	        }
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ChampionNewVirtualAccount;
-
-/***/ },
-/* 435 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Client = __webpack_require__(301);
-	var Validation = __webpack_require__(431);
-	var ChampionSocket = __webpack_require__(413);
-	var url_for = __webpack_require__(419).url_for;
-
-	var LostPassword = function () {
-	    'use strict';
-
-	    var form_selector = '#frm_lost_password';
-	    var btn_submit = void 0;
-
-	    var fields = {
-	        txt_email: '#txt_email',
-	        btn_submit: '#btn_submit'
-	    };
-
-	    var load = function load() {
-	        if (Client.redirect_if_login()) return;
-	        btn_submit = $(form_selector).find(fields.btn_submit);
-
-	        btn_submit.on('click', submit);
-
-	        Validation.init(form_selector, [{ selector: fields.txt_email, validations: ['req', 'email'] }]);
-	    };
-
-	    var unload = function unload() {
-	        if (btn_submit) {
-	            btn_submit.off('click', submit);
-	        }
-	    };
-
-	    var submit = function submit(e) {
-	        e.preventDefault();
-	        if (Validation.validate(form_selector)) {
-	            var data = {
-	                verify_email: $(fields.txt_email).val(),
-	                type: 'reset_password'
-	            };
-	            ChampionSocket.send(data).then(function (response) {
-	                if (response.error) {
-	                    $('#msg_form').removeClass('invisible').text(response.error.message);
-	                } else {
-	                    window.location.href = url_for('reset-password');
-	                }
-	            });
-	        }
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = LostPassword;
-
-/***/ },
-/* 436 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Client = __webpack_require__(301);
-	var Validation = __webpack_require__(431);
-	var ChampionSocket = __webpack_require__(413);
-	var Login = __webpack_require__(421);
-	var DatePicker = __webpack_require__(433).DatePicker;
-	var Utility = __webpack_require__(417);
-	var moment = __webpack_require__(302);
-
-	var ResetPassword = function () {
-	    'use strict';
-
-	    var form_selector = '#frm_reset_password';
-	    var hidden_class = 'invisible';
-
-	    var container = void 0,
-	        btn_submit = void 0,
-	        real_acc = void 0;
-
-	    var fields = {
-	        txt_verification_code: '#txt_verification_code',
-	        txt_password: '#txt_password',
-	        txt_re_password: '#txt_re_password',
-	        chk_has_real: '#chk_has_real',
-	        txt_birth_date: '#txt_birth_date',
-	        btn_submit: '#btn_submit'
-	    };
-
-	    var load = function load() {
-	        if (Client.redirect_if_login()) return;
-	        container = $(form_selector);
-	        btn_submit = container.find(fields.btn_submit);
-	        real_acc = container.find(fields.chk_has_real);
-
-	        real_acc.on('click', haveRealAccountHandler);
-	        btn_submit.on('click', submit);
-	        attachDatePicker();
-
-	        Validation.init(form_selector, [{ selector: fields.txt_verification_code, validations: ['req', 'email_token'] }, { selector: fields.txt_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_password }]] }, { selector: fields.txt_birth_date, validations: ['req'] }]);
-	    };
-
-	    var haveRealAccountHandler = function haveRealAccountHandler() {
-	        container.find('.dob_row').toggleClass(hidden_class);
-	    };
-
-	    var submit = function submit(e) {
-	        e.preventDefault();
-	        if (Validation.validate(form_selector)) {
-	            var data = {
-	                reset_password: 1,
-	                verification_code: $(fields.txt_verification_code).val(),
-	                new_password: $(fields.txt_password).val()
-	            };
-	            if (real_acc.is(':checked')) {
-	                data.date_of_birth = $(fields.txt_birth_date).val();
-	            }
-	            ChampionSocket.send(data).then(function (response) {
-	                btn_submit.prop('disabled', true);
-	                $(form_selector).addClass(hidden_class);
-	                if (response.error) {
-	                    $('p.notice-msg').addClass(hidden_class);
-	                    $('#reset-error').removeClass(hidden_class);
-
-	                    var resetErrorTemplate = '[_1]' + ' Please click the link below to restart the password recovery process. ' + 'If you require further assistance, please contact our Customer Support.';
-
-	                    // special handling as backend returns inconsistent format
-	                    var errMsg = resetErrorTemplate.replace('[_1]', response.error.code === 'InputValidationFailed' ? 'Token has expired.' : response.error.message);
-
-	                    $('#reset-error-msg').text(errMsg);
-	                } else {
-	                    $('p.notice-msg').text('Your password has been successfully reset. ' + 'Please log into your account using your new password.');
-	                    window.setTimeout(function () {
-	                        Login.redirect_to_login();
-	                    }, 5000);
-	                }
-	            });
-	        }
-	    };
-
-	    var attachDatePicker = function attachDatePicker() {
-	        var datePickerInst = new DatePicker(fields.txt_birth_date);
-	        datePickerInst.hide();
-	        datePickerInst.show({
-	            minDate: -100 * 365,
-	            maxDate: -18 * 365 - 5,
-	            yearRange: '-100:-18'
-	        });
-	        $(fields.txt_birth_date).attr('data-value', Utility.toISOFormat(moment())).change(function () {
-	            return Utility.dateValueChanged(this, 'date');
-	        });
-	    };
-
-	    var unload = function unload() {
-	        if (btn_submit) {
-	            real_acc.off('click', haveRealAccountHandler);
-	            btn_submit.off('click', submit);
-	        }
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ResetPassword;
-
-/***/ },
-/* 437 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(413);
-	var Client = __webpack_require__(301);
-
-	var Cashier = function () {
-	    'use strict';
-
-	    var hidden_class = 'invisible';
-
-	    var load = function load() {
-	        ChampionSocket.wait('authorize').then(function () {
-	            var cashierContainer = $('.fx-cashier');
-	            if (Client.is_logged_in() && Client.is_virtual()) {
-	                cashierContainer.find('#fx-virtual').removeClass(hidden_class);
-	                $('#deposit-btn, #withdraw-btn').addClass(hidden_class);
-	                if (Client.get('balance') > 1000) {
-	                    disableButton($('#VRT_topup_link'));
-	                }
-	            } else if (Client.is_logged_in() && !Client.is_virtual()) {
-	                cashierContainer.find('#fx-virtual').addClass(hidden_class);
-	                $('#deposit-btn, #withdraw-btn').removeClass(hidden_class);
-	                ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
-	                    if (!response.error && response.cashier_password === 1) {
-	                        disableButton($('#deposit-btn, #withdraw-btn'));
-	                    }
-	                });
-	            } else {
-	                $('#deposit-btn, #withdraw-btn').addClass(hidden_class);
-	            }
-	        });
-	    };
-
-	    var disableButton = function disableButton($btn) {
-	        $btn.attr('href', 'javascr' + 'ipt:;').addClass('button-disabled');
-	    };
-
-	    return {
-	        load: load
-	    };
-	}();
-
-	module.exports = Cashier;
-
-/***/ },
-/* 438 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	var ChampionSocket = __webpack_require__(413);
-	var Validation = __webpack_require__(431);
-
-	var CashierPassword = function () {
-	    'use strict';
-
-	    var btn_submit = void 0,
-	        form_type = void 0;
-
-	    var hidden_class = 'invisible';
-
-	    var fields = {
-	        txt_unlock_password: '#txt_unlock_password',
-	        txt_lock_password: '#txt_lock_password',
-	        txt_re_password: '#txt_re_password',
-	        btn_submit: '#btn_submit'
-	    };
-
-	    var views = {
-	        logged_out: 'logged_out',
-	        virtual: 'virtual',
-	        real: 'real',
-	        lock_cashier: 'lock',
-	        unlock_cashier: 'unlock'
-	    };
-
-	    var load = function load() {
-	        ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
-	            if (response.error) return;
-	            if (response.cashier_password === 1) {
-	                form_type = views.unlock_cashier;
-	            } else {
-	                form_type = views.lock_cashier;
-	            }
-	            $('#form_' + form_type + '_cashier').removeClass(hidden_class);
-	            initForm(form_type);
-	        });
-	    };
-
-	    var initForm = function initForm(form) {
-	        var form_selector = '#form_' + form_type + '_cashier',
-	            $form = $(form_selector);
-
-	        btn_submit = $form.find(fields.btn_submit);
-	        btn_submit.on('click', submit);
-
-	        if (form === views.lock_cashier) {
-	            Validation.init(form_selector, [{ selector: fields.txt_lock_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_lock_password }]] }]);
-	        } else {
-	            Validation.init(form_selector, [{ selector: fields.txt_unlock_password, validations: ['req'] }]);
-	        }
-	    };
-
-	    var unload = function unload() {
-	        if (btn_submit) {
-	            btn_submit.off('click', submit);
-	        }
-	    };
-
-	    var submit = function submit(e) {
-	        e.preventDefault();
-
-	        var form_selector = '#form_' + form_type + '_cashier',
-	            $form = $(form_selector);
-
-	        if (Validation.validate(form_selector)) {
-	            var req_key = form_type + '_password',
-	                req_val = $('#txt_' + form_type + '_password').val();
-
-	            var data = _defineProperty({
-	                cashier_password: 1
-	            }, req_key, req_val);
-
-	            ChampionSocket.send(data).then(function (response) {
-	                if (response.error) {
-	                    $(form_selector + ' #msg_form').removeClass(hidden_class).text(response.error.message);
-	                } else {
-	                    $form.addClass(hidden_class);
-	                    $('.notice-msg').removeClass(hidden_class).text('Your settings have been updated successfully.');
-	                }
-	            });
-	        }
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = CashierPassword;
-
-/***/ },
-/* 439 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(413);
-	var Client = __webpack_require__(301);
-
-	var CashierPaymentMethods = function () {
-	    'use strict';
-
-	    var hidden_class = 'invisible';
-
-	    var load = function load() {
-	        ChampionSocket.wait('authorize').then(function () {
-	            var container = $('.fx-payment-methods');
-	            if (!Client.is_logged_in()) {
-	                container.find('#btn-open-account').removeClass(hidden_class);
-	            } else if (!Client.is_virtual()) {
-	                container.find('#btn-deposit, #btn-withdraw').removeClass(hidden_class);
-	                ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
-	                    if (!response.error && response.cashier_password === 1) {
-	                        container.find('#btn-deposit, #btn-withdraw').addClass('button-disabled');
-	                    }
-	                });
-	            }
-	        });
-	    };
-
-	    return {
-	        load: load
-	    };
-	}();
-
-	module.exports = CashierPaymentMethods;
-
-/***/ },
-/* 440 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(413);
-	var Client = __webpack_require__(301);
-
-	var CashierTopUpVirtual = function () {
-	    'use strict';
-
-	    var hidden_class = 'invisible';
-
-	    var viewError = void 0,
-	        viewSuccess = void 0;
-
-	    var load = function load() {
-	        var container = $('#topup_virtual');
-	        viewError = container.find('#viewError');
-	        viewSuccess = container.find('#viewSuccess');
-
-	        top_up_virtual();
-	    };
-
-	    var top_up_virtual = function top_up_virtual() {
-	        var data = {
-	            topup_virtual: '1'
-	        };
-	        ChampionSocket.send(data).then(function (response) {
-	            $('#topup_loading').remove();
-	            if (response.error) {
-	                viewError.removeClass(hidden_class).find('.notice-msg').text(response.error.message);
-	            } else {
-	                viewSuccess.removeClass(hidden_class).find('.success-msg').text('[_1] [_2] has been credited to your Virtual money account [_3]'.replace('[_1]', response.topup_virtual.currency).replace('[_2]', response.topup_virtual.amount).replace('[_3]', Client.get('loginid')));
-	            }
-	        });
-	    };
-
-	    return {
-	        load: load,
-	        top_up_virtual: top_up_virtual
-	    };
-	}();
-
-	module.exports = CashierTopUpVirtual;
-
-/***/ },
-/* 441 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(413);
-
-	var Authenticate = function () {
-	    'use strict';
-
-	    var load = function load() {
-	        ChampionSocket.send({ get_account_status: 1 }).then(function (response) {
-	            if (response.error) {
-	                $('#error_message').removeClass('invisible').text(response.error.message);
-	            } else {
-	                var status = response.get_account_status.status;
-	                var authenticated = /authenticated/.test(status);
-	                var age_verified = /age_verification/.test(status);
-	                if (authenticated && age_verified) {
-	                    $('#fully_authenticated').removeClass('invisible');
-	                } else if (!authenticated) {
-	                    $('#not_authenticated').removeClass('invisible');
-	                } else if (!age_verified) {
-	                    $('#needs_age_verification').removeClass('invisible');
-	                }
-	            }
-	        });
-	    };
-
-	    return {
-	        load: load
-	    };
-	}();
-
-	module.exports = Authenticate;
-
-/***/ },
-/* 442 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(413);
-	var Validation = __webpack_require__(431);
-
-	var ChangePassword = function () {
-	    'use strict';
-
-	    var $form = void 0,
-	        btn_submit = void 0;
-
-	    var form_selector = '#frm_change_password',
-	        hidden_class = 'invisible';
-
-	    var fields = {
-	        txt_old_password: '#txt_old_password',
-	        txt_new_password: '#txt_new_password',
-	        txt_re_password: '#txt_re_password',
-	        btn_submit: '#btn_submit'
-	    };
-
-	    var load = function load() {
-	        $form = $(form_selector + ':visible');
-	        btn_submit = $form.find(fields.btn_submit);
-	        btn_submit.on('click', submit);
-	        Validation.init(form_selector, [{ selector: fields.txt_old_password, validations: ['req'] }, { selector: fields.txt_new_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_new_password }]] }]);
-	    };
-
-	    var unload = function unload() {
-	        if (btn_submit) {
-	            btn_submit.off('click', submit);
-	        }
-	    };
-
-	    var submit = function submit(e) {
-	        e.preventDefault();
-	        if (Validation.validate(form_selector)) {
-	            var data = {
-	                change_password: 1,
-	                old_password: $(fields.txt_old_password).val(),
-	                new_password: $(fields.txt_new_password).val()
-	            };
-	            ChampionSocket.send(data).then(function (response) {
-	                if (response.error) {
-	                    $('#msg_form').removeClass(hidden_class).text(response.error.message);
-	                } else {
-	                    setTimeout(function () {
-	                        ChampionSocket.send({ logout: 1 });
-	                    }, 5000);
-	                    $form.addClass(hidden_class);
-	                    $('.notice-msg').removeClass(hidden_class).text('Your password has been changed.');
-	                }
-	            });
-	        }
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = ChangePassword;
-
-/***/ },
-/* 443 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var MetaTraderConfig = __webpack_require__(444);
-	var MetaTraderUI = __webpack_require__(445);
-	var Client = __webpack_require__(301);
-	var ChampionSocket = __webpack_require__(413);
-	var Validation = __webpack_require__(431);
-
-	var MetaTrader = function () {
-	    'use strict';
-
-	    var types_info = MetaTraderConfig.types_info;
-	    var actions_info = MetaTraderConfig.actions_info;
-	    var fields = MetaTraderConfig.fields;
-
-	    var load = function load() {
-	        ChampionSocket.wait('mt5_login_list').then(function (response) {
-	            responseLoginList(response);
-	        });
-	        MetaTraderUI.init(submit);
-	    };
-
-	    var responseLoginList = function responseLoginList(response) {
-	        (response.mt5_login_list || []).forEach(function (obj) {
-	            var acc_type = Client.getMT5AccountType(obj.group);
-	            if (acc_type) {
-	                // ignore old accounts which are not linked to any group
-	                types_info[acc_type].account_info = { login: obj.login };
-	                getAccountDetails(obj.login, acc_type);
-	            }
-	        });
-
-	        // Update types with no account
-	        Object.keys(types_info).forEach(function (acc_type) {
-	            if (!types_info[acc_type].account_info) {
-	                MetaTraderUI.updateAccount(acc_type);
-	            }
-	        });
-	    };
-
-	    var getAccountDetails = function getAccountDetails(login, acc_type) {
-	        MetaTraderUI.displayLoadingAccount(acc_type);
-	        ChampionSocket.send({
-	            mt5_get_settings: 1,
-	            login: login
-	        }).then(function (response) {
-	            if (response.mt5_get_settings) {
-	                types_info[acc_type].account_info = response.mt5_get_settings;
-	                MetaTraderUI.updateAccount(acc_type);
-	            }
-	        });
-	    };
-
-	    var makeRequestObject = function makeRequestObject(acc_type, action) {
-	        var req = {};
-
-	        Object.keys(fields[action]).forEach(function (field) {
-	            var field_obj = fields[action][field];
-	            if (field_obj.request_field) {
-	                req[field_obj.request_field] = MetaTraderUI.$form().find(field_obj.id).val();
-	            }
-	        });
-
-	        // set main command
-	        req['mt5_' + action] = 1;
-
-	        // add additional fields
-	        $.extend(req, fields[action].additional_fields(acc_type));
-
-	        return req;
-	    };
-
-	    var submit = function submit(e) {
-	        e.preventDefault();
-	        MetaTraderUI.hideFormMessage();
-	        var $btn_submit = $(e.target);
-	        var acc_type = $btn_submit.attr('acc_type');
-	        var action = $btn_submit.attr('action');
-	        if (Validation.validate('#frm_' + action)) {
-	            MetaTraderUI.disableButton();
-	            // further validations before submit (password_check)
-	            MetaTraderUI.postValidate(acc_type, action).then(function (is_ok) {
-	                if (!is_ok) {
-	                    MetaTraderUI.enableButton();
-	                    return;
-	                }
-
-	                var req = makeRequestObject(acc_type, action);
-	                ChampionSocket.send(req).then(function (response) {
-	                    if (response.error) {
-	                        MetaTraderUI.displayFormMessage(response.error.message);
-	                        MetaTraderUI.enableButton();
-	                    } else {
-	                        MetaTraderUI.closeForm();
-	                        MetaTraderUI.displayMainMessage(actions_info[action].success_msg(response));
-	                        getAccountDetails(actions_info[action].login ? actions_info[action].login(response) : types_info[acc_type].account_info.login, acc_type);
-	                        if (typeof actions_info[action].onSuccess === 'function') {
-	                            actions_info[action].onSuccess(response, acc_type);
-	                        }
-	                    }
-	                });
-	            });
-	        }
-	    };
-
-	    return {
-	        load: load
-	    };
-	}();
-
-	module.exports = MetaTrader;
-
-/***/ },
-/* 444 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Client = __webpack_require__(301);
-	var formatMoney = __webpack_require__(423).formatMoney;
-	var GTM = __webpack_require__(420);
-	var ChampionSocket = __webpack_require__(413);
-	var State = __webpack_require__(416).State;
-	var url_for = __webpack_require__(419).url_for;
-	var isEmptyObject = __webpack_require__(417).isEmptyObject;
-
-	var MetaTraderConfig = function () {
-	    'use strict';
-
-	    var types_info = {
-	        demo: { account_type: 'demo', mt5_account_type: '', title: 'Demo', max_leverage: 1000, is_demo: true },
-	        champion_cent: { account_type: 'financial', mt5_account_type: 'cent', title: 'Real Cent', max_leverage: 1000 },
-	        champion_standard: { account_type: 'financial', mt5_account_type: 'standard', title: 'Real Standard', max_leverage: 300 },
-	        champion_stp: { account_type: 'financial', mt5_account_type: 'stp', title: 'Real STP', max_leverage: 100 }
-	    };
-
-	    var needsRealMessage = function needsRealMessage() {
-	        return $('#msg_' + (Client.has_real() ? 'switch' : 'upgrade')).html();
-	    };
-
-	    var actions_info = {
-	        new_account: {
-	            title: 'Create Account',
-	            success_msg: function success_msg(response) {
-	                return 'Congratulations! Your [_1] Account has been created.'.replace('[_1]', types_info[response.mt5_new_account.account_type === 'financial' ? 'champion_' + response.mt5_new_account.mt5_account_type : response.mt5_new_account.account_type].title);
-	            },
-	            login: function login(response) {
-	                return response.mt5_new_account.login;
-	            },
-	            prerequisites: function prerequisites(acc_type) {
-	                return new Promise(function (resolve) {
-	                    if (types_info[acc_type].is_demo) {
-	                        resolve();
-	                    } else if (Client.is_virtual()) {
-	                        resolve(needsRealMessage());
-	                    } else {
-	                        ChampionSocket.send({ get_financial_assessment: 1 }).then(function (response_financial) {
-	                            resolve(isEmptyObject(response_financial.get_financial_assessment) ? $('#msg_assessment').html() : '');
-	                        });
-	                    }
-	                });
-	            },
-	            formValues: function formValues($form, acc_type, action) {
-	                // Account type, Sub account type
-	                $form.find(fields[action].lbl_account_type.id).text(types_info[acc_type].title);
-	                // Email
-	                $form.find(fields[action].lbl_email.id).text(fields[action].additional_fields(acc_type).email);
-	                // Max leverage
-	                $form.find(fields[action].ddl_leverage.id + ' option').each(function () {
-	                    if (+$(this).val() > types_info[acc_type].max_leverage) {
-	                        $(this).remove();
-	                    }
-	                });
-	            },
-	            onSuccess: function onSuccess(response, acc_type) {
-	                var type = types_info[acc_type].mt5_account_type || 'demo';
-	                var gtm_data = {
-	                    event: 'mt5_new_account',
-	                    bom_email: Client.get('email'),
-	                    bom_country: State.get(['response', 'get_settings', 'get_settings', 'country']),
-	                    mt5_last_signup: type
-	                };
-	                gtm_data['mt5_' + type + '_id'] = response.mt5_new_account.login;
-	                if (acc_type === 'demo' && !Client.is_virtual()) {
-	                    gtm_data.visitorId = Client.get('loginid_array').find(function (login) {
-	                        return !login.real;
-	                    }).id;
-	                }
-	                GTM.pushDataLayer(gtm_data);
-	            }
-	        },
-	        password_change: {
-	            title: 'Change Password',
-	            success_msg: function success_msg(response) {
-	                return 'The main password of account number [_1] has been changed.'.replace('[_1]', response.echo_req.login);
-	            },
-	            prerequisites: function prerequisites() {
-	                return new Promise(function (resolve) {
-	                    return resolve('');
-	                });
-	            },
-	            formValues: function formValues($form, acc_type, action) {
-	                // Login ID
-	                $form.find(fields[action].lbl_login.id).text(fields[action].additional_fields(acc_type).login);
-	            }
-	        },
-	        deposit: {
-	            title: 'Deposit',
-	            success_msg: function success_msg(response) {
-	                return '[_1] deposit from [_2] to account number [_3] is done. Transaction ID: [_4]'.replace('[_1]', formatMoney(response.echo_req.amount)).replace('[_2]', response.echo_req.from_binary).replace('[_3]', response.echo_req.to_mt5).replace('[_4]', response.binary_transaction_id);
-	            },
-	            prerequisites: function prerequisites() {
-	                return new Promise(function (resolve) {
-	                    if (Client.is_virtual()) {
-	                        resolve(needsRealMessage());
-	                    } else {
-	                        ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
-	                            if (!response.error && response.cashier_password === 1) {
-	                                resolve('Your cashier is locked as per your request - to unlock it, please click <a href="[_1]">here</a>.'.replace('[_1]', url_for('cashier/cashier-password')));
-	                            } else {
-	                                resolve();
-	                            }
-	                        });
-	                    }
-	                });
-	            },
-	            formValues: function formValues($form, acc_type, action) {
-	                // From, To
-	                $form.find(fields[action].lbl_from.id).text(fields[action].additional_fields(acc_type).from_binary);
-	                $form.find(fields[action].lbl_to.id).text(fields[action].additional_fields(acc_type).to_mt5);
-	            }
-	        },
-	        withdrawal: {
-	            title: 'Withdraw',
-	            success_msg: function success_msg(response) {
-	                return '[_1] withdrawal from account number [_2] to [_3] is done. Transaction ID: [_4]'.replace('[_1]', formatMoney(response.echo_req.amount)).replace('[_2]', response.echo_req.from_mt5).replace('[_3]', response.echo_req.to_binary).replace('[_4]', response.binary_transaction_id);
-	            },
-	            prerequisites: function prerequisites() {
-	                return new Promise(function (resolve) {
-	                    if (Client.is_virtual()) {
-	                        resolve(needsRealMessage());
-	                    } else {
-	                        ChampionSocket.send({ get_account_status: 1 }).then(function (response_status) {
-	                            resolve($.inArray('authenticated', response_status.get_account_status.status) === -1 ? $('#msg_authenticate').find('.show_for_mt5').removeClass('invisible').end().html() : '');
-	                        });
-	                    }
-	                });
-	            },
-	            pre_submit: function pre_submit($form, acc_type, displayFormMessage) {
-	                return ChampionSocket.send({
-	                    mt5_password_check: 1,
-	                    login: types_info[acc_type].account_info.login,
-	                    password: $form.find(fields.withdrawal.txt_main_pass.id).val()
-	                }).then(function (response) {
-	                    if (+response.mt5_password_check === 1) {
-	                        return true;
-	                    } else if (response.error) {
-	                        displayFormMessage(response.error.message);
-	                    }
-	                    return false;
-	                });
-	            },
-	            formValues: function formValues($form, acc_type, action) {
-	                // From, To
-	                $form.find(fields[action].lbl_from.id).text(fields[action].additional_fields(acc_type).from_mt5);
-	                $form.find(fields[action].lbl_to.id).text(fields[action].additional_fields(acc_type).to_binary);
-	            }
-	        }
-	    };
-
-	    var fields = {
-	        new_account: {
-	            lbl_account_type: { id: '#lbl_account_type' },
-	            lbl_email: { id: '#lbl_email' },
-	            txt_name: { id: '#txt_name', request_field: 'name' },
-	            ddl_leverage: { id: '#ddl_leverage', request_field: 'leverage' },
-	            txt_main_pass: { id: '#txt_main_pass', request_field: 'mainPassword' },
-	            txt_re_main_pass: { id: '#txt_re_main_pass' },
-	            txt_investor_pass: { id: '#txt_investor_pass', request_field: 'investPassword' },
-	            chk_tnc: { id: '#chk_tnc' },
-	            additional_fields: function additional_fields(acc_type) {
-	                return $.extend({
-	                    account_type: types_info[acc_type].account_type,
-	                    email: Client.get('email')
-	                }, types_info[acc_type].mt5_account_type ? {
-	                    mt5_account_type: types_info[acc_type].mt5_account_type
-	                } : {});
-	            }
-	        },
-	        password_change: {
-	            lbl_login: { id: '#lbl_login' },
-	            txt_old_password: { id: '#txt_old_password', request_field: 'old_password' },
-	            txt_new_password: { id: '#txt_new_password', request_field: 'new_password' },
-	            txt_re_new_password: { id: '#txt_re_new_password' },
-	            additional_fields: function additional_fields(acc_type) {
-	                return {
-	                    login: types_info[acc_type].account_info.login
-	                };
-	            }
-	        },
-	        deposit: {
-	            lbl_from: { id: '#lbl_from' },
-	            lbl_to: { id: '#lbl_to' },
-	            txt_amount: { id: '#txt_amount', request_field: 'amount' },
-	            additional_fields: function additional_fields(acc_type) {
-	                return {
-	                    from_binary: Client.get('loginid'),
-	                    to_mt5: types_info[acc_type].account_info.login
-	                };
-	            }
-	        },
-	        withdrawal: {
-	            lbl_from: { id: '#lbl_from' },
-	            lbl_to: { id: '#lbl_to' },
-	            txt_amount: { id: '#txt_amount', request_field: 'amount' },
-	            txt_main_pass: { id: '#txt_main_pass' },
-	            additional_fields: function additional_fields(acc_type) {
-	                return {
-	                    from_mt5: types_info[acc_type].account_info.login,
-	                    to_binary: Client.get('loginid')
-	                };
-	            }
-	        }
-	    };
-
-	    var validations = {
-	        new_account: [{ selector: fields.new_account.txt_name.id, validations: ['req', 'letter_symbol', ['length', { min: 2, max: 30 }]] }, { selector: fields.new_account.txt_main_pass.id, validations: ['req', ['password', 'mt']] }, { selector: fields.new_account.txt_re_main_pass.id, validations: ['req', ['compare', { to: fields.new_account.txt_main_pass.id }]] }, { selector: fields.new_account.txt_investor_pass.id, validations: ['req', ['password', 'mt'], ['not_equal', { to: fields.new_account.txt_main_pass.id, name1: 'Main password', name2: 'Investor password' }]] }, { selector: fields.new_account.ddl_leverage.id, validations: ['req'] }, { selector: fields.new_account.chk_tnc.id, validations: ['req'] }],
-	        password_change: [{ selector: fields.password_change.txt_old_password.id, validations: ['req'] }, { selector: fields.password_change.txt_new_password.id, validations: ['req', ['password', 'mt'], ['not_equal', { to: fields.password_change.txt_old_password.id, name1: 'Current password', name2: 'New password' }]] }, { selector: fields.password_change.txt_re_new_password.id, validations: ['req', ['compare', { to: fields.password_change.txt_new_password.id }]] }],
-	        deposit: [{ selector: fields.deposit.txt_amount.id, validations: ['req', ['number', { type: 'float', min: 1, max: 20000, decimals: '0, 2' }]] }],
-	        withdrawal: [{ selector: fields.withdrawal.txt_main_pass.id, validations: ['req'] }, { selector: fields.withdrawal.txt_amount.id, validations: ['req', ['number', { type: 'float', min: 1, max: 20000, decimals: '0, 2' }]] }]
-	    };
-
-	    return {
-	        types_info: types_info,
-	        actions_info: actions_info,
-	        fields: fields,
-	        validations: validations
-	    };
-	}();
-
-	module.exports = MetaTraderConfig;
-
-/***/ },
-/* 445 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var MetaTraderConfig = __webpack_require__(444);
-	var formatMoney = __webpack_require__(423).formatMoney;
-	var showLoadingImage = __webpack_require__(417).showLoadingImage;
-	var Validation = __webpack_require__(431);
-
-	var MetaTraderUI = function () {
-	    'use strict';
-
-	    var $container = void 0,
-	        $list = void 0,
-	        $action = void 0,
-	        $templates = void 0,
-	        _$form = void 0,
-	        $main_msg = void 0,
-	        submit = void 0;
-
-	    var hidden_class = 'invisible';
-
-	    var types_info = MetaTraderConfig.types_info;
-	    var actions_info = MetaTraderConfig.actions_info;
-	    var validations = MetaTraderConfig.validations;
-
-	    var init = function init(submit_func) {
-	        submit = submit_func;
-	        $container = $('#mt_account_management');
-	        $list = $container.find('#accounts_list');
-	        $action = $container.find('#fst_action');
-	        $templates = $container.find('#templates');
-	        $main_msg = $container.find('#main_msg');
-	        $container.find('#mt_loading').remove();
-
-	        populateAccountList();
-	    };
-
-	    var populateAccountList = function populateAccountList() {
-	        var $acc_box = $templates.find('> .acc-box');
-	        Object.keys(types_info).forEach(function (acc_type) {
-	            if ($list.find('#' + acc_type).length === 0) {
-	                var $acc_item = $acc_box.clone();
-
-	                // set values
-	                $acc_item.attr('id', acc_type);
-	                $acc_item.find('.title').text(types_info[acc_type].title);
-
-	                // exceptions for demo account
-	                if (types_info[acc_type].is_demo) {
-	                    $acc_item.find('.act_deposit, .act_withdrawal').remove();
-	                }
-	                $list.append($acc_item);
-	            }
-	        });
-	        $list.find('[class*="act_"]').click(populateForm);
-	        $action.find('.close').click(function () {
-	            closeForm(true);
-	        });
-	    };
-
-	    var displayLoadingAccount = function displayLoadingAccount(acc_type) {
-	        var $acc_item = $list.find('#' + acc_type);
-	        $acc_item.find('> div > div:not(.title, .separator)').addClass(hidden_class);
-	        $acc_item.find('.loading').removeClass(hidden_class);
-	    };
-
-	    var updateAccount = function updateAccount(acc_type) {
-	        var $acc_item = $list.find('#' + acc_type);
-	        $acc_item.find('.loading').addClass(hidden_class);
-	        if (types_info[acc_type].account_info) {
-	            // Update account info
-	            $acc_item.find('.acc-info div[data]').map(function () {
-	                var key = $(this).attr('data');
-	                var info = types_info[acc_type].account_info[key];
-	                $(this).text(key === 'balance' ? formatMoney(+info, 'USD') : key === 'leverage' ? '1:' + info : info);
-	            });
-	            $acc_item.find('.has-account').removeClass(hidden_class);
-	        } else {
-	            $acc_item.find('.no-account').removeClass(hidden_class).find('.info').html($templates.find('#' + acc_type));
-
-	            // Display account creation form if url has a hash like: #create_champion_cent
-	            var hash = window.location.hash;
-	            if (hash && hash === '#create_' + acc_type) {
-	                $acc_item.find('.act_new_account').click();
-	                // remove hash from url
-	                var url = window.location.href.split('#')[0];
-	                window.history.replaceState({ url: url }, null, url);
-	            }
-	        }
-	    };
-
-	    var populateForm = function populateForm(e) {
-	        closeForm();
-	        var $target = $(e.target);
-	        if ($target.prop('tagName').toLowerCase() === 'img') {
-	            $target = $target.parents('a');
-	        }
-	        var acc_type = $target.parents('.acc-box').attr('id');
-	        var action = $target.attr('class').match(/act_(.*)/)[1];
-
-	        // set active
-	        $list.find('.acc-box[id!="' + acc_type + '"] > div').removeClass('active');
-	        $list.find('#' + acc_type + ' > div').addClass('active');
-
-	        actions_info[action].prerequisites(acc_type).then(function (error_msg) {
-	            if (error_msg) {
-	                // does not meet one of prerequisites
-	                displayMainMessage(error_msg);
-	                return;
-	            }
-
-	            // clone form, event listener
-	            _$form = $templates.find('#frm_' + action).clone();
-	            var formValues = actions_info[action].formValues;
-	            if (formValues) formValues(_$form, acc_type, action);
-	            _$form.find('#btn_submit').attr({ acc_type: acc_type, action: action }).on('click dblclick', submit);
-
-	            // update title, append form
-	            $action.find('h4').text(types_info[acc_type].title + ': ' + actions_info[action].title).end().find('#frm_action').html(_$form).end().removeClass(hidden_class);
-	            $.scrollTo($action, 500, { offset: -7 });
-	            Validation.init('#frm_' + action, validations[action]);
-	        });
-	    };
-
-	    var closeForm = function closeForm(should_scroll) {
-	        if (_$form && _$form.length) {
-	            _$form.find('#btn_submit').off('click dblclick', submit);
-	            _$form.empty();
-	            _$form = undefined;
-	            $action.addClass(hidden_class);
-	            $list.find('.acc-box > div').removeClass('active');
-	            if (should_scroll) {
-	                $.scrollTo($list, 500, { offset: -10 });
-	            }
-	        }
-	        $main_msg.empty().addClass(hidden_class);
-	    };
-
-	    var postValidate = function postValidate(acc_type, action) {
-	        var validate = actions_info[action].pre_submit;
-	        return validate ? validate(_$form, acc_type, displayFormMessage) : new Promise(function (resolve) {
-	            return resolve(true);
-	        });
-	    };
-
-	    var hideFormMessage = function hideFormMessage() {
-	        _$form.find('#msg_form').html('').addClass(hidden_class);
-	    };
-
-	    var displayFormMessage = function displayFormMessage(message) {
-	        _$form.find('#msg_form').text(message).removeClass(hidden_class);
-	    };
-
-	    var displayMainMessage = function displayMainMessage(message) {
-	        $main_msg.html(message).removeClass(hidden_class);
-	        $.scrollTo($main_msg, 500, { offset: -10 });
-	    };
-
-	    var disableButton = function disableButton() {
-	        var $btn = _$form.find('button');
-	        if ($btn.length && !$btn.find('.barspinner').length) {
-	            $btn.attr('disabled', 'disabled');
-	            var $btn_text = $('<span/>', { text: $btn.text(), class: hidden_class });
-	            showLoadingImage($btn, 'white');
-	            $btn.append($btn_text);
-	        }
-	    };
-
-	    var enableButton = function enableButton() {
-	        var $btn = _$form.find('button');
-	        if ($btn.length && $btn.find('.barspinner').length) {
-	            $btn.removeAttr('disabled').html($btn.find('span').text());
-	        }
-	    };
-
-	    return {
-	        init: init,
-	        $form: function $form() {
-	            return _$form;
-	        },
-	        displayLoadingAccount: displayLoadingAccount,
-	        updateAccount: updateAccount,
-	        closeForm: closeForm,
-	        postValidate: postValidate,
-	        hideFormMessage: hideFormMessage,
-	        displayFormMessage: displayFormMessage,
-	        displayMainMessage: displayMainMessage,
-	        disableButton: disableButton,
-	        enableButton: enableButton
-	    };
-	}();
-
-	module.exports = MetaTraderUI;
-
-/***/ },
-/* 446 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var moment = __webpack_require__(302);
-	var Client = __webpack_require__(301);
-	var FormManager = __webpack_require__(447);
-	var ChampionSocket = __webpack_require__(413);
-	var dateValueChanged = __webpack_require__(417).dateValueChanged;
-	var DatePicker = __webpack_require__(433).DatePicker;
-	var TimePicker = __webpack_require__(448);
-
-	var SelfExclusion = function () {
-	    'use strict';
-
-	    var $form = void 0,
-	        fields = void 0,
-	        self_exclusion_data = void 0;
-
-	    var form_id = '#frm_self_exclusion';
-	    var timeout_date_id = '#timeout_until_date';
-	    var timeout_time_id = '#timeout_until_time';
-	    var exclude_until_id = '#exclude_until';
-	    var error_class = 'errorfield';
-	    var hidden_class = 'invisible';
-
-	    var load = function load() {
-	        $form = $(form_id);
-
-	        fields = {};
-	        $form.find('input').each(function () {
-	            fields[this.name] = '';
-	        });
-
-	        initDatePicker();
-	        getData();
-	    };
-
-	    var getData = function getData(send_anyway) {
-	        if (send_anyway) {
-	            ChampionSocket.send({ get_self_exclusion: 1 }, true).then(function (response) {
-	                handleResponse(response);
-	            });
-	        } else {
-	            ChampionSocket.wait('get_self_exclusion').then(function (response) {
-	                handleResponse(response);
-	            });
-	        }
-	    };
-
-	    var handleResponse = function handleResponse(response) {
-	        if (response.error) {
-	            if (response.error.code === 'ClientSelfExclusion') {
-	                ChampionSocket.send({ logout: 1 });
-	            }
-	            if (response.error.message) {
-	                $('#msg_error').html(response.error.message);
-	                $form.addClass(hidden_class);
-	            }
-	            return;
-	        }
-
-	        $('.barspinner').addClass(hidden_class);
-	        self_exclusion_data = response.get_self_exclusion;
-	        $.each(self_exclusion_data, function (key, value) {
-	            fields[key] = value;
-	            $form.find('#' + key).val(value);
-	        });
-	        $form.removeClass(hidden_class);
-	        bindValidation();
-	    };
-
-	    var bindValidation = function bindValidation() {
-	        var validations = [{ request_field: 'set_self_exclusion', value: 1 }];
-
-	        $form.find('input[type="text"]').each(function () {
-	            var id = $(this).attr('id');
-
-	            if (/(timeout_until|exclude_until)/.test(id)) return;
-
-	            var checks = [];
-	            var options = { min: 0 };
-	            if (id in self_exclusion_data) {
-	                checks.push('req');
-	                options.max = self_exclusion_data[id];
-	            } else {
-	                options.allow_empty = true;
-	            }
-	            checks.push(['number', options]);
-
-	            if (id === 'session_duration_limit') {
-	                checks.push(['custom', { func: validSessionDuration, message: 'Session duration limit cannot be more than 6 weeks.' }]);
-	            }
-
-	            validations.push({
-	                selector: '#' + id,
-	                validations: checks,
-	                exclude_if_empty: 1
-	            });
-	        });
-
-	        validations.push({
-	            selector: timeout_date_id,
-	            request_field: 'timeout_until',
-	            re_check_field: timeout_time_id,
-	            exclude_if_empty: 1,
-	            value: getTimeout,
-	            validations: [['custom', { func: function func() {
-	                    return $(timeout_time_id).val() ? $(timeout_date_id).val().length : true;
-	                }, message: 'This field is required.' }], ['custom', { func: validDate, message: 'Please select a valid date.' }], ['custom', { func: function func(value) {
-	                    return !value.length || toMoment(value).isAfter(moment().subtract(1, 'days'), 'day');
-	                }, message: 'Time out must be after today.' }], ['custom', { func: function func(value) {
-	                    return !value.length || toMoment(value).isBefore(moment().add(6, 'weeks'));
-	                }, message: 'Time out cannot be more than 6 weeks.' }]]
-	        }, {
-	            selector: timeout_time_id,
-	            exclude_request: 1,
-	            re_check_field: timeout_date_id,
-	            validations: [['custom', { func: function func() {
-	                    return $(timeout_date_id).val() && toMoment($(timeout_date_id).val()).isSame(moment(), 'day') ? $(timeout_time_id).val().length : true;
-	                }, message: 'This field is required.' }], ['custom', { func: function func(value) {
-	                    return !value.length || !$(timeout_date_id).val() || getTimeout() > moment().valueOf() / 1000;
-	                }, message: 'Time out cannot be in the past.' }], ['custom', { func: validTime, message: 'Please select a valid time.' }]]
-	        }, {
-	            selector: exclude_until_id,
-	            exclude_if_empty: 1,
-	            value: function value() {
-	                return dateFormat(exclude_until_id);
-	            },
-	            validations: [['custom', { func: validDate, message: 'Please select a valid date.' }], ['custom', { func: function func(value) {
-	                    return !value.length || toMoment(value).isAfter(moment().add(6, 'months'));
-	                }, message: 'Exclude time cannot be less than 6 months.' }], ['custom', { func: function func(value) {
-	                    return !value.length || toMoment(value).isBefore(moment().add(5, 'years'));
-	                }, message: 'Exclude time cannot be for more than 5 years.' }]]
-	        });
-
-	        FormManager.init(form_id, validations);
-	        FormManager.handleSubmit({
-	            form_selector: form_id,
-	            fnc_response_handler: setExclusionResponse,
-	            fnc_additional_check: additionalCheck,
-	            enable_button: true
-	        });
-	    };
-
-	    var validSessionDuration = function validSessionDuration(value) {
-	        return +value <= moment.duration(6, 'weeks').as('minutes');
-	    };
-	    var validDate = function validDate(value) {
-	        return !value.length || /^\d{4}-\d{2}-\d{2}$/.test(value) && moment(new Date(value), 'YYYY-MM-DD', true).isValid();
-	    };
-	    var validTime = function validTime(value) {
-	        return !value.length || moment(value, 'HH:mm', true).isValid();
-	    };
-
-	    var toMoment = function toMoment(value) {
-	        return moment(new Date(value));
-	    };
-	    var dateFormat = function dateFormat(elm_id) {
-	        return $(elm_id).val() ? toMoment($(elm_id).val()).format('YYYY-MM-DD') : '';
-	    };
-	    var getTimeout = function getTimeout() {
-	        return $(timeout_date_id).val() ? moment((dateFormat(timeout_date_id) + ' ' + $(timeout_time_id).val()).trim()).valueOf() / 1000 : '';
-	    };
-
-	    var initDatePicker = function initDatePicker() {
-	        // timeout_until
-	        new TimePicker(timeout_time_id).show();
-	        new DatePicker(timeout_date_id).show({
-	            minDate: 'today',
-	            maxDate: 6 * 7 });
-
-	        // exclude_until
-	        new DatePicker(exclude_until_id).show({
-	            minDate: moment().add(6, 'months').add(1, 'day').toDate(),
-	            maxDate: 5 * 365 });
-
-	        $(timeout_date_id + ', ' + exclude_until_id).change(function () {
-	            dateValueChanged(this, 'date');
-	        });
-	    };
-
-	    var additionalCheck = function additionalCheck(data) {
-	        var is_changed = Object.keys(data).some(function (key) {
-	            return (// using != in next line since response types is inconsistent
-	                key !== 'set_self_exclusion' && (!(key in self_exclusion_data) || self_exclusion_data[key] != data[key]) // eslint-disable-line eqeqeq
-
-	            );
-	        });
-	        if (!is_changed) {
-	            showFormMessage('You did not change anything.', false);
-	        }
-
-	        var is_confirmed = true;
-	        if ('timeout_until' in data || 'exclude_until' in data) {
-	            is_confirmed = window.confirm('When you click "OK" you will be excluded from trading on the site until the selected date.');
-	        }
-
-	        return is_changed && is_confirmed;
-	    };
-
-	    var setExclusionResponse = function setExclusionResponse(response) {
-	        if (response.error) {
-	            var error_msg = response.error.message;
-	            var error_fld = response.error.field;
-	            if (error_fld) {
-	                $('#' + error_fld).siblings('.error-msg').removeClass(hidden_class).html(error_msg);
-	            } else {
-	                showFormMessage(error_msg, false);
-	            }
-	            return;
-	        }
-	        showFormMessage('Your changes have been updated.', true);
-	        Client.set('session_start', moment().unix()); // used to handle session duration limit
-	        getData(true);
-	    };
-
-	    var showFormMessage = function showFormMessage(msg, is_success) {
-	        $('#msg_form').attr('class', is_success ? 'success-msg' : error_class).html(is_success ? '<ul class="checked"><li>' + msg + '</li></ul>' : msg).css('display', 'block').delay(5000).fadeOut(1000);
-	    };
-
-	    return {
-	        load: load
-	    };
-	}();
-
-	module.exports = SelfExclusion;
-
-/***/ },
-/* 447 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ChampionSocket = __webpack_require__(413);
-	var isEmptyObject = __webpack_require__(417).isEmptyObject;
-	var showLoadingImage = __webpack_require__(417).showLoadingImage;
-	var Validation = __webpack_require__(431);
-
-	var FormManager = function () {
-	    'use strict';
-
-	    var forms = {};
-
-	    var initForm = function initForm(form_selector, fields) {
-	        var $form = $(form_selector + ':visible');
-	        var $btn = $form.find('button[type="submit"]');
-	        if ($form.length) {
-	            forms[form_selector] = {
-	                $btn_submit: $btn,
-	                can_submit: true
-	            };
-	            if (Array.isArray(fields) && fields.length) {
-	                forms[form_selector].fields = fields;
-
-	                fields.forEach(function (field) {
-	                    if (field.selector) {
-	                        field.$ = $form.find(field.selector);
-	                        if (!field.$.length) return;
-	                    }
-
-	                    field.form = form_selector;
-	                });
-	            }
-	        }
-	        // handle firefox
-	        $btn.removeAttr('disabled');
-	        Validation.init(form_selector, fields);
-	    };
-
-	    var getFormData = function getFormData(form_selector) {
-	        var data = {};
-	        var fields = forms[form_selector].fields;
-	        if (!fields) return data;
-	        var key = void 0,
-	            $selector = void 0,
-	            val = void 0,
-	            value = void 0;
-
-	        fields.forEach(function (field) {
-	            if (!field.exclude_request) {
-	                $selector = $(field.form).find(field.selector);
-	                if ($selector.is(':visible') || field.value) {
-	                    val = $selector.val();
-	                    key = field.request_field || field.selector;
-
-	                    // prioritise data-value
-	                    // if label, take the text
-	                    // if checkbox, take checked value
-	                    // otherwise take the value
-	                    value = field.value ? typeof field.value === 'function' ? field.value() : field.value : $selector.attr('data-value') || (/lbl_/.test(key) ? field.value || $selector.text() : $selector.is(':checkbox') ? $selector.is(':checked') ? 1 : 0 : Array.isArray(val) ? val.join(',') : val || '');
-
-	                    if (!(field.exclude_if_empty && val.length === 0)) {
-	                        key = key.replace(/lbl_|#|\./g, '');
-	                        if (field.parent_node) {
-	                            if (!data[field.parent_node]) {
-	                                data[field.parent_node] = {};
-	                            }
-	                            data[field.parent_node][key] = value;
-	                        } else {
-	                            data[key] = value;
-	                        }
-	                    }
-	                }
-	            }
-	        });
-	        return data;
-	    };
-
-	    var disableButton = function disableButton($btn) {
-	        if ($btn.length && !$btn.find('.barspinner').length) {
-	            $btn.attr('disabled', 'disabled');
-	            var $btn_text = $('<span/>', { text: $btn.text(), class: 'invisible' });
-	            showLoadingImage($btn, 'white');
-	            $btn.append($btn_text);
-	        }
-	    };
-
-	    var enableButton = function enableButton($btn) {
-	        if ($btn.length && $btn.find('.barspinner').length) {
-	            $btn.removeAttr('disabled').html($btn.find('span').text());
-	        }
-	    };
-
-	    var handleSubmit = function handleSubmit(options) {
-	        var form = void 0,
-	            $btn_submit = void 0,
-	            can_submit = void 0;
-
-	        var onSuccess = function onSuccess() {
-	            var response = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-	            if (typeof options.fnc_response_handler === 'function') {
-	                if (options.enable_button || 'error' in response) {
-	                    enableButton($btn_submit);
-	                    form.can_submit = true;
-	                }
-	                options.fnc_response_handler(response);
-	            }
-	        };
-
-	        $(options.form_selector).off('submit').on('submit', function (evt) {
-	            evt.preventDefault();
-	            form = forms[options.form_selector];
-	            $btn_submit = form.$btn_submit;
-	            can_submit = form.can_submit;
-	            if (!can_submit) return;
-	            if (Validation.validate(options.form_selector)) {
-	                var req = $.extend({}, options.obj_request, getFormData(options.form_selector));
-	                if (typeof options.fnc_additional_check === 'function' && !options.fnc_additional_check(req)) {
-	                    return;
-	                }
-	                disableButton($btn_submit);
-	                form.can_submit = false;
-	                if (isEmptyObject(req)) {
-	                    onSuccess();
-	                } else {
-	                    ChampionSocket.send(req).then(function (response) {
-	                        onSuccess(response);
-	                    });
-	                }
-	            }
-	        });
-	    };
-
-	    return {
-	        init: initForm,
-	        handleSubmit: handleSubmit
-	    };
-	}();
-
-	module.exports = FormManager;
-
-/***/ },
-/* 448 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var moment = __webpack_require__(302);
-	var checkInput = __webpack_require__(417).checkInput;
-
-	var TimePicker = function TimePicker(component_selector) {
-	    this.component_selector = component_selector;
-	};
-
-	TimePicker.prototype = {
-	    show: function show(min_time, max_time) {
-	        this.checkWidth(this.config(min_time, max_time), this.component_selector, this);
-	        var that = this;
-	        $(window).resize(function () {
-	            that.checkWidth(that.config_data, that.component_selector, that);
-	        });
-	    },
-	    hide: function hide() {
-	        if ($(this.component_selector + '.hasTimepicker').length > 0) {
-	            $(this.component_selector).timepicker('destroy').removeAttr('data-picker');
-	        }
-	        $(this.component_selector).off('keydown');
-	    },
-	    create: function create(config) {
-	        var that = this;
-	        $(this.component_selector).keydown(function (e) {
-	            if (e.which === 13) {
-	                e.preventDefault();
-	                e.stopPropagation();
-	                $(this).timepicker('setTime', $(this).val());
-	                $(this).timepicker('hide');
-	                $(this).blur();
-	                $(that).trigger('enter_pressed');
-	                return false;
-	            }
-	            return true;
-	        }).timepicker(config);
-	    },
-	    time_now: function time_now() {
-	        return moment.utc(window.time);
-	    },
-	    config: function config(min_time, max_time) {
-	        var that = this;
-	        var time_now = this.time_now();
-
-	        var config = {
-	            hourText: 'Hour',
-	            minuteText: 'Minute',
-	            amPmText: ['AM', 'PM']
-	        };
-	        if (min_time) {
-	            min_time = min_time === 'now' ? time_now : moment.utc(min_time);
-	            if (min_time.isBefore(time_now)) {
-	                min_time = time_now;
-	            }
-	            config.minTime = { hour: parseInt(min_time.hour()), minute: parseInt(min_time.minute()) };
-	        }
-	        if (max_time) {
-	            max_time = moment.utc(max_time);
-	            config.maxTime = { hour: parseInt(max_time.hour()), minute: parseInt(max_time.minute()) };
-	        }
-
-	        config.onSelect = function (time) {
-	            var oldValue = $(that.component_selector).attr('data-value');
-	            if (!time.match(/^(:?[0-3]\d):(:?[0-5]\d):(:?[0-5]\d)$/)) {
-	                time_now = that.time_now();
-	                var invalid = time.match(/([a-z0-9]*):([a-z0-9]*):?([a-z0-9]*)?/);
-	                var hour = time_now.format('hh'),
-	                    minute = time_now.format('mm'),
-	                    second = time_now.format('ss');
-
-	                if (typeof invalid[1] !== 'undefined' && isFinite(invalid[1])) {
-	                    hour = parseInt(invalid[1]);
-	                    if (hour < 10) {
-	                        hour = '0' + hour;
-	                    }
-	                }
-	                if (typeof invalid[2] !== 'undefined' && isFinite(invalid[2])) {
-	                    minute = parseInt(invalid[2]);
-	                    if (parseInt(minute) < 10) {
-	                        minute = '0' + minute;
-	                    }
-	                }
-	                if (typeof invalid[3] !== 'undefined' && isFinite(invalid[3])) {
-	                    second = parseInt(invalid[3]);
-	                    if (second < 10) {
-	                        second = '0' + second;
-	                    }
-	                }
-
-	                var new_time = moment(time_now.format('YYYY-MM-DD') + ' ' + hour + ':' + minute + ':' + second).format('HH:mm');
-
-	                if (oldValue && oldValue === new_time) return false;
-
-	                $(this).val(new_time);
-	                $(this).attr('data-value', new_time);
-	                $(that.component_selector).trigger('change', [new_time]);
-	            } else {
-	                if (oldValue && oldValue === time) return false;
-	                $(this).attr('data-value', time);
-	                $(that.component_selector).trigger('change', [time]);
-	            }
-	            return true;
-	        };
-
-	        this.config_data = config;
-
-	        return config;
-	    },
-	    getTime: function getTime(time) {
-	        var hour = ('0' + time.hour).slice(-2),
-	            minute = ('0' + time.minute).slice(-2),
-	            second = '00';
-	        return [hour, minute, second].join(':');
-	    },
-	    checkWidth: function checkWidth(config, component_selector, that) {
-	        var $selector = $(that.component_selector);
-	        if ($(window).width() < 770 && checkInput('time', 'not-a-time') && $selector.attr('data-picker') !== 'native') {
-	            that.hide($selector);
-	            $selector.attr({ type: 'time', 'data-picker': 'native' });
-	            var minTime = config.minTime;
-	            if (minTime) {
-	                $selector.attr('min', that.getTime(minTime));
-	            }
-	            var maxTime = config.maxTime;
-	            if (maxTime) {
-	                $selector.attr('max', that.getTime(maxTime));
-	            }
-	        } else if ($(window).width() > 769 && $selector.attr('data-picker') !== 'jquery' || $(window).width() < 770 && !checkInput('time', 'not-a-time')) {
-	            $selector.attr({ type: 'text', 'data-picker': 'jquery' });
-	            $selector.removeAttr('min');
-	            $selector.removeAttr('max');
-	            that.create(config);
-	        }
-	    }
-	};
-
-	module.exports = TimePicker;
-
-/***/ },
-/* 449 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Client = __webpack_require__(301);
-
-	var ChampionSettings = function () {
-	    'use strict';
-
-	    var settingsContainer = void 0;
-
-	    var load = function load() {
-	        settingsContainer = $('.fx-settings');
-
-	        if (!Client.is_virtual()) {
-	            settingsContainer.find('#fx-settings-content, .fx-real').show();
-	            return;
-	        }
-	        settingsContainer.find('#fx-settings-content').show();
-	    };
-
-	    return {
-	        load: load
-	    };
-	}();
-
-	module.exports = ChampionSettings;
-
-/***/ },
-/* 450 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var Client = __webpack_require__(301);
-	var Header = __webpack_require__(422);
-	var ChampionSocket = __webpack_require__(413);
-	var default_redirect_url = __webpack_require__(419).default_redirect_url;
-	var url_for = __webpack_require__(419).url_for;
-	var url_for_static = __webpack_require__(419).url_for_static;
-	var template = __webpack_require__(417).template;
-
-	var TNCApproval = function () {
-	    'use strict';
-
-	    var hidden_class = 'invisible';
-	    var btn_accept = '#btn-accept';
-
-	    var load = function load() {
-	        $('#tnc-loading').addClass(hidden_class);
-	        $('#tnc_image').attr('src', url_for_static('images/protection-icon.svg'));
-	        $('#tnc_approval').removeClass(hidden_class);
-	        var $tnc_msg = $('#tnc-message');
-	        var tnc_message = template($tnc_msg.html(), [Client.get('landing_company_fullname'), url_for('terms-and-conditions')]);
-	        $tnc_msg.html(tnc_message).removeClass(hidden_class);
-	        $(btn_accept).text('OK').on('click', function (e) {
-	            approveTNC(e);
-	        });
-	    };
-
-	    var approveTNC = function approveTNC(e) {
-	        e.preventDefault();
-	        e.stopPropagation();
-	        ChampionSocket.send({ tnc_approval: '1' }).then(function (response) {
-	            if (!Object.prototype.hasOwnProperty.call(response, 'error')) {
-	                ChampionSocket.send({ get_settings: 1 }, true).then(function () {
-	                    Header.displayAccountStatus();
-	                });
-	                window.location.href = default_redirect_url();
-	            } else {
-	                $('#err_message').html(response.error.message).removeClass(hidden_class);
-	            }
-	        });
-	    };
-
-	    var unload = function unload() {
-	        $(btn_accept).off('click', function (e) {
-	            approveTNC(e);
-	        });
-	    };
-
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
-
-	module.exports = TNCApproval;
-
-/***/ },
-/* 451 */
+/* 430 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38262,7 +36241,7 @@
 	var ChampionSocket = __webpack_require__(413);
 	var url_for = __webpack_require__(419).url_for;
 	var Client = __webpack_require__(301);
-	var Validation = __webpack_require__(431);
+	var Validation = __webpack_require__(429);
 
 	var CashierDepositWithdraw = function () {
 	    'use strict';
@@ -38384,12 +36363,199 @@
 	module.exports = CashierDepositWithdraw;
 
 /***/ },
-/* 452 */
+/* 431 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Slider = __webpack_require__(453);
+	var ChampionSocket = __webpack_require__(413);
+	var Client = __webpack_require__(301);
+
+	var CashierPaymentMethods = function () {
+	    'use strict';
+
+	    var hidden_class = 'invisible';
+
+	    var load = function load() {
+	        ChampionSocket.wait('authorize').then(function () {
+	            var container = $('.fx-payment-methods');
+	            if (!Client.is_logged_in()) {
+	                container.find('#btn-open-account').removeClass(hidden_class);
+	            } else if (!Client.is_virtual()) {
+	                container.find('#btn-deposit, #btn-withdraw').removeClass(hidden_class);
+	                ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
+	                    if (!response.error && response.cashier_password === 1) {
+	                        container.find('#btn-deposit, #btn-withdraw').addClass('button-disabled');
+	                    }
+	                });
+	            }
+	        });
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = CashierPaymentMethods;
+
+/***/ },
+/* 432 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(413);
+	var Client = __webpack_require__(301);
+
+	var CashierTopUpVirtual = function () {
+	    'use strict';
+
+	    var hidden_class = 'invisible';
+
+	    var viewError = void 0,
+	        viewSuccess = void 0;
+
+	    var load = function load() {
+	        var container = $('#topup_virtual');
+	        viewError = container.find('#viewError');
+	        viewSuccess = container.find('#viewSuccess');
+
+	        top_up_virtual();
+	    };
+
+	    var top_up_virtual = function top_up_virtual() {
+	        var data = {
+	            topup_virtual: '1'
+	        };
+	        ChampionSocket.send(data).then(function (response) {
+	            $('#topup_loading').remove();
+	            if (response.error) {
+	                viewError.removeClass(hidden_class).find('.notice-msg').text(response.error.message);
+	            } else {
+	                viewSuccess.removeClass(hidden_class).find('.success-msg').text('[_1] [_2] has been credited to your Virtual money account [_3]'.replace('[_1]', response.topup_virtual.currency).replace('[_2]', response.topup_virtual.amount).replace('[_3]', Client.get('loginid')));
+	            }
+	        });
+	    };
+
+	    return {
+	        load: load,
+	        top_up_virtual: top_up_virtual
+	    };
+	}();
+
+	module.exports = CashierTopUpVirtual;
+
+/***/ },
+/* 433 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	__webpack_require__(418);
+	var Client = __webpack_require__(301);
+	var Login = __webpack_require__(421);
+
+	var ClientType = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        if (Client.is_logged_in()) {
+	            $('.virtual-signup').hide();
+	            if (Client.has_real()) {
+	                $('.real-signup').hide();
+	            }
+	        } else {
+	            $('#login-link').find('a').on('click', function () {
+	                Login.redirect_to_login();
+	            });
+	        }
+	    };
+
+	    var unload = function unload() {
+	        $('#login-link').find('a').off('click');
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ClientType;
+
+/***/ },
+/* 434 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var getAppId = __webpack_require__(413).getAppId;
+	var getServer = __webpack_require__(413).getServer;
+
+	var ChampionEndpoint = function () {
+	    'use strict';
+
+	    var $container = void 0,
+	        $txt_server_url = void 0,
+	        $txt_app_id = void 0,
+	        $btn_submit = void 0,
+	        $btn_reset = void 0;
+
+	    var load = function load() {
+	        $container = $('#champion-container');
+	        $txt_server_url = $container.find('#txt_server_url');
+	        $txt_app_id = $container.find('#txt_app_id');
+	        $btn_submit = $container.find('#btn_submit');
+	        $btn_reset = $container.find('#btn_reset');
+
+	        $txt_server_url.val(getServer());
+	        $txt_app_id.val(getAppId());
+
+	        $btn_submit.on('click', function (e) {
+	            e.preventDefault();
+
+	            var server_url = ($txt_server_url.val() || '').trim().toLowerCase().replace(/[><()\"\']/g, '');
+	            if (server_url) {
+	                localStorage.setItem('config.server_url', server_url);
+	            }
+
+	            var app_id = ($txt_app_id.val() || '').trim();
+	            if (app_id && !isNaN(app_id)) {
+	                localStorage.setItem('config.app_id', parseInt(app_id));
+	            }
+
+	            window.location.reload();
+	        });
+
+	        $btn_reset.on('click', function (e) {
+	            e.preventDefault();
+	            localStorage.removeItem('config.server_url');
+	            localStorage.removeItem('config.app_id');
+	            window.location.reload();
+	        });
+	    };
+
+	    var unload = function unload() {
+	        $btn_submit.off('click');
+	        $btn_reset.off('click');
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionEndpoint;
+
+/***/ },
+/* 435 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Slider = __webpack_require__(436);
 
 	var Home = function () {
 	    'use strict';
@@ -38417,12 +36583,12 @@
 	module.exports = Home;
 
 /***/ },
-/* 453 */
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	__webpack_require__(454);
+	__webpack_require__(437);
 
 	var Slider = function () {
 	    var init = function init() {
@@ -38490,7 +36656,7 @@
 	module.exports = Slider;
 
 /***/ },
-/* 454 */
+/* 437 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
@@ -41128,15 +39294,1786 @@
 	});
 
 /***/ },
-/* 455 */
+/* 438 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(301);
+	var Validation = __webpack_require__(429);
+	var ChampionSocket = __webpack_require__(413);
+	var url_for = __webpack_require__(419).url_for;
+
+	var LostPassword = function () {
+	    'use strict';
+
+	    var form_selector = '#frm_lost_password';
+	    var btn_submit = void 0;
+
+	    var fields = {
+	        txt_email: '#txt_email',
+	        btn_submit: '#btn_submit'
+	    };
+
+	    var load = function load() {
+	        if (Client.redirect_if_login()) return;
+	        btn_submit = $(form_selector).find(fields.btn_submit);
+
+	        btn_submit.on('click', submit);
+
+	        Validation.init(form_selector, [{ selector: fields.txt_email, validations: ['req', 'email'] }]);
+	    };
+
+	    var unload = function unload() {
+	        if (btn_submit) {
+	            btn_submit.off('click', submit);
+	        }
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        if (Validation.validate(form_selector)) {
+	            var data = {
+	                verify_email: $(fields.txt_email).val(),
+	                type: 'reset_password'
+	            };
+	            ChampionSocket.send(data).then(function (response) {
+	                if (response.error) {
+	                    $('#msg_form').removeClass('invisible').text(response.error.message);
+	                } else {
+	                    window.location.href = url_for('reset-password');
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = LostPassword;
+
+/***/ },
+/* 439 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	var MT5 = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        $('.has-tabs').tabs().removeClass('invisible');
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = MT5;
+
+/***/ },
+/* 440 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var moment = __webpack_require__(302);
+	var ChampionSocket = __webpack_require__(413);
+	var Client = __webpack_require__(301);
+	var Utility = __webpack_require__(417);
+	var default_redirect_url = __webpack_require__(419).default_redirect_url;
+	var Validation = __webpack_require__(429);
+	var DatePicker = __webpack_require__(441).DatePicker;
+
+	var ChampionNewRealAccount = function () {
+	    'use strict';
+
+	    var form_selector = '#frm_new_account_real';
+	    var hidden_class = 'invisible';
+
+	    var client_residence = void 0;
+
+	    var container = void 0,
+	        btn_submit = void 0,
+	        datePickerInst = void 0;
+
+	    var fields = {
+	        ddl_title: '#ddl_title',
+	        txt_fname: '#txt_fname',
+	        txt_lname: '#txt_lname',
+	        txt_birth_date: '#txt_birth_date',
+	        lbl_residence: '#lbl_residence',
+	        txt_address1: '#txt_address1',
+	        txt_address2: '#txt_address2',
+	        txt_city: '#txt_city',
+	        ddl_state: '#ddl_state',
+	        txt_state: '#txt_state',
+	        txt_postcode: '#txt_postcode',
+	        txt_phone: '#txt_phone',
+	        ddl_secret_question: '#ddl_secret_question',
+	        txt_secret_answer: '#txt_secret_answer',
+	        chk_not_pep: '#chk_not_pep',
+	        chk_tnc: '#chk_tnc',
+	        btn_submit: '#btn_submit'
+	    };
+
+	    var load = function load() {
+	        if (Client.has_real()) {
+	            window.location.href = default_redirect_url();
+	            return;
+	        }
+
+	        container = $('#champion-container');
+	        client_residence = Client.get('residence');
+	        displayResidence();
+	        populateState();
+	        attachDatePicker();
+
+	        btn_submit = container.find(fields.btn_submit);
+	        btn_submit.on('click dblclick', submit);
+	    };
+
+	    var unload = function unload() {
+	        if (btn_submit) {
+	            btn_submit.off('click', submit);
+	        }
+	        if (datePickerInst) {
+	            datePickerInst.hide();
+	        }
+	    };
+
+	    var initValidation = function initValidation() {
+	        Validation.init(form_selector, [{ selector: fields.txt_fname, validations: ['req', 'letter_symbol', ['min', { min: 2 }]] }, { selector: fields.txt_lname, validations: ['req', 'letter_symbol', ['min', { min: 2 }]] }, { selector: fields.txt_birth_date, validations: ['req'] }, { selector: fields.txt_address1, validations: ['req', 'address', ['length', { min: 1, max: 70 }]] }, { selector: fields.txt_address2, validations: ['address', ['length', { min: 0, max: 70 }]] }, { selector: fields.txt_city, validations: ['req', 'letter_symbol', ['length', { min: 1, max: 35 }]] }, { selector: fields.txt_state, validations: ['letter_symbol'] }, { selector: fields.txt_postcode, validations: ['postcode', ['length', { min: 0, max: 20 }]] }, { selector: fields.txt_phone, validations: ['req', 'phone', ['length', { min: 6, max: 35, exclude: /^\+/ }]] }, { selector: fields.ddl_secret_question, validations: ['req'] }, { selector: fields.txt_secret_answer, validations: ['req', 'general', ['length', { min: 4, max: 50 }]] }, { selector: fields.chk_tnc, validations: ['req'] }, { selector: fields.chk_not_pep, validations: ['req'] }]);
+	    };
+
+	    var displayResidence = function displayResidence() {
+	        ChampionSocket.send({ residence_list: 1 }).then(function (response) {
+	            container.find('#residence_loading').remove();
+	            var $lbl_residence = container.find(fields.lbl_residence);
+	            var country_obj = response.residence_list.find(function (r) {
+	                return r.value === client_residence;
+	            });
+	            if (country_obj) {
+	                $lbl_residence.text(country_obj.text);
+	                if (country_obj.phone_idd) {
+	                    $(fields.txt_phone).val('+' + country_obj.phone_idd);
+	                }
+	            }
+	            $lbl_residence.parent().removeClass(hidden_class);
+	        });
+	    };
+
+	    var populateState = function populateState() {
+	        ChampionSocket.send({ states_list: client_residence }).then(function (response) {
+	            var $ddl_state = container.find(fields.ddl_state);
+	            var states = response.states_list;
+	            container.find('#state_loading').remove();
+	            if (states && states.length) {
+	                Utility.dropDownFromObject($ddl_state, states);
+	                $ddl_state.removeClass(hidden_class);
+	            } else {
+	                $ddl_state.replaceWith($('<input/>', { type: 'text', id: fields.txt_state.replace('#', ''), class: 'text', maxlength: '35' }));
+	            }
+	            initValidation();
+	        });
+	    };
+
+	    var attachDatePicker = function attachDatePicker() {
+	        datePickerInst = new DatePicker(fields.txt_birth_date);
+	        datePickerInst.show({
+	            minDate: -100 * 365,
+	            maxDate: -18 * 365 - 5,
+	            yearRange: '-100:-18'
+	        });
+	        $(fields.txt_birth_date).attr('data-value', Utility.toISOFormat(moment())).change(function () {
+	            return Utility.dateValueChanged(this, 'date');
+	        }).val('');
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        btn_submit.attr('disabled', 'disabled');
+	        if (Validation.validate(form_selector)) {
+	            var data = {
+	                new_account_real: 1,
+	                salutation: $(fields.ddl_title).val(),
+	                first_name: $(fields.txt_fname).val(),
+	                last_name: $(fields.txt_lname).val(),
+	                date_of_birth: $(fields.txt_birth_date).val(),
+	                residence: client_residence,
+	                address_line_1: $(fields.txt_address1).val(),
+	                address_line_2: $(fields.txt_address2).val(),
+	                address_city: $(fields.txt_city).val(),
+	                address_state: $(fields.ddl_state).val() || $(fields.txt_state).val(),
+	                address_postcode: $(fields.txt_postcode).val(),
+	                phone: $(fields.txt_phone).val(),
+	                secret_question: $(fields.ddl_secret_question).val(),
+	                secret_answer: $(fields.txt_secret_answer).val()
+	            };
+	            if (Client.get('affiliate_token')) {
+	                data.affiliate_token = Client.get('affiliate_token');
+	            }
+	            ChampionSocket.send(data).then(function (response) {
+	                if (response.error) {
+	                    $('#msg_form').removeClass(hidden_class).text(response.error.message);
+	                    btn_submit.removeAttr('disabled');
+	                } else {
+	                    var acc_info = response.new_account_real;
+	                    Client.process_new_account(Client.get('email'), acc_info.client_id, acc_info.oauth_token);
+	                    window.location.href = default_redirect_url();
+	                }
+	            });
+	        } else {
+	            btn_submit.removeAttr('disabled');
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionNewRealAccount;
+
+/***/ },
+/* 441 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var moment = __webpack_require__(302);
+	var Utility = __webpack_require__(417);
+
+	var DatePicker = function DatePicker(component_selector, select_type) {
+	    this.component_selector = component_selector;
+	    this.select_type = typeof select_type === 'undefined' ? 'date' : select_type;
+
+	    this.localizations = {};
+	    this.localizations.monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+	    this.localizations.monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+	    this.localizations.dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+	    this.localizations.dayNamesMin = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+	    this.localizations.nextText = 'Next';
+	    this.localizations.prevText = 'Previous';
+	};
+
+	DatePicker.prototype = {
+	    show: function show(options) {
+	        this.checkWidth(this.config(options), this.component_selector, this);
+	        var that = this;
+	        $(window).resize(function () {
+	            that.checkWidth(that.config_data, that.component_selector, that);
+	        });
+	    },
+	    hide: function hide() {
+	        if ($(this.component_selector + '.hasDatepicker').length > 0) {
+	            $(this.component_selector).datepicker('destroy').removeAttr('data-picker');
+	        }
+	        $(this.component_selector).off('keydown');
+	    },
+	    create: function create(config) {
+	        var that = this;
+	        $(this.component_selector).keydown(function (e) {
+	            if (e.which === 13) {
+	                e.preventDefault();
+	                e.stopPropagation();
+	                if (that.select_type === 'date') {
+	                    $(this).datepicker('setDate', $(this).val());
+	                }
+	                $(this).datepicker('hide');
+	                $(this).blur();
+	                $(that).trigger('enter_pressed');
+	                return false;
+	            }
+	            return true;
+	        }).datepicker(config);
+
+	        // Not possible to tell datepicker where to put it's
+	        // trigger calendar icon on the page, so we remove it
+	        // from the DOM and use our own one.
+	        $('button.ui-datepicker-trigger').remove();
+	    },
+	    config: function config(options) {
+	        var today = new Date();
+
+	        var config = {
+	            dateFormat: 'yy-mm-dd',
+	            monthNames: this.localizations.monthNames,
+	            monthNamesShort: this.localizations.monthNamesShort,
+	            dayNames: this.localizations.dayNames,
+	            dayNamesMin: this.localizations.dayNamesMin,
+	            nextText: this.localizations.nextText,
+	            prevText: this.localizations.prevText,
+	            changeMonth: true,
+	            changeYear: true
+	        };
+
+	        $.extend(config, options);
+
+	        var setDate = function setDate(date) {
+	            var new_date = void 0;
+	            if (typeof options[date] === 'number') {
+	                new_date = new Date();
+	                new_date.setDate(today.getDate() + Number(options[date]));
+	            }
+	            config[date] = new_date || options[date];
+	        };
+
+	        if (options.minDate !== undefined) {
+	            if (options.minDate === 'today') {
+	                config.minDate = today;
+	            } else {
+	                setDate('minDate');
+	            }
+	        }
+
+	        if (options.maxDate !== undefined) {
+	            setDate('maxDate');
+	        }
+
+	        var that = this;
+	        config.onSelect = function (date_text) {
+	            var day = date_text.split(' ')[0];
+	            var month = Utility.padLeft(Number($('.ui-datepicker-month').val()) + 1, 2, '0');
+	            var year = $('.ui-datepicker-year').val();
+	            var date = [year, month, day].join('-');
+	            var oldValue = $(this).attr('data-value');
+
+	            $(this).attr('data-value', date);
+	            if (that.select_type === 'diff') {
+	                var today_utc = moment.utc();
+	                var selected_date = moment.utc(date + ' 23:59:59');
+	                var duration = selected_date.diff(today_utc, 'days');
+	                $(this).val(duration);
+	                if (oldValue && oldValue === date) return false;
+	                $(that.component_selector).trigger('change', [duration]);
+	            } else if (that.select_type === 'date') {
+	                $(this).val(date_text);
+	                if (oldValue && oldValue === date) return false;
+	                $(that.component_selector).trigger('change', [date_text]);
+	            }
+	            return true;
+	        };
+
+	        this.config_data = config;
+
+	        return config;
+	    },
+	    getDate: function getDate(date) {
+	        var year = date.getFullYear();
+	        var month = Utility.padLeft(date.getMonth() + 1, 2, '0');
+	        var day = Utility.padLeft(date.getDate(), 2, '0');
+	        return [year, month, day].join('-');
+	    },
+	    checkWidth: function checkWidth(config, component_selector, that) {
+	        var $selector = $(component_selector);
+	        if ($(window).width() < 770 && Utility.checkInput('date', 'not-a-date') && $selector.attr('data-picker') !== 'native') {
+	            that.hide($selector);
+	            $selector.attr({ type: 'date', 'data-picker': 'native' }).val($selector.attr('data-value'));
+	            if ($selector.attr('readonly')) {
+	                $selector.attr('data-readonly', 'readonly').removeAttr('readonly');
+	            }
+	            if (config.minDate !== undefined) {
+	                $selector.attr('min', that.getDate(config.minDate));
+	            }
+	            if (config.maxDate !== undefined) {
+	                $selector.attr('max', that.getDate(config.maxDate));
+	            }
+	        } else if ($(window).width() > 769 && $selector.attr('data-picker') !== 'jquery' || $(window).width() < 770 && !Utility.checkInput('date', 'not-a-date')) {
+	            var value = $selector.attr('data-value');
+	            var format_value = value && that.select_type === 'date' ? Utility.toISOFormat(moment(value)) : $selector.val();
+	            $selector.attr({ type: 'text', 'data-picker': 'jquery' }).removeAttr('min').removeAttr('max').val(format_value);
+	            if ($selector.attr('data-readonly')) {
+	                $selector.attr('readonly', 'readonly').removeAttr('data-readonly');
+	            }
+	            that.create(config);
+	        }
+	    }
+	};
+
+	module.exports = {
+	    DatePicker: DatePicker
+	};
+
+/***/ },
+/* 442 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(413);
+	var Client = __webpack_require__(301);
+	var Utility = __webpack_require__(417);
+	var default_redirect_url = __webpack_require__(419).default_redirect_url;
+	var Validation = __webpack_require__(429);
+
+	var ChampionNewVirtualAccount = function () {
+	    'use strict';
+
+	    var form_selector = '#frm_new_account_virtual';
+	    var hidden_class = 'invisible';
+
+	    var container = void 0,
+	        btn_submit = void 0;
+
+	    var fields = {
+	        txt_verification_code: '#txt_verification_code',
+	        txt_password: '#txt_password',
+	        txt_re_password: '#txt_re_password',
+	        ddl_residence: '#ddl_residence',
+	        btn_submit: '#btn_submit'
+	    };
+
+	    var load = function load() {
+	        if (Client.redirect_if_login()) return;
+	        container = $('#champion-container');
+	        btn_submit = container.find(fields.btn_submit);
+	        btn_submit.on('click dblclick', submit);
+
+	        Validation.init(form_selector, [{ selector: fields.txt_verification_code, validations: ['req', 'email_token'] }, { selector: fields.txt_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_password }]] }, { selector: fields.ddl_residence, validations: ['req'] }]);
+
+	        populateResidence();
+	    };
+
+	    var populateResidence = function populateResidence() {
+	        ChampionSocket.send({ residence_list: 1 }).then(function (response) {
+	            var $ddl_residence = container.find(fields.ddl_residence);
+	            Utility.dropDownFromObject($ddl_residence, response.residence_list);
+	            container.find('#residence_loading').remove();
+	            $ddl_residence.removeClass(hidden_class);
+	        });
+	    };
+
+	    var unload = function unload() {
+	        if (btn_submit) {
+	            btn_submit.off('click', submit);
+	        }
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        if (Validation.validate(form_selector)) {
+	            btn_submit.attr('disabled', 'disabled');
+	            var data = {
+	                new_account_virtual: 1,
+	                verification_code: $(fields.txt_verification_code).val(),
+	                client_password: $(fields.txt_password).val(),
+	                residence: $(fields.ddl_residence).val()
+	            };
+	            if (Client.get('affiliate_token')) {
+	                data.affiliate_token = Client.get('affiliate_token');
+	            }
+	            ChampionSocket.send(data).then(function (response) {
+	                if (response.error) {
+	                    $('#msg_form').removeClass(hidden_class).text(response.error.message);
+	                    btn_submit.removeAttr('disabled');
+	                } else {
+	                    var acc_info = response.new_account_virtual;
+	                    Client.process_new_account(acc_info.email, acc_info.client_id, acc_info.oauth_token, true);
+	                    window.location.href = default_redirect_url();
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionNewVirtualAccount;
+
+/***/ },
+/* 443 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(301);
+	var Validation = __webpack_require__(429);
+	var ChampionSocket = __webpack_require__(413);
+	var Login = __webpack_require__(421);
+	var DatePicker = __webpack_require__(441).DatePicker;
+	var Utility = __webpack_require__(417);
+	var moment = __webpack_require__(302);
+
+	var ResetPassword = function () {
+	    'use strict';
+
+	    var form_selector = '#frm_reset_password';
+	    var hidden_class = 'invisible';
+
+	    var container = void 0,
+	        btn_submit = void 0,
+	        real_acc = void 0;
+
+	    var fields = {
+	        txt_verification_code: '#txt_verification_code',
+	        txt_password: '#txt_password',
+	        txt_re_password: '#txt_re_password',
+	        chk_has_real: '#chk_has_real',
+	        txt_birth_date: '#txt_birth_date',
+	        btn_submit: '#btn_submit'
+	    };
+
+	    var load = function load() {
+	        if (Client.redirect_if_login()) return;
+	        container = $(form_selector);
+	        btn_submit = container.find(fields.btn_submit);
+	        real_acc = container.find(fields.chk_has_real);
+
+	        real_acc.on('click', haveRealAccountHandler);
+	        btn_submit.on('click', submit);
+	        attachDatePicker();
+
+	        Validation.init(form_selector, [{ selector: fields.txt_verification_code, validations: ['req', 'email_token'] }, { selector: fields.txt_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_password }]] }, { selector: fields.txt_birth_date, validations: ['req'] }]);
+	    };
+
+	    var haveRealAccountHandler = function haveRealAccountHandler() {
+	        container.find('.dob_row').toggleClass(hidden_class);
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        if (Validation.validate(form_selector)) {
+	            var data = {
+	                reset_password: 1,
+	                verification_code: $(fields.txt_verification_code).val(),
+	                new_password: $(fields.txt_password).val()
+	            };
+	            if (real_acc.is(':checked')) {
+	                data.date_of_birth = $(fields.txt_birth_date).val();
+	            }
+	            ChampionSocket.send(data).then(function (response) {
+	                btn_submit.prop('disabled', true);
+	                $(form_selector).addClass(hidden_class);
+	                if (response.error) {
+	                    $('p.notice-msg').addClass(hidden_class);
+	                    $('#reset-error').removeClass(hidden_class);
+
+	                    var resetErrorTemplate = '[_1]' + ' Please click the link below to restart the password recovery process. ' + 'If you require further assistance, please contact our Customer Support.';
+
+	                    // special handling as backend returns inconsistent format
+	                    var errMsg = resetErrorTemplate.replace('[_1]', response.error.code === 'InputValidationFailed' ? 'Token has expired.' : response.error.message);
+
+	                    $('#reset-error-msg').text(errMsg);
+	                } else {
+	                    $('p.notice-msg').text('Your password has been successfully reset. ' + 'Please log into your account using your new password.');
+	                    window.setTimeout(function () {
+	                        Login.redirect_to_login();
+	                    }, 5000);
+	                }
+	            });
+	        }
+	    };
+
+	    var attachDatePicker = function attachDatePicker() {
+	        var datePickerInst = new DatePicker(fields.txt_birth_date);
+	        datePickerInst.hide();
+	        datePickerInst.show({
+	            minDate: -100 * 365,
+	            maxDate: -18 * 365 - 5,
+	            yearRange: '-100:-18'
+	        });
+	        $(fields.txt_birth_date).attr('data-value', Utility.toISOFormat(moment())).change(function () {
+	            return Utility.dateValueChanged(this, 'date');
+	        });
+	    };
+
+	    var unload = function unload() {
+	        if (btn_submit) {
+	            real_acc.off('click', haveRealAccountHandler);
+	            btn_submit.off('click', submit);
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ResetPassword;
+
+/***/ },
+/* 444 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(413);
+	var ChampionRouter = __webpack_require__(424);
+	var url_for = __webpack_require__(419).url_for;
+	var Validation = __webpack_require__(429);
+	var Client = __webpack_require__(301);
+
+	var ChampionSignup = function () {
+	    'use strict';
+
+	    var form_selector = '.frm-verify-email';
+	    var signup_selector = '#signup';
+	    var hidden_class = 'invisible';
+
+	    var is_active = false,
+	        $form = void 0,
+	        $input = void 0,
+	        $button = void 0;
+
+	    var load = function load() {
+	        if (Client.is_logged_in() || /(new-account|terms-and-conditions|user|cashier)/.test(window.location.pathname)) {
+	            changeVisibility($(form_selector), 'hide');
+	        } else {
+	            changeVisibility($(form_selector), 'show');
+	            if ($(form_selector).length === 1) {
+	                changeVisibility($(signup_selector), 'show');
+	            } else {
+	                changeVisibility($(signup_selector), 'hide');
+	            }
+	            eventHandler();
+	        }
+	    };
+
+	    var changeVisibility = function changeVisibility($selector, action) {
+	        if (action === 'hide') {
+	            $selector.addClass(hidden_class);
+	        } else {
+	            $selector.removeClass(hidden_class);
+	        }
+	    };
+
+	    var eventHandler = function eventHandler() {
+	        $form = $(form_selector + ':visible');
+	        $input = $form.find('input');
+	        $button = $form.find('button');
+	        $button.off('click', submit).on('click', submit);
+	        is_active = true;
+	        Validation.init(form_selector, [{ selector: '#email', validations: ['req', 'email'], msg_element: '#signup_error' }]);
+	    };
+
+	    var unload = function unload() {
+	        if (is_active) {
+	            $button.off('click', submit);
+	            $input.val('');
+	        }
+	        is_active = false;
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        if (is_active && Validation.validate(form_selector)) {
+	            ChampionSocket.send({
+	                verify_email: $input.val(),
+	                type: 'account_opening'
+	            }).then(function (response) {
+	                if (response.verify_email) {
+	                    ChampionRouter.forward(url_for('new-account/virtual'));
+	                } else if (response.error) {
+	                    $(form_selector + ':visible #signup_error').text(response.error.message).removeClass(hidden_class);
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChampionSignup;
+
+/***/ },
+/* 445 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ClientType = __webpack_require__(433);
+	var Client = __webpack_require__(301);
+	var ChampionSocket = __webpack_require__(413);
+
+	var TradingPlatform = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        ClientType.load();
+
+	        var web_url = 'https://trade.mql5.com/trade?servers=ChampionGroup-Server&trade_server=ChampionGroup-Server&demo_server=ChampionGroup-Server&startup_mode=open_demo&lang=en';
+
+	        var sendToSignup = function sendToSignup() {
+	            $('a.mt5-web-platform').attr('href', web_url);
+	        };
+
+	        if (Client.is_logged_in()) {
+	            ChampionSocket.wait('mt5_login_list').then(function (response) {
+	                if (response.mt5_login_list.length) {
+	                    $('a.mt5-web-platform').attr('href', web_url.replace('&startup_mode=open_demo', ''));
+	                } else {
+	                    sendToSignup();
+	                }
+	            });
+	        } else {
+	            sendToSignup();
+	        }
+	    };
+
+	    var unload = function unload() {
+	        ClientType.unload();
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = TradingPlatform;
+
+/***/ },
+/* 446 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(413);
+	var DatePicker = __webpack_require__(441).DatePicker;
+	var moment = __webpack_require__(302);
+
+	var TradingTimes = function () {
+	    'use strict';
+
+	    var today = moment.utc().format('YYYY-MM-DD'),
+	        hidden_class = 'invisible';
+
+	    var active_symbols = void 0;
+
+	    var load = function load() {
+	        var date_picker = new DatePicker('#trading-date'); // create datepicker
+	        date_picker.show({
+	            minDate: 'today',
+	            maxDate: 365
+	        });
+
+	        var $date = $('#trading-date').val(today);
+	        $date.change(function () {
+	            unload();
+	            getTradingTimes($date.val());
+	        });
+
+	        ChampionSocket.send({ active_symbols: 'brief' }).then(function (response) {
+	            $('.barspinner').addClass(hidden_class);
+	            if (response.error) {
+	                $('#error-msg').html(response.error.message);
+	            } else {
+	                active_symbols = response.active_symbols.slice(0);
+	                getTradingTimes('today');
+	            }
+	        });
+	    };
+
+	    var getTradingTimes = function getTradingTimes(date) {
+	        ChampionSocket.send({ trading_times: date || 'today' }).then(function (response) {
+	            $('.barspinner').addClass(hidden_class);
+	            if (response.error) {
+	                $('#error-msg').html(response.error.message);
+	            } else {
+	                createTable(response.trading_times);
+	            }
+	        });
+	    };
+
+	    var createTable = function createTable(data) {
+	        var submarket_subheader = '<tr><th class="asset">Asset</th> \n                 <th class="opens">Opens</th>\n                 <th class="closes">Closes</th>\n                 <th class="settles">Settles</th>\n                 <th class="upcomingevents">Upcoming events</th></tr>'; // constant subheader
+
+	        var markets = data.markets.slice(0);
+	        var tabs = createTabs(markets);
+	        var market_tabs = '<ul>' + tabs + '</ul>'; // create market tabs, wrap tab items in <ul>
+	        var market_contents = markets.map(function (market, index) {
+	            if (market.name === 'Volatility Indices') {
+	                return null;
+	            }
+	            var market_table = market.submarkets.map(function (submarket) {
+	                var submarket_header = createTableHeader(submarket.name); // create header row
+	                var submarket_symbols = createTableRow(submarket.symbols); // create symbol rows
+	                return '<table>\n                            ' + submarket_header + '\n                            ' + submarket_subheader + '\n                            ' + submarket_symbols + '\n                        </table>'; // create market table
+	            }).join('');
+	            return '<div id="market_' + index++ + '">\n                        ' + market_table + '\n                    </div>'; // create market contents, wrap market table in <div>
+	        }).join('');
+
+	        $('#fx-trading-times').html('' + market_tabs + market_contents).tabs();
+	    };
+
+	    var createTabs = function createTabs(tabs) {
+	        return tabs.map(function (tab, index) {
+	            return tab.name === 'Volatility Indices' ? null : '<li><a href="#market_' + index++ + '">' + tab.name + '</a></li>';
+	        }).join('');
+	    };
+
+	    var createTableHeader = function createTableHeader(title) {
+	        return '<tr><th colspan="5" class="center-text">' + title + '</th></tr>';
+	    };
+
+	    var createTableRow = function createTableRow(symbols) {
+	        return symbols.map(function (symbol) {
+	            if (getSymbolInfo(symbol, active_symbols)) {
+	                return '<tr><td class="asset">' + symbol.name + '</td>\n                            <td class="opens">' + symbol.times.open.join('<br>') + '</td>\n                            <td class="closes">' + symbol.times.close.join('<br>') + '</td>\n                            <td class="settles">' + symbol.times.settlement + '</td>\n                            <td class="upcomingevents">' + createEventsText(symbol.events) + '</td></tr>';
+	            }
+	            return '';
+	        }).join('');
+	    };
+
+	    var createEventsText = function createEventsText(events) {
+	        var result = '';
+	        for (var i = 0; i < events.length; i++) {
+	            if (i) result += '<br>';
+	            result += events[i].descrip + ': ' + events[i].dates;
+	        }
+	        return result.length > 0 ? result : '--';
+	    };
+
+	    var getSymbolInfo = function getSymbolInfo(symbol) {
+	        return active_symbols.filter(function (obj) {
+	            return obj.symbol === symbol;
+	        });
+	    };
+
+	    var unload = function unload() {
+	        $('#fx-trading-times').empty().tabs('destroy'); // return to pre-init state
+	        $('.barspinner').removeClass(hidden_class);
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = TradingTimes;
+
+/***/ },
+/* 447 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(413);
+
+	var Authenticate = function () {
+	    'use strict';
+
+	    var load = function load() {
+	        ChampionSocket.send({ get_account_status: 1 }).then(function (response) {
+	            if (response.error) {
+	                $('#error_message').removeClass('invisible').text(response.error.message);
+	            } else {
+	                var status = response.get_account_status.status;
+	                var authenticated = /authenticated/.test(status);
+	                var age_verified = /age_verification/.test(status);
+	                if (authenticated && age_verified) {
+	                    $('#fully_authenticated').removeClass('invisible');
+	                } else if (!authenticated) {
+	                    $('#not_authenticated').removeClass('invisible');
+	                } else if (!age_verified) {
+	                    $('#needs_age_verification').removeClass('invisible');
+	                }
+	            }
+	        });
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = Authenticate;
+
+/***/ },
+/* 448 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(413);
+	var Validation = __webpack_require__(429);
+
+	var ChangePassword = function () {
+	    'use strict';
+
+	    var $form = void 0,
+	        btn_submit = void 0;
+
+	    var form_selector = '#frm_change_password',
+	        hidden_class = 'invisible';
+
+	    var fields = {
+	        txt_old_password: '#txt_old_password',
+	        txt_new_password: '#txt_new_password',
+	        txt_re_password: '#txt_re_password',
+	        btn_submit: '#btn_submit'
+	    };
+
+	    var load = function load() {
+	        $form = $(form_selector + ':visible');
+	        btn_submit = $form.find(fields.btn_submit);
+	        btn_submit.on('click', submit);
+	        Validation.init(form_selector, [{ selector: fields.txt_old_password, validations: ['req'] }, { selector: fields.txt_new_password, validations: ['req', 'password'] }, { selector: fields.txt_re_password, validations: ['req', ['compare', { to: fields.txt_new_password }]] }]);
+	    };
+
+	    var unload = function unload() {
+	        if (btn_submit) {
+	            btn_submit.off('click', submit);
+	        }
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        if (Validation.validate(form_selector)) {
+	            var data = {
+	                change_password: 1,
+	                old_password: $(fields.txt_old_password).val(),
+	                new_password: $(fields.txt_new_password).val()
+	            };
+	            ChampionSocket.send(data).then(function (response) {
+	                if (response.error) {
+	                    $('#msg_form').removeClass(hidden_class).text(response.error.message);
+	                } else {
+	                    setTimeout(function () {
+	                        ChampionSocket.send({ logout: 1 });
+	                    }, 5000);
+	                    $form.addClass(hidden_class);
+	                    $('.notice-msg').removeClass(hidden_class).text('Your password has been changed.');
+	                }
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = ChangePassword;
+
+/***/ },
+/* 449 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(413);
+
+	var Limits = function () {
+	    'use strict';
+
+	    var $trading_limits = void 0,
+	        $withdrawal_limits = void 0;
+
+	    var hidden_class = 'invisible';
+
+	    var load = function load() {
+	        $trading_limits = $('#fx-trading-limits');
+	        $withdrawal_limits = $('#fx-withdrawal-limits');
+
+	        ChampionSocket.send({ get_limits: 1 }).then(function (response) {
+	            if (response.error) {
+	                $('#error-msg').html(response.error.message);
+	            } else {
+	                handleResponse(response.get_limits);
+	            }
+	        });
+	    };
+
+	    var handleResponse = function handleResponse(data) {
+	        // Trading limits
+	        var trading_limits_header = '<tr><th>Item</th><th>Limits</th></tr><tr>';
+	        var trading_limits_contents = '<tr><td>Maximum number of open positions</td>\n                         <td>' + data.open_positions + '</td></tr>\n                     <tr><td>Maximum account cash balance</td>\n                         <td>' + formatNumbers(data.account_balance) + '</td></tr>\n                     <tr><td>Maximum aggregate payouts on open positions</td>\n                         <td>' + formatNumbers(data.payout) + '</td></tr>\n                     <tr><td>Maximum aggregate payouts on open positions per symbol and contract type</td>\n                         <td>' + formatNumbers(data.payout_per_symbol_and_contract_type) + '</td></tr>';
+	        $trading_limits.append('<table>' + trading_limits_header + trading_limits_contents + '</table><br>');
+
+	        var market_specific = data.market_specific;
+	        var market_specific_header = '<tr><th>Maximum daily turnover</th><th>Limits</th></tr>';
+	        var market_specific_contents = '';
+	        Object.keys(market_specific).forEach(function (market) {
+	            var submarkets = market_specific[market];
+	            var market_header = '<tr><td class=\'market\' colspan=\'2\'>' + market + '</td></tr>';
+	            var market_rows = submarkets.map(function (submarket) {
+	                return '<tr><td class=\'submarket\'>' + submarket.name + '</td>\n                      <td class=\'limit\'>' + formatNumbers(submarket.turnover_limit) + '</td></tr>';
+	            }).join('');
+	            market_specific_contents += '' + market_header + market_rows;
+	        });
+
+	        var hint = '<p class="hint">Stated limits are subject to change without prior notice.</p>';
+	        $trading_limits.append('<table>' + market_specific_header + market_specific_contents + '</table>' + hint);
+
+	        // Withdrawal limits
+	        var withdrawal_msg = '';
+	        if (data.lifetime_limit === 99999999 && data.num_of_days_limit === 99999999) {
+	            withdrawal_msg = '<p>Your account is fully authenticated and your withdrawal limits have been lifted.</p>';
+	        } else {
+	            var days_limit = data.num_of_days_limit;
+	            var withdrawn = data.withdrawal_since_inception_monetary;
+	            var remainder = data.remainder;
+
+	            withdrawal_msg = '<p>Your withdrawal limit is &dollar;' + days_limit + '.</p>\n                              <p>You have already withdrawn &dollar;' + withdrawn + '.</p>\n                              <p>Therefore your current immediate maximum withdrawal \n                                 (subject to your account having sufficient funds) is &dollar;' + remainder + '.</p>';
+	        }
+	        $withdrawal_limits.append(withdrawal_msg);
+
+	        $('.barspinner').addClass(hidden_class);
+	        $('#fx-limits').removeClass(hidden_class);
+	    };
+
+	    var formatNumbers = function formatNumbers(num, decimal_points) {
+	        num = String(num || 0).replace(/,/g, '') * 1;
+	        return num.toFixed(decimal_points).toString().replace(/(^|[^\w.])(\d{4,})/g, function ($0, $1, $2) {
+	            return $1 + $2.replace(/\d(?=(?:\d\d\d)+(?!\d))/g, '$&,');
+	        });
+	    };
+
+	    var unload = function unload() {
+	        $trading_limits.empty();
+	        $withdrawal_limits.empty();
+	        $('.barspinner').removeClass(hidden_class);
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = Limits;
+
+/***/ },
+/* 450 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var ChampionSocket = __webpack_require__(413);
+	var moment = __webpack_require__(302);
+
+	var LoginHistory = function () {
+	    'use strict';
+
+	    var hidden_class = 'invisible';
+
+	    var load = function load() {
+	        var req = {
+	            login_history: 1,
+	            limit: 50
+	        };
+
+	        ChampionSocket.send(req).then(function (response) {
+	            $('.barspinner').addClass(hidden_class);
+	            if (response.error) {
+	                $('#error-msg').html(response.error.message);
+	            } else {
+	                handleResponse(response);
+	            }
+	        });
+	    };
+
+	    var handleResponse = function handleResponse(response) {
+	        var histories = response.login_history;
+	        var length = histories.length;
+	        var parsed_data = [];
+	        for (var i = 0; i < length; i++) {
+	            var data = parse(histories[i]);
+	            parsed_data.push(data);
+	        }
+	        render(parsed_data);
+	    };
+
+	    var render = function render(data) {
+	        var rows = data.map(function (history) {
+	            return '<tr><td>' + history.time + '</td>\n                 <td>' + history.action + '</td>\n                 <td>' + history.browser.name + ' ' + history.browser.version + '</td>\n                 <td>' + history.ip_addr + '</td>\n                 <td>' + history.status + '</td></tr>';
+	        }).join('');
+
+	        var header = '<th>Date and time</th>\n                        <th>Action</th>\n                        <th>Browser</th>\n                        <th>IP address</th>\n                        <th>Status</th>';
+
+	        var table = '<table><tr>' + header + '</tr>' + rows + '</table>';
+
+	        $('#fx-login-history').append(table);
+	    };
+
+	    var parseUA = function parseUA(user_agent) {
+	        // Table of UA-values (and precedences) from:
+	        //  https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
+	        // Regexes stolen from:
+	        //  https://github.com/biggora/express-useragent/blob/master/lib/express-useragent.js
+	        var lookup = [{ name: 'Edge', regex: /Edge\/([\d\w\.\-]+)/i }, { name: 'SeaMonkey', regex: /seamonkey\/([\d\w\.\-]+)/i }, { name: 'Opera', regex: /(?:opera|opr)\/([\d\w\.\-]+)/i }, { name: 'Chromium', regex: /(?:chromium|crios)\/([\d\w\.\-]+)/i }, { name: 'Chrome', regex: /chrome\/([\d\w\.\-]+)/i }, { name: 'Safari', regex: /version\/([\d\w\.\-]+)/i }, { name: 'IE', regex: /msie\s([\d\.]+[\d])/i }, { name: 'IE', regex: /trident\/\d+\.\d+;.*[rv:]+(\d+\.\d)/i }, { name: 'Firefox', regex: /firefox\/([\d\w\.\-]+)/i }];
+	        for (var i = 0; i < lookup.length; i++) {
+	            var info = lookup[i];
+	            var match = user_agent.match(info.regex);
+	            if (match !== null) {
+	                return {
+	                    name: info.name,
+	                    version: match[1]
+	                };
+	            }
+	        }
+	        return null;
+	    };
+
+	    var parse = function parse(response) {
+	        var env = response.environment;
+	        var ip_address = env.split(' ')[2].split('=')[1];
+	        var user_agent = env.match('User_AGENT=(.+) LANG')[1];
+	        var utc_time = moment.unix(response.time).utc().format('YYYY-MM-DD HH:mm:ss').replace(' ', '\n');
+	        var status = response.status === 1 ? 'Successful' : 'Failed';
+	        return {
+	            time: utc_time + ' GMT',
+	            action: response.action,
+	            status: status,
+	            browser: parseUA(user_agent),
+	            ip_addr: ip_address
+	        };
+	    };
+
+	    var unload = function unload() {
+	        $('#fx-login-history').empty(); // cleanup
+	    };
+
+	    return {
+	        load: load,
+	        unload: unload
+	    };
+	}();
+
+	module.exports = LoginHistory;
+
+/***/ },
+/* 451 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var MetaTraderConfig = __webpack_require__(452);
+	var MetaTraderUI = __webpack_require__(453);
+	var Client = __webpack_require__(301);
+	var ChampionSocket = __webpack_require__(413);
+	var State = __webpack_require__(416).State;
+	var Validation = __webpack_require__(429);
+
+	var MetaTrader = function () {
+	    'use strict';
+
+	    var types_info = MetaTraderConfig.types_info;
+	    var actions_info = MetaTraderConfig.actions_info;
+	    var fields = MetaTraderConfig.fields;
+
+	    var load = function load() {
+	        State.set('is_mt_pages', 1);
+	        ChampionSocket.wait('mt5_login_list').then(function (response) {
+	            responseLoginList(response);
+	        });
+	        MetaTraderUI.init(submit);
+	    };
+
+	    var responseLoginList = function responseLoginList(response) {
+	        (response.mt5_login_list || []).forEach(function (obj) {
+	            var acc_type = Client.getMT5AccountType(obj.group);
+	            if (acc_type) {
+	                // ignore old accounts which are not linked to any group
+	                types_info[acc_type].account_info = { login: obj.login };
+	                getAccountDetails(obj.login, acc_type);
+	            }
+	        });
+
+	        Client.set('mt5_account', getDefaultAccount(response.mt5_login_list));
+
+	        // Update types with no account
+	        Object.keys(types_info).forEach(function (acc_type) {
+	            if (!types_info[acc_type].account_info) {
+	                MetaTraderUI.updateAccount(acc_type);
+	            }
+	        });
+	    };
+
+	    var getDefaultAccount = function getDefaultAccount(login_list) {
+	        return (
+	            // remove hash from url
+	            // const url = window.location.href.split('#')[0];
+	            // window.history.replaceState({ url: url }, null, url);
+	            Object.keys(types_info).indexOf(location.hash.substring(1)) >= 0 ? location.hash.substring(1) : Client.get('mt5_account') || (login_list && login_list.length ? Client.getMT5AccountType((login_list.find(function (login) {
+	                return (/real/.test(login.group)
+	                );
+	            }) || login_list.find(function (login) {
+	                return (/demo/.test(login.group)
+	                );
+	            })).group) : 'demo_champion_cent')
+	        );
+	    };
+
+	    var getAccountDetails = function getAccountDetails(login, acc_type) {
+	        ChampionSocket.send({
+	            mt5_get_settings: 1,
+	            login: login
+	        }).then(function (response) {
+	            if (response.mt5_get_settings) {
+	                types_info[acc_type].account_info = response.mt5_get_settings;
+	                MetaTraderUI.updateAccount(acc_type);
+	            }
+	        });
+	    };
+
+	    var makeRequestObject = function makeRequestObject(acc_type, action) {
+	        var req = {};
+
+	        Object.keys(fields[action]).forEach(function (field) {
+	            var field_obj = fields[action][field];
+	            if (field_obj.request_field) {
+	                req[field_obj.request_field] = MetaTraderUI.$form().find(field_obj.id).val();
+	            }
+	        });
+
+	        // set main command
+	        req['mt5_' + action] = 1;
+
+	        // add additional fields
+	        $.extend(req, fields[action].additional_fields(acc_type));
+
+	        return req;
+	    };
+
+	    var submit = function submit(e) {
+	        e.preventDefault();
+	        MetaTraderUI.hideFormMessage();
+	        var $btn_submit = $(e.target);
+	        var acc_type = $btn_submit.attr('acc_type');
+	        var action = $btn_submit.attr('action');
+	        if (Validation.validate('#frm_' + action)) {
+	            MetaTraderUI.disableButton();
+	            // further validations before submit (password_check)
+	            MetaTraderUI.postValidate(acc_type, action).then(function (is_ok) {
+	                if (!is_ok) {
+	                    MetaTraderUI.enableButton();
+	                    return;
+	                }
+
+	                var req = makeRequestObject(acc_type, action);
+	                ChampionSocket.send(req).then(function (response) {
+	                    if (response.error) {
+	                        MetaTraderUI.displayFormMessage(response.error.message);
+	                    } else {
+	                        var login = actions_info[action].login ? actions_info[action].login(response) : types_info[acc_type].account_info.login;
+	                        if (!types_info[acc_type].account_info) {
+	                            types_info[acc_type].account_info = { login: login };
+	                        }
+	                        MetaTraderUI.loadAction(null, acc_type);
+	                        MetaTraderUI.displayMainMessage(actions_info[action].success_msg(response));
+	                        getAccountDetails(login, acc_type);
+	                        if (typeof actions_info[action].onSuccess === 'function') {
+	                            actions_info[action].onSuccess(response, acc_type);
+	                        }
+	                    }
+	                    MetaTraderUI.enableButton();
+	                });
+	            });
+	        }
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = MetaTrader;
+
+/***/ },
+/* 452 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(301);
+	var formatMoney = __webpack_require__(423).formatMoney;
+	var GTM = __webpack_require__(420);
+	var ChampionSocket = __webpack_require__(413);
+	var url_for = __webpack_require__(419).url_for;
+	var isEmptyObject = __webpack_require__(417).isEmptyObject;
+
+	var MetaTraderConfig = function () {
+	    'use strict';
+
+	    var types_info = {
+	        demo_champion_cent: { account_type: 'demo', mt5_account_type: 'cent', title: 'Demo Cent', order: 1, max_leverage: 1000, is_demo: true },
+	        demo_champion_standard: { account_type: 'demo', mt5_account_type: 'standard', title: 'Demo Standard', order: 3, max_leverage: 300, is_demo: true },
+	        demo_champion_stp: { account_type: 'demo', mt5_account_type: 'stp', title: 'Demo STP', order: 5, max_leverage: 100, is_demo: true },
+	        real_champion_cent: { account_type: 'financial', mt5_account_type: 'cent', title: 'Real Cent', order: 2, max_leverage: 1000 },
+	        real_champion_standard: { account_type: 'financial', mt5_account_type: 'standard', title: 'Real Standard', order: 4, max_leverage: 300 },
+	        real_champion_stp: { account_type: 'financial', mt5_account_type: 'stp', title: 'Real STP', order: 6, max_leverage: 100 }
+	    };
+
+	    var needsRealMessage = function needsRealMessage() {
+	        return $('#msg_' + (Client.has_real() ? 'switch' : 'upgrade')).html();
+	    };
+
+	    var actions_info = {
+	        new_account: {
+	            title: 'Sign up',
+	            success_msg: function success_msg(response) {
+	                return 'Congratulations! Your [_1] Account has been created.'.replace('[_1]', types_info[Object.keys(types_info).find(function (t) {
+	                    return types_info[t].account_type === response.mt5_new_account.account_type && types_info[t].mt5_account_type === response.mt5_new_account.mt5_account_type;
+	                })].title);
+	            },
+	            login: function login(response) {
+	                return response.mt5_new_account.login;
+	            },
+	            prerequisites: function prerequisites(acc_type) {
+	                return new Promise(function (resolve) {
+	                    if (types_info[acc_type].is_demo) {
+	                        resolve();
+	                    } else if (Client.is_virtual()) {
+	                        resolve(needsRealMessage());
+	                    } else {
+	                        ChampionSocket.send({ get_financial_assessment: 1 }).then(function (response_financial) {
+	                            resolve(isEmptyObject(response_financial.get_financial_assessment) ? $('#msg_assessment').html() : '');
+	                        });
+	                    }
+	                });
+	            },
+	            formValues: function formValues($form, acc_type, action) {
+	                // Account type, Sub account type
+	                $form.find(fields[action].lbl_account_type.id).text(types_info[acc_type].title);
+	                // Email
+	                $form.find(fields[action].lbl_email.id).text(fields[action].additional_fields(acc_type).email);
+	                // Max leverage
+	                $form.find(fields[action].ddl_leverage.id + ' option').each(function () {
+	                    if (+$(this).val() > types_info[acc_type].max_leverage) {
+	                        $(this).remove();
+	                    }
+	                });
+	            },
+	            onSuccess: function onSuccess(response) {
+	                GTM.mt5NewAccount(response);
+	            }
+	        },
+	        password_change: {
+	            title: 'Change password',
+	            success_msg: function success_msg(response) {
+	                return 'The main password of account number [_1] has been changed.'.replace('[_1]', response.echo_req.login);
+	            },
+	            prerequisites: function prerequisites() {
+	                return new Promise(function (resolve) {
+	                    return resolve('');
+	                });
+	            },
+	            formValues: function formValues($form, acc_type, action) {
+	                // Login ID
+	                $form.find(fields[action].lbl_login.id).text(fields[action].additional_fields(acc_type).login);
+	            }
+	        },
+	        deposit: {
+	            title: 'Deposit',
+	            success_msg: function success_msg(response) {
+	                return '[_1] deposit from [_2] to account number [_3] is done. Transaction ID: [_4]'.replace('[_1]', formatMoney(response.echo_req.amount)).replace('[_2]', response.echo_req.from_binary).replace('[_3]', response.echo_req.to_mt5).replace('[_4]', response.binary_transaction_id);
+	            },
+	            prerequisites: function prerequisites() {
+	                return new Promise(function (resolve) {
+	                    if (Client.is_virtual()) {
+	                        resolve(needsRealMessage());
+	                    } else {
+	                        ChampionSocket.send({ cashier_password: 1 }).then(function (response) {
+	                            if (!response.error && response.cashier_password === 1) {
+	                                resolve('Your cashier is locked as per your request - to unlock it, please click <a href="[_1]">here</a>.'.replace('[_1]', url_for('cashier/cashier-password')));
+	                            } else {
+	                                resolve();
+	                            }
+	                        });
+	                    }
+	                });
+	            },
+	            formValues: function formValues($form, acc_type, action) {
+	                // From, To
+	                $form.find(fields[action].lbl_from.id).text(fields[action].additional_fields(acc_type).from_binary);
+	                $form.find(fields[action].lbl_to.id).text(fields[action].additional_fields(acc_type).to_mt5);
+	            }
+	        },
+	        withdrawal: {
+	            title: 'Withdraw',
+	            success_msg: function success_msg(response) {
+	                return '[_1] withdrawal from account number [_2] to [_3] is done. Transaction ID: [_4]'.replace('[_1]', formatMoney(response.echo_req.amount)).replace('[_2]', response.echo_req.from_mt5).replace('[_3]', response.echo_req.to_binary).replace('[_4]', response.binary_transaction_id);
+	            },
+	            prerequisites: function prerequisites() {
+	                return new Promise(function (resolve) {
+	                    if (Client.is_virtual()) {
+	                        resolve(needsRealMessage());
+	                    } else {
+	                        ChampionSocket.send({ get_account_status: 1 }).then(function (response_status) {
+	                            resolve($.inArray('authenticated', response_status.get_account_status.status) === -1 ? $('#msg_authenticate').find('.show_for_mt5').removeClass('invisible').end().html() : '');
+	                        });
+	                    }
+	                });
+	            },
+	            pre_submit: function pre_submit($form, acc_type, displayFormMessage) {
+	                return ChampionSocket.send({
+	                    mt5_password_check: 1,
+	                    login: types_info[acc_type].account_info.login,
+	                    password: $form.find(fields.withdrawal.txt_main_pass.id).val()
+	                }).then(function (response) {
+	                    if (+response.mt5_password_check === 1) {
+	                        return true;
+	                    } else if (response.error) {
+	                        displayFormMessage(response.error.message);
+	                    }
+	                    return false;
+	                });
+	            },
+	            formValues: function formValues($form, acc_type, action) {
+	                // From, To
+	                $form.find(fields[action].lbl_from.id).text(fields[action].additional_fields(acc_type).from_mt5);
+	                $form.find(fields[action].lbl_to.id).text(fields[action].additional_fields(acc_type).to_binary);
+	            }
+	        }
+	    };
+
+	    var fields = {
+	        new_account: {
+	            lbl_account_type: { id: '#lbl_account_type' },
+	            lbl_email: { id: '#lbl_email' },
+	            txt_name: { id: '#txt_name', request_field: 'name' },
+	            ddl_leverage: { id: '#ddl_leverage', request_field: 'leverage' },
+	            txt_main_pass: { id: '#txt_main_pass', request_field: 'mainPassword' },
+	            txt_re_main_pass: { id: '#txt_re_main_pass' },
+	            txt_investor_pass: { id: '#txt_investor_pass', request_field: 'investPassword' },
+	            chk_tnc: { id: '#chk_tnc' },
+	            additional_fields: function additional_fields(acc_type) {
+	                return $.extend({
+	                    account_type: types_info[acc_type].account_type,
+	                    email: Client.get('email')
+	                }, types_info[acc_type].mt5_account_type ? {
+	                    mt5_account_type: types_info[acc_type].mt5_account_type
+	                } : {});
+	            }
+	        },
+	        password_change: {
+	            lbl_login: { id: '#lbl_login' },
+	            txt_old_password: { id: '#txt_old_password', request_field: 'old_password' },
+	            txt_new_password: { id: '#txt_new_password', request_field: 'new_password' },
+	            txt_re_new_password: { id: '#txt_re_new_password' },
+	            additional_fields: function additional_fields(acc_type) {
+	                return {
+	                    login: types_info[acc_type].account_info.login
+	                };
+	            }
+	        },
+	        deposit: {
+	            lbl_from: { id: '#lbl_from' },
+	            lbl_to: { id: '#lbl_to' },
+	            txt_amount: { id: '#txt_amount', request_field: 'amount' },
+	            additional_fields: function additional_fields(acc_type) {
+	                return {
+	                    from_binary: Client.get('loginid'),
+	                    to_mt5: types_info[acc_type].account_info.login
+	                };
+	            }
+	        },
+	        withdrawal: {
+	            lbl_from: { id: '#lbl_from' },
+	            lbl_to: { id: '#lbl_to' },
+	            txt_amount: { id: '#txt_amount', request_field: 'amount' },
+	            txt_main_pass: { id: '#txt_main_pass' },
+	            additional_fields: function additional_fields(acc_type) {
+	                return {
+	                    from_mt5: types_info[acc_type].account_info.login,
+	                    to_binary: Client.get('loginid')
+	                };
+	            }
+	        }
+	    };
+
+	    var validations = {
+	        new_account: [{ selector: fields.new_account.txt_name.id, validations: ['req', 'letter_symbol', ['length', { min: 2, max: 30 }]] }, { selector: fields.new_account.txt_main_pass.id, validations: ['req', ['password', 'mt']] }, { selector: fields.new_account.txt_re_main_pass.id, validations: ['req', ['compare', { to: fields.new_account.txt_main_pass.id }]] }, { selector: fields.new_account.txt_investor_pass.id, validations: ['req', ['password', 'mt'], ['not_equal', { to: fields.new_account.txt_main_pass.id, name1: 'Main password', name2: 'Investor password' }]] }, { selector: fields.new_account.ddl_leverage.id, validations: ['req'] }, { selector: fields.new_account.chk_tnc.id, validations: ['req'] }],
+	        password_change: [{ selector: fields.password_change.txt_old_password.id, validations: ['req'] }, { selector: fields.password_change.txt_new_password.id, validations: ['req', ['password', 'mt'], ['not_equal', { to: fields.password_change.txt_old_password.id, name1: 'Current password', name2: 'New password' }]] }, { selector: fields.password_change.txt_re_new_password.id, validations: ['req', ['compare', { to: fields.password_change.txt_new_password.id }]] }],
+	        deposit: [{ selector: fields.deposit.txt_amount.id, validations: ['req', ['number', { type: 'float', min: 1, max: 20000, decimals: '0, 2' }]] }],
+	        withdrawal: [{ selector: fields.withdrawal.txt_main_pass.id, validations: ['req'] }, { selector: fields.withdrawal.txt_amount.id, validations: ['req', ['number', { type: 'float', min: 1, max: 20000, decimals: '0, 2' }]] }]
+	    };
+
+	    return {
+	        types_info: types_info,
+	        actions_info: actions_info,
+	        fields: fields,
+	        validations: validations
+	    };
+	}();
+
+	module.exports = MetaTraderConfig;
+
+/***/ },
+/* 453 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var MetaTraderConfig = __webpack_require__(452);
+	var Client = __webpack_require__(301);
+	var formatMoney = __webpack_require__(423).formatMoney;
+	var showLoadingImage = __webpack_require__(417).showLoadingImage;
+	var Validation = __webpack_require__(429);
+
+	var MetaTraderUI = function () {
+	    'use strict';
+
+	    var $container = void 0,
+	        $list_cont = void 0,
+	        $mt5_account = void 0,
+	        $list = void 0,
+	        $detail = void 0,
+	        $action = void 0,
+	        $templates = void 0,
+	        _$form = void 0,
+	        $main_msg = void 0,
+	        submit = void 0;
+
+	    var hidden_class = 'invisible';
+
+	    var types_info = MetaTraderConfig.types_info;
+	    var actions_info = MetaTraderConfig.actions_info;
+	    var validations = MetaTraderConfig.validations;
+
+	    var init = function init(submit_func) {
+	        submit = submit_func;
+	        $container = $('#mt_account_management');
+	        $mt5_account = $container.find('#mt5_account');
+	        $list_cont = $container.find('#accounts_list');
+	        $list = $list_cont.find('> div');
+	        $detail = $container.find('#account_detail');
+	        $action = $container.find('#fst_action');
+	        $templates = $container.find('#templates');
+	        $main_msg = $container.find('#main_msg');
+	        $detail.find('[class*="act_"]').click(populateForm);
+
+	        populateAccountList();
+	    };
+
+	    var populateAccountList = function populateAccountList() {
+	        var $acc_name = $templates.find('> .acc-name');
+	        var no_real = Client.is_virtual() && !Client.has_real();
+	        $('#top_msg')[no_real ? 'removeClass' : 'addClass'](hidden_class);
+	        Object.keys(types_info).sort(function (a, b) {
+	            return types_info[a].order > types_info[b].order;
+	        }).forEach(function (acc_type, idx) {
+	            if ($list.find('#' + acc_type).length === 0) {
+	                var $acc_item = $acc_name.clone();
+	                $acc_item.attr('value', acc_type);
+	                if (no_real && /real/.test(acc_type)) {
+	                    $acc_item.addClass('disabled');
+	                }
+	                $list.append($acc_item);
+	                if (idx % 2 === 1 && idx < Object.keys(types_info).length - 1) {
+	                    $list.append($('<div/>', { class: 'separator fill-bg-color' }));
+	                }
+	            }
+	        });
+
+	        var hideList = function hideList() {
+	            $list_cont.slideUp('fast', function () {
+	                $mt5_account.removeClass('open');
+	            });
+	        };
+
+	        // account switch events
+	        $mt5_account.off('click').on('click', function (e) {
+	            e.stopPropagation();
+	            if ($list_cont.is(':hidden')) {
+	                $mt5_account.addClass('open');
+	                $list_cont.slideDown('fast');
+	            } else {
+	                hideList();
+	            }
+	        });
+	        $list.off('click').on('click', '.acc-name', function () {
+	            if (!$(this).hasClass('disabled')) {
+	                setAccountType($(this).attr('value'), true);
+	            }
+	        });
+	        $(document).off('click.mt5_account_list').on('click.mt5_account_list', function () {
+	            hideList();
+	        });
+	    };
+
+	    var setAccountType = function setAccountType(acc_type, should_set_account) {
+	        if ($mt5_account.attr('value') !== acc_type) {
+	            Client.set('mt5_account', acc_type);
+	            $mt5_account.attr('value', acc_type).html(types_info[acc_type].title).removeClass('empty');
+	            $action.addClass(hidden_class);
+	            if (should_set_account) {
+	                setCurrentAccount(acc_type);
+	            }
+	        }
+	    };
+
+	    var updateAccount = function updateAccount(acc_type) {
+	        updateListItem(acc_type);
+	        setCurrentAccount(acc_type);
+	    };
+
+	    var updateListItem = function updateListItem(acc_type) {
+	        var $acc_item = $list.find('[value=' + acc_type + ']');
+	        $acc_item.find('.mt-type').text('' + types_info[acc_type].title);
+	        if (types_info[acc_type].account_info) {
+	            $acc_item.find('.mt-login').text(types_info[acc_type].account_info.login);
+	            $acc_item.find('.mt-balance').text(formatMoney(+types_info[acc_type].account_info.balance, 'USD'));
+	            $acc_item.find('.mt-new').addClass(hidden_class);
+	        } else {
+	            $acc_item.find('.mt-new').removeClass(hidden_class);
+	        }
+	    };
+
+	    var setCurrentAccount = function setCurrentAccount(acc_type) {
+	        if (acc_type !== Client.get('mt5_account')) return;
+
+	        $detail.find('#account_desc').html($templates.find('.account-desc .' + acc_type).clone());
+
+	        if (types_info[acc_type].account_info) {
+	            // Update account info
+	            $detail.find('.acc-info div[data]').map(function () {
+	                var key = $(this).attr('data');
+	                var info = types_info[acc_type].account_info[key];
+	                $(this).text(key === 'balance' ? formatMoney(+info, 'USD') : key === 'leverage' ? '1:' + info : info);
+	            });
+	            $detail.find('.act_deposit, .act_withdrawal')[types_info[acc_type].is_demo ? 'addClass' : 'removeClass'](hidden_class);
+	            $detail.find('.has-account').removeClass(hidden_class);
+	            $detail.find('#account_desc .more').addClass(hidden_class);
+	        } else {
+	            $detail.find('.acc-info, .acc-actions').addClass(hidden_class);
+	        }
+	        $('#mt_loading').remove();
+	        $container.removeClass(hidden_class);
+
+	        setAccountType(acc_type);
+
+	        if ($action.hasClass(hidden_class)) {
+	            loadAction(defaultAction(acc_type));
+	        }
+	    };
+
+	    var defaultAction = function defaultAction(acc_type) {
+	        return types_info[acc_type].account_info ? types_info[acc_type].is_demo ? 'password_change' : 'deposit' : 'new_account';
+	    };
+
+	    var loadAction = function loadAction(action, acc_type) {
+	        $detail.find('.acc-actions [class*=act_' + (action || defaultAction(acc_type)) + ']').click();
+	    };
+
+	    var populateForm = function populateForm(e) {
+	        var $target = $(e.target);
+	        if ($target.prop('tagName').toLowerCase() !== 'a') {
+	            $target = $target.parents('a');
+	        }
+
+	        var acc_type = Client.get('mt5_account');
+	        var action = $target.attr('class').split(' ').find(function (c) {
+	            return (/^act_/.test(c)
+	            );
+	        }).replace('act_', '');
+
+	        // set active, update title
+	        $detail.find('[class*="act_"]').removeClass('selected');
+	        $target.addClass('selected');
+	        $action.find('h4').text(actions_info[action].title);
+
+	        actions_info[action].prerequisites(acc_type).then(function (error_msg) {
+	            if (error_msg) {
+	                // does not meet one of prerequisites
+	                displayMainMessage(error_msg);
+	                $action.find('#frm_action').empty().end().removeClass(hidden_class);
+	                return;
+	            }
+
+	            if (!$action.find('#frm_' + action).length) {
+	                $main_msg.addClass(hidden_class);
+	            }
+
+	            // clone form, event listener
+	            _$form = $templates.find('#frm_' + action).clone();
+	            var formValues = actions_info[action].formValues;
+	            if (formValues) formValues(_$form, acc_type, action);
+	            _$form.find('#btn_submit').attr({ acc_type: acc_type, action: action }).on('click dblclick', submit);
+
+	            // append form
+	            $action.find('#frm_action').html(_$form).removeClass(hidden_class).end().removeClass(hidden_class);
+	            // $.scrollTo($action, 500, { offset: -7 });
+	            Validation.init('#frm_' + action, validations[action]);
+	        });
+	    };
+
+	    var postValidate = function postValidate(acc_type, action) {
+	        var validate = actions_info[action].pre_submit;
+	        return validate ? validate(_$form, acc_type, displayFormMessage) : new Promise(function (resolve) {
+	            return resolve(true);
+	        });
+	    };
+
+	    var hideFormMessage = function hideFormMessage() {
+	        _$form.find('#msg_form').html('').addClass(hidden_class);
+	    };
+
+	    var displayFormMessage = function displayFormMessage(message) {
+	        _$form.find('#msg_form').text(message).removeClass(hidden_class);
+	    };
+
+	    var displayMainMessage = function displayMainMessage(message) {
+	        $main_msg.html(message).removeClass(hidden_class);
+	        $.scrollTo($action, 500, { offset: -80 });
+	    };
+
+	    var disableButton = function disableButton() {
+	        var $btn = _$form.find('button');
+	        if ($btn.length && !$btn.find('.barspinner').length) {
+	            $btn.attr('disabled', 'disabled');
+	            var $btn_text = $('<span/>', { text: $btn.text(), class: hidden_class });
+	            showLoadingImage($btn, 'white');
+	            $btn.append($btn_text);
+	        }
+	    };
+
+	    var enableButton = function enableButton() {
+	        var $btn = _$form.find('button');
+	        if ($btn.length && $btn.find('.barspinner').length) {
+	            $btn.removeAttr('disabled').html($btn.find('span').text());
+	        }
+	    };
+
+	    return {
+	        init: init,
+	        $form: function $form() {
+	            return _$form;
+	        },
+	        loadAction: loadAction,
+	        updateAccount: updateAccount,
+	        postValidate: postValidate,
+	        hideFormMessage: hideFormMessage,
+	        displayFormMessage: displayFormMessage,
+	        displayMainMessage: displayMainMessage,
+	        disableButton: disableButton,
+	        enableButton: enableButton
+	    };
+	}();
+
+	module.exports = MetaTraderUI;
+
+/***/ },
+/* 454 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var Client = __webpack_require__(301);
 	var showLoadingImage = __webpack_require__(417).showLoadingImage;
-	var FinancialAssessment = __webpack_require__(456);
-	var PersonalDetails = __webpack_require__(457);
+	var FinancialAssessment = __webpack_require__(455);
+	var PersonalDetails = __webpack_require__(456);
 
 	var Profile = function () {
 	    'use strict';
@@ -41188,7 +41125,7 @@
 	module.exports = Profile;
 
 /***/ },
-/* 456 */
+/* 455 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41200,7 +41137,7 @@
 	var State = __webpack_require__(416).State;
 	var isEmptyObject = __webpack_require__(417).isEmptyObject;
 	var showLoadingImage = __webpack_require__(417).showLoadingImage;
-	var Validation = __webpack_require__(431);
+	var Validation = __webpack_require__(429);
 
 	var FinancialAssessment = function () {
 	    'use strict';
@@ -41341,7 +41278,7 @@
 	module.exports = FinancialAssessment;
 
 /***/ },
-/* 457 */
+/* 456 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41350,9 +41287,9 @@
 
 	var Client = __webpack_require__(301);
 	var ChampionSocket = __webpack_require__(413);
-	var Validation = __webpack_require__(431);
+	var Validation = __webpack_require__(429);
 	var moment = __webpack_require__(302);
-	__webpack_require__(458);
+	__webpack_require__(457);
 
 	var PersonalDetails = function () {
 	    'use strict';
@@ -41550,7 +41487,7 @@
 	module.exports = PersonalDetails;
 
 /***/ },
-/* 458 */
+/* 457 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var require;var require;/*!
@@ -47281,7 +47218,7 @@
 
 
 /***/ },
-/* 459 */
+/* 458 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47309,103 +47246,379 @@
 	module.exports = ChampionSecurity;
 
 /***/ },
+/* 459 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var moment = __webpack_require__(302);
+	var Client = __webpack_require__(301);
+	var FormManager = __webpack_require__(460);
+	var ChampionSocket = __webpack_require__(413);
+	var dateValueChanged = __webpack_require__(417).dateValueChanged;
+	var DatePicker = __webpack_require__(441).DatePicker;
+	var TimePicker = __webpack_require__(461);
+
+	var SelfExclusion = function () {
+	    'use strict';
+
+	    var $form = void 0,
+	        fields = void 0,
+	        self_exclusion_data = void 0;
+
+	    var form_id = '#frm_self_exclusion';
+	    var timeout_date_id = '#timeout_until_date';
+	    var timeout_time_id = '#timeout_until_time';
+	    var exclude_until_id = '#exclude_until';
+	    var error_class = 'errorfield';
+	    var hidden_class = 'invisible';
+
+	    var load = function load() {
+	        $form = $(form_id);
+
+	        fields = {};
+	        $form.find('input').each(function () {
+	            fields[this.name] = '';
+	        });
+
+	        initDatePicker();
+	        getData();
+	    };
+
+	    var getData = function getData(send_anyway) {
+	        if (send_anyway) {
+	            ChampionSocket.send({ get_self_exclusion: 1 }, true).then(function (response) {
+	                handleResponse(response);
+	            });
+	        } else {
+	            ChampionSocket.wait('get_self_exclusion').then(function (response) {
+	                handleResponse(response);
+	            });
+	        }
+	    };
+
+	    var handleResponse = function handleResponse(response) {
+	        if (response.error) {
+	            if (response.error.code === 'ClientSelfExclusion') {
+	                ChampionSocket.send({ logout: 1 });
+	            }
+	            if (response.error.message) {
+	                $('#msg_error').html(response.error.message);
+	                $form.addClass(hidden_class);
+	            }
+	            return;
+	        }
+
+	        $('.barspinner').addClass(hidden_class);
+	        self_exclusion_data = response.get_self_exclusion;
+	        $.each(self_exclusion_data, function (key, value) {
+	            fields[key] = value;
+	            $form.find('#' + key).val(value);
+	        });
+	        $form.removeClass(hidden_class);
+	        bindValidation();
+	    };
+
+	    var bindValidation = function bindValidation() {
+	        var validations = [{ request_field: 'set_self_exclusion', value: 1 }];
+
+	        $form.find('input[type="text"]').each(function () {
+	            var id = $(this).attr('id');
+
+	            if (/(timeout_until|exclude_until)/.test(id)) return;
+
+	            var checks = [];
+	            var options = { min: 0 };
+	            if (id in self_exclusion_data) {
+	                checks.push('req');
+	                options.max = self_exclusion_data[id];
+	            } else {
+	                options.allow_empty = true;
+	            }
+	            checks.push(['number', options]);
+
+	            if (id === 'session_duration_limit') {
+	                checks.push(['custom', { func: validSessionDuration, message: 'Session duration limit cannot be more than 6 weeks.' }]);
+	            }
+
+	            validations.push({
+	                selector: '#' + id,
+	                validations: checks,
+	                exclude_if_empty: 1
+	            });
+	        });
+
+	        validations.push({
+	            selector: timeout_date_id,
+	            request_field: 'timeout_until',
+	            re_check_field: timeout_time_id,
+	            exclude_if_empty: 1,
+	            value: getTimeout,
+	            validations: [['custom', { func: function func() {
+	                    return $(timeout_time_id).val() ? $(timeout_date_id).val().length : true;
+	                }, message: 'This field is required.' }], ['custom', { func: validDate, message: 'Please select a valid date.' }], ['custom', { func: function func(value) {
+	                    return !value.length || toMoment(value).isAfter(moment().subtract(1, 'days'), 'day');
+	                }, message: 'Time out must be after today.' }], ['custom', { func: function func(value) {
+	                    return !value.length || toMoment(value).isBefore(moment().add(6, 'weeks'));
+	                }, message: 'Time out cannot be more than 6 weeks.' }]]
+	        }, {
+	            selector: timeout_time_id,
+	            exclude_request: 1,
+	            re_check_field: timeout_date_id,
+	            validations: [['custom', { func: function func() {
+	                    return $(timeout_date_id).val() && toMoment($(timeout_date_id).val()).isSame(moment(), 'day') ? $(timeout_time_id).val().length : true;
+	                }, message: 'This field is required.' }], ['custom', { func: function func(value) {
+	                    return !value.length || !$(timeout_date_id).val() || getTimeout() > moment().valueOf() / 1000;
+	                }, message: 'Time out cannot be in the past.' }], ['custom', { func: validTime, message: 'Please select a valid time.' }]]
+	        }, {
+	            selector: exclude_until_id,
+	            exclude_if_empty: 1,
+	            value: function value() {
+	                return dateFormat(exclude_until_id);
+	            },
+	            validations: [['custom', { func: validDate, message: 'Please select a valid date.' }], ['custom', { func: function func(value) {
+	                    return !value.length || toMoment(value).isAfter(moment().add(6, 'months'));
+	                }, message: 'Exclude time cannot be less than 6 months.' }], ['custom', { func: function func(value) {
+	                    return !value.length || toMoment(value).isBefore(moment().add(5, 'years'));
+	                }, message: 'Exclude time cannot be for more than 5 years.' }]]
+	        });
+
+	        FormManager.init(form_id, validations);
+	        FormManager.handleSubmit({
+	            form_selector: form_id,
+	            fnc_response_handler: setExclusionResponse,
+	            fnc_additional_check: additionalCheck,
+	            enable_button: true
+	        });
+	    };
+
+	    var validSessionDuration = function validSessionDuration(value) {
+	        return +value <= moment.duration(6, 'weeks').as('minutes');
+	    };
+	    var validDate = function validDate(value) {
+	        return !value.length || /^\d{4}-\d{2}-\d{2}$/.test(value) && moment(new Date(value), 'YYYY-MM-DD', true).isValid();
+	    };
+	    var validTime = function validTime(value) {
+	        return !value.length || moment(value, 'HH:mm', true).isValid();
+	    };
+
+	    var toMoment = function toMoment(value) {
+	        return moment(new Date(value));
+	    };
+	    var dateFormat = function dateFormat(elm_id) {
+	        return $(elm_id).val() ? toMoment($(elm_id).val()).format('YYYY-MM-DD') : '';
+	    };
+	    var getTimeout = function getTimeout() {
+	        return $(timeout_date_id).val() ? moment((dateFormat(timeout_date_id) + ' ' + $(timeout_time_id).val()).trim()).valueOf() / 1000 : '';
+	    };
+
+	    var initDatePicker = function initDatePicker() {
+	        // timeout_until
+	        new TimePicker(timeout_time_id).show();
+	        new DatePicker(timeout_date_id).show({
+	            minDate: 'today',
+	            maxDate: 6 * 7 });
+
+	        // exclude_until
+	        new DatePicker(exclude_until_id).show({
+	            minDate: moment().add(6, 'months').add(1, 'day').toDate(),
+	            maxDate: 5 * 365 });
+
+	        $(timeout_date_id + ', ' + exclude_until_id).change(function () {
+	            dateValueChanged(this, 'date');
+	        });
+	    };
+
+	    var additionalCheck = function additionalCheck(data) {
+	        var is_changed = Object.keys(data).some(function (key) {
+	            return (// using != in next line since response types is inconsistent
+	                key !== 'set_self_exclusion' && (!(key in self_exclusion_data) || self_exclusion_data[key] != data[key]) // eslint-disable-line eqeqeq
+
+	            );
+	        });
+	        if (!is_changed) {
+	            showFormMessage('You did not change anything.', false);
+	        }
+
+	        var is_confirmed = true;
+	        if ('timeout_until' in data || 'exclude_until' in data) {
+	            is_confirmed = window.confirm('When you click "OK" you will be excluded from trading on the site until the selected date.');
+	        }
+
+	        return is_changed && is_confirmed;
+	    };
+
+	    var setExclusionResponse = function setExclusionResponse(response) {
+	        if (response.error) {
+	            var error_msg = response.error.message;
+	            var error_fld = response.error.field;
+	            if (error_fld) {
+	                $('#' + error_fld).siblings('.error-msg').removeClass(hidden_class).html(error_msg);
+	            } else {
+	                showFormMessage(error_msg, false);
+	            }
+	            return;
+	        }
+	        showFormMessage('Your changes have been updated.', true);
+	        Client.set('session_start', moment().unix()); // used to handle session duration limit
+	        getData(true);
+	    };
+
+	    var showFormMessage = function showFormMessage(msg, is_success) {
+	        $('#msg_form').attr('class', is_success ? 'success-msg' : error_class).html(is_success ? '<ul class="checked"><li>' + msg + '</li></ul>' : msg).css('display', 'block').delay(5000).fadeOut(1000);
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = SelfExclusion;
+
+/***/ },
 /* 460 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var ChampionSocket = __webpack_require__(413);
-	var moment = __webpack_require__(302);
+	var isEmptyObject = __webpack_require__(417).isEmptyObject;
+	var showLoadingImage = __webpack_require__(417).showLoadingImage;
+	var Validation = __webpack_require__(429);
 
-	var LoginHistory = function () {
+	var FormManager = function () {
 	    'use strict';
 
-	    var hidden_class = 'invisible';
+	    var forms = {};
 
-	    var load = function load() {
-	        var req = {
-	            login_history: 1,
-	            limit: 50
+	    var initForm = function initForm(form_selector, fields) {
+	        var $form = $(form_selector + ':visible');
+	        var $btn = $form.find('button[type="submit"]');
+	        if ($form.length) {
+	            forms[form_selector] = {
+	                $btn_submit: $btn,
+	                can_submit: true
+	            };
+	            if (Array.isArray(fields) && fields.length) {
+	                forms[form_selector].fields = fields;
+
+	                fields.forEach(function (field) {
+	                    if (field.selector) {
+	                        field.$ = $form.find(field.selector);
+	                        if (!field.$.length) return;
+	                    }
+
+	                    field.form = form_selector;
+	                });
+	            }
+	        }
+	        // handle firefox
+	        $btn.removeAttr('disabled');
+	        Validation.init(form_selector, fields);
+	    };
+
+	    var getFormData = function getFormData(form_selector) {
+	        var data = {};
+	        var fields = forms[form_selector].fields;
+	        if (!fields) return data;
+	        var key = void 0,
+	            $selector = void 0,
+	            val = void 0,
+	            value = void 0;
+
+	        fields.forEach(function (field) {
+	            if (!field.exclude_request) {
+	                $selector = $(field.form).find(field.selector);
+	                if ($selector.is(':visible') || field.value) {
+	                    val = $selector.val();
+	                    key = field.request_field || field.selector;
+
+	                    // prioritise data-value
+	                    // if label, take the text
+	                    // if checkbox, take checked value
+	                    // otherwise take the value
+	                    value = field.value ? typeof field.value === 'function' ? field.value() : field.value : $selector.attr('data-value') || (/lbl_/.test(key) ? field.value || $selector.text() : $selector.is(':checkbox') ? $selector.is(':checked') ? 1 : 0 : Array.isArray(val) ? val.join(',') : val || '');
+
+	                    if (!(field.exclude_if_empty && val.length === 0)) {
+	                        key = key.replace(/lbl_|#|\./g, '');
+	                        if (field.parent_node) {
+	                            if (!data[field.parent_node]) {
+	                                data[field.parent_node] = {};
+	                            }
+	                            data[field.parent_node][key] = value;
+	                        } else {
+	                            data[key] = value;
+	                        }
+	                    }
+	                }
+	            }
+	        });
+	        return data;
+	    };
+
+	    var disableButton = function disableButton($btn) {
+	        if ($btn.length && !$btn.find('.barspinner').length) {
+	            $btn.attr('disabled', 'disabled');
+	            var $btn_text = $('<span/>', { text: $btn.text(), class: 'invisible' });
+	            showLoadingImage($btn, 'white');
+	            $btn.append($btn_text);
+	        }
+	    };
+
+	    var enableButton = function enableButton($btn) {
+	        if ($btn.length && $btn.find('.barspinner').length) {
+	            $btn.removeAttr('disabled').html($btn.find('span').text());
+	        }
+	    };
+
+	    var handleSubmit = function handleSubmit(options) {
+	        var form = void 0,
+	            $btn_submit = void 0,
+	            can_submit = void 0;
+
+	        var onSuccess = function onSuccess() {
+	            var response = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+	            if (typeof options.fnc_response_handler === 'function') {
+	                if (options.enable_button || 'error' in response) {
+	                    enableButton($btn_submit);
+	                    form.can_submit = true;
+	                }
+	                options.fnc_response_handler(response);
+	            }
 	        };
 
-	        ChampionSocket.send(req).then(function (response) {
-	            $('.barspinner').addClass(hidden_class);
-	            if (response.error) {
-	                $('#error-msg').html(response.error.message);
-	            } else {
-	                handleResponse(response);
+	        $(options.form_selector).off('submit').on('submit', function (evt) {
+	            evt.preventDefault();
+	            form = forms[options.form_selector];
+	            $btn_submit = form.$btn_submit;
+	            can_submit = form.can_submit;
+	            if (!can_submit) return;
+	            if (Validation.validate(options.form_selector)) {
+	                var req = $.extend({}, options.obj_request, getFormData(options.form_selector));
+	                if (typeof options.fnc_additional_check === 'function' && !options.fnc_additional_check(req)) {
+	                    return;
+	                }
+	                disableButton($btn_submit);
+	                form.can_submit = false;
+	                if (isEmptyObject(req)) {
+	                    onSuccess();
+	                } else {
+	                    ChampionSocket.send(req).then(function (response) {
+	                        onSuccess(response);
+	                    });
+	                }
 	            }
 	        });
 	    };
 
-	    var handleResponse = function handleResponse(response) {
-	        var histories = response.login_history;
-	        var length = histories.length;
-	        var parsed_data = [];
-	        for (var i = 0; i < length; i++) {
-	            var data = parse(histories[i]);
-	            parsed_data.push(data);
-	        }
-	        render(parsed_data);
-	    };
-
-	    var render = function render(data) {
-	        var rows = data.map(function (history) {
-	            return '<tr><td>' + history.time + '</td>\n                 <td>' + history.action + '</td>\n                 <td>' + history.browser.name + ' ' + history.browser.version + '</td>\n                 <td>' + history.ip_addr + '</td>\n                 <td>' + history.status + '</td></tr>';
-	        }).join('');
-
-	        var header = '<th>Date and time</th>\n                        <th>Action</th>\n                        <th>Browser</th>\n                        <th>IP address</th>\n                        <th>Status</th>';
-
-	        var table = '<table><tr>' + header + '</tr>' + rows + '</table>';
-
-	        $('#fx-login-history').append(table);
-	    };
-
-	    var parseUA = function parseUA(user_agent) {
-	        // Table of UA-values (and precedences) from:
-	        //  https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
-	        // Regexes stolen from:
-	        //  https://github.com/biggora/express-useragent/blob/master/lib/express-useragent.js
-	        var lookup = [{ name: 'Edge', regex: /Edge\/([\d\w\.\-]+)/i }, { name: 'SeaMonkey', regex: /seamonkey\/([\d\w\.\-]+)/i }, { name: 'Opera', regex: /(?:opera|opr)\/([\d\w\.\-]+)/i }, { name: 'Chromium', regex: /(?:chromium|crios)\/([\d\w\.\-]+)/i }, { name: 'Chrome', regex: /chrome\/([\d\w\.\-]+)/i }, { name: 'Safari', regex: /version\/([\d\w\.\-]+)/i }, { name: 'IE', regex: /msie\s([\d\.]+[\d])/i }, { name: 'IE', regex: /trident\/\d+\.\d+;.*[rv:]+(\d+\.\d)/i }, { name: 'Firefox', regex: /firefox\/([\d\w\.\-]+)/i }];
-	        for (var i = 0; i < lookup.length; i++) {
-	            var info = lookup[i];
-	            var match = user_agent.match(info.regex);
-	            if (match !== null) {
-	                return {
-	                    name: info.name,
-	                    version: match[1]
-	                };
-	            }
-	        }
-	        return null;
-	    };
-
-	    var parse = function parse(response) {
-	        var env = response.environment;
-	        var ip_address = env.split(' ')[2].split('=')[1];
-	        var user_agent = env.match('User_AGENT=(.+) LANG')[1];
-	        var utc_time = moment.unix(response.time).utc().format('YYYY-MM-DD HH:mm:ss').replace(' ', '\n');
-	        var status = response.status === 1 ? 'Successful' : 'Failed';
-	        return {
-	            time: utc_time + ' GMT',
-	            action: response.action,
-	            status: status,
-	            browser: parseUA(user_agent),
-	            ip_addr: ip_address
-	        };
-	    };
-
-	    var unload = function unload() {
-	        $('#fx-login-history').empty(); // cleanup
-	    };
-
 	    return {
-	        load: load,
-	        unload: unload
+	        init: initForm,
+	        handleSubmit: handleSubmit
 	    };
 	}();
 
-	module.exports = LoginHistory;
+	module.exports = FormManager;
 
 /***/ },
 /* 461 */
@@ -47413,120 +47626,142 @@
 
 	'use strict';
 
-	var ChampionSocket = __webpack_require__(413);
-	var DatePicker = __webpack_require__(433).DatePicker;
 	var moment = __webpack_require__(302);
+	var checkInput = __webpack_require__(417).checkInput;
 
-	var TradingTimes = function () {
-	    'use strict';
+	var TimePicker = function TimePicker(component_selector) {
+	    this.component_selector = component_selector;
+	};
 
-	    var today = moment.utc().format('YYYY-MM-DD'),
-	        hidden_class = 'invisible';
-
-	    var active_symbols = void 0;
-
-	    var load = function load() {
-	        var date_picker = new DatePicker('#trading-date'); // create datepicker
-	        date_picker.show({
-	            minDate: 'today',
-	            maxDate: 365
+	TimePicker.prototype = {
+	    show: function show(min_time, max_time) {
+	        this.checkWidth(this.config(min_time, max_time), this.component_selector, this);
+	        var that = this;
+	        $(window).resize(function () {
+	            that.checkWidth(that.config_data, that.component_selector, that);
 	        });
-
-	        var $date = $('#trading-date').val(today);
-	        $date.change(function () {
-	            unload();
-	            getTradingTimes($date.val());
-	        });
-
-	        ChampionSocket.send({ active_symbols: 'brief' }).then(function (response) {
-	            $('.barspinner').addClass(hidden_class);
-	            if (response.error) {
-	                $('#error-msg').html(response.error.message);
-	            } else {
-	                active_symbols = response.active_symbols.slice(0);
-	                getTradingTimes('today');
-	            }
-	        });
-	    };
-
-	    var getTradingTimes = function getTradingTimes(date) {
-	        ChampionSocket.send({ trading_times: date || 'today' }).then(function (response) {
-	            $('.barspinner').addClass(hidden_class);
-	            if (response.error) {
-	                $('#error-msg').html(response.error.message);
-	            } else {
-	                createTable(response.trading_times);
-	            }
-	        });
-	    };
-
-	    var createTable = function createTable(data) {
-	        var submarket_subheader = '<tr><th class="asset">Asset</th> \n                 <th class="opens">Opens</th>\n                 <th class="closes">Closes</th>\n                 <th class="settles">Settles</th>\n                 <th class="upcomingevents">Upcoming events</th></tr>'; // constant subheader
-
-	        var markets = data.markets.slice(0);
-	        var tabs = createTabs(markets);
-	        var market_tabs = '<ul>' + tabs + '</ul>'; // create market tabs, wrap tab items in <ul>
-	        var market_contents = markets.map(function (market, index) {
-	            if (market.name === 'Volatility Indices') {
-	                return null;
-	            }
-	            var market_table = market.submarkets.map(function (submarket) {
-	                var submarket_header = createTableHeader(submarket.name); // create header row
-	                var submarket_symbols = createTableRow(submarket.symbols); // create symbol rows
-	                return '<table>\n                            ' + submarket_header + '\n                            ' + submarket_subheader + '\n                            ' + submarket_symbols + '\n                        </table>'; // create market table
-	            }).join('');
-	            return '<div id="market_' + index++ + '">\n                        ' + market_table + '\n                    </div>'; // create market contents, wrap market table in <div>
-	        }).join('');
-
-	        $('#fx-trading-times').html('' + market_tabs + market_contents).tabs();
-	    };
-
-	    var createTabs = function createTabs(tabs) {
-	        return tabs.map(function (tab, index) {
-	            return tab.name === 'Volatility Indices' ? null : '<li><a href="#market_' + index++ + '">' + tab.name + '</a></li>';
-	        }).join('');
-	    };
-
-	    var createTableHeader = function createTableHeader(title) {
-	        return '<tr><th colspan="5" class="center-text">' + title + '</th></tr>';
-	    };
-
-	    var createTableRow = function createTableRow(symbols) {
-	        return symbols.map(function (symbol) {
-	            if (getSymbolInfo(symbol, active_symbols)) {
-	                return '<tr><td class="asset">' + symbol.name + '</td>\n                            <td class="opens">' + symbol.times.open.join('<br>') + '</td>\n                            <td class="closes">' + symbol.times.close.join('<br>') + '</td>\n                            <td class="settles">' + symbol.times.settlement + '</td>\n                            <td class="upcomingevents">' + createEventsText(symbol.events) + '</td></tr>';
-	            }
-	            return '';
-	        }).join('');
-	    };
-
-	    var createEventsText = function createEventsText(events) {
-	        var result = '';
-	        for (var i = 0; i < events.length; i++) {
-	            if (i) result += '<br>';
-	            result += events[i].descrip + ': ' + events[i].dates;
+	    },
+	    hide: function hide() {
+	        if ($(this.component_selector + '.hasTimepicker').length > 0) {
+	            $(this.component_selector).timepicker('destroy').removeAttr('data-picker');
 	        }
-	        return result.length > 0 ? result : '--';
-	    };
+	        $(this.component_selector).off('keydown');
+	    },
+	    create: function create(config) {
+	        var that = this;
+	        $(this.component_selector).keydown(function (e) {
+	            if (e.which === 13) {
+	                e.preventDefault();
+	                e.stopPropagation();
+	                $(this).timepicker('setTime', $(this).val());
+	                $(this).timepicker('hide');
+	                $(this).blur();
+	                $(that).trigger('enter_pressed');
+	                return false;
+	            }
+	            return true;
+	        }).timepicker(config);
+	    },
+	    time_now: function time_now() {
+	        return moment.utc(window.time);
+	    },
+	    config: function config(min_time, max_time) {
+	        var that = this;
+	        var time_now = this.time_now();
 
-	    var getSymbolInfo = function getSymbolInfo(symbol) {
-	        return active_symbols.filter(function (obj) {
-	            return obj.symbol === symbol;
-	        });
-	    };
+	        var config = {
+	            hourText: 'Hour',
+	            minuteText: 'Minute',
+	            amPmText: ['AM', 'PM']
+	        };
+	        if (min_time) {
+	            min_time = min_time === 'now' ? time_now : moment.utc(min_time);
+	            if (min_time.isBefore(time_now)) {
+	                min_time = time_now;
+	            }
+	            config.minTime = { hour: parseInt(min_time.hour()), minute: parseInt(min_time.minute()) };
+	        }
+	        if (max_time) {
+	            max_time = moment.utc(max_time);
+	            config.maxTime = { hour: parseInt(max_time.hour()), minute: parseInt(max_time.minute()) };
+	        }
 
-	    var unload = function unload() {
-	        $('#fx-trading-times').empty().tabs('destroy'); // return to pre-init state
-	        $('.barspinner').removeClass(hidden_class);
-	    };
+	        config.onSelect = function (time) {
+	            var oldValue = $(that.component_selector).attr('data-value');
+	            if (!time.match(/^(:?[0-3]\d):(:?[0-5]\d):(:?[0-5]\d)$/)) {
+	                time_now = that.time_now();
+	                var invalid = time.match(/([a-z0-9]*):([a-z0-9]*):?([a-z0-9]*)?/);
+	                var hour = time_now.format('hh'),
+	                    minute = time_now.format('mm'),
+	                    second = time_now.format('ss');
 
-	    return {
-	        load: load,
-	        unload: unload
-	    };
-	}();
+	                if (typeof invalid[1] !== 'undefined' && isFinite(invalid[1])) {
+	                    hour = parseInt(invalid[1]);
+	                    if (hour < 10) {
+	                        hour = '0' + hour;
+	                    }
+	                }
+	                if (typeof invalid[2] !== 'undefined' && isFinite(invalid[2])) {
+	                    minute = parseInt(invalid[2]);
+	                    if (parseInt(minute) < 10) {
+	                        minute = '0' + minute;
+	                    }
+	                }
+	                if (typeof invalid[3] !== 'undefined' && isFinite(invalid[3])) {
+	                    second = parseInt(invalid[3]);
+	                    if (second < 10) {
+	                        second = '0' + second;
+	                    }
+	                }
 
-	module.exports = TradingTimes;
+	                var new_time = moment(time_now.format('YYYY-MM-DD') + ' ' + hour + ':' + minute + ':' + second).format('HH:mm');
+
+	                if (oldValue && oldValue === new_time) return false;
+
+	                $(this).val(new_time);
+	                $(this).attr('data-value', new_time);
+	                $(that.component_selector).trigger('change', [new_time]);
+	            } else {
+	                if (oldValue && oldValue === time) return false;
+	                $(this).attr('data-value', time);
+	                $(that.component_selector).trigger('change', [time]);
+	            }
+	            return true;
+	        };
+
+	        this.config_data = config;
+
+	        return config;
+	    },
+	    getTime: function getTime(time) {
+	        var hour = ('0' + time.hour).slice(-2),
+	            minute = ('0' + time.minute).slice(-2),
+	            second = '00';
+	        return [hour, minute, second].join(':');
+	    },
+	    checkWidth: function checkWidth(config, component_selector, that) {
+	        var $selector = $(that.component_selector);
+	        if ($(window).width() < 770 && checkInput('time', 'not-a-time') && $selector.attr('data-picker') !== 'native') {
+	            that.hide($selector);
+	            $selector.attr({ type: 'time', 'data-picker': 'native' });
+	            var minTime = config.minTime;
+	            if (minTime) {
+	                $selector.attr('min', that.getTime(minTime));
+	            }
+	            var maxTime = config.maxTime;
+	            if (maxTime) {
+	                $selector.attr('max', that.getTime(maxTime));
+	            }
+	        } else if ($(window).width() > 769 && $selector.attr('data-picker') !== 'jquery' || $(window).width() < 770 && !checkInput('time', 'not-a-time')) {
+	            $selector.attr({ type: 'text', 'data-picker': 'jquery' });
+	            $selector.removeAttr('min');
+	            $selector.removeAttr('max');
+	            that.create(config);
+	        }
+	    }
+	};
+
+	module.exports = TimePicker;
 
 /***/ },
 /* 462 */
@@ -47534,78 +47769,81 @@
 
 	'use strict';
 
-	var ChampionSocket = __webpack_require__(413);
+	var Client = __webpack_require__(301);
 
-	var Limits = function () {
+	var ChampionSettings = function () {
 	    'use strict';
 
-	    var $trading_limits = void 0,
-	        $withdrawal_limits = void 0;
-
-	    var hidden_class = 'invisible';
+	    var settingsContainer = void 0;
 
 	    var load = function load() {
-	        $trading_limits = $('#fx-trading-limits');
-	        $withdrawal_limits = $('#fx-withdrawal-limits');
+	        settingsContainer = $('.fx-settings');
 
-	        ChampionSocket.send({ get_limits: 1 }).then(function (response) {
-	            if (response.error) {
-	                $('#error-msg').html(response.error.message);
+	        if (!Client.is_virtual()) {
+	            settingsContainer.find('#fx-settings-content, .fx-real').show();
+	            return;
+	        }
+	        settingsContainer.find('#fx-settings-content').show();
+	    };
+
+	    return {
+	        load: load
+	    };
+	}();
+
+	module.exports = ChampionSettings;
+
+/***/ },
+/* 463 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Client = __webpack_require__(301);
+	var Header = __webpack_require__(422);
+	var ChampionSocket = __webpack_require__(413);
+	var default_redirect_url = __webpack_require__(419).default_redirect_url;
+	var url_for = __webpack_require__(419).url_for;
+	var url_for_static = __webpack_require__(419).url_for_static;
+	var template = __webpack_require__(417).template;
+
+	var TNCApproval = function () {
+	    'use strict';
+
+	    var hidden_class = 'invisible';
+	    var btn_accept = '#btn-accept';
+
+	    var load = function load() {
+	        $('#tnc-loading').addClass(hidden_class);
+	        $('#tnc_image').attr('src', url_for_static('images/protection-icon.svg'));
+	        $('#tnc_approval').removeClass(hidden_class);
+	        var $tnc_msg = $('#tnc-message');
+	        var tnc_message = template($tnc_msg.html(), [Client.get('landing_company_fullname'), url_for('terms-and-conditions')]);
+	        $tnc_msg.html(tnc_message).removeClass(hidden_class);
+	        $(btn_accept).text('OK').on('click', function (e) {
+	            approveTNC(e);
+	        });
+	    };
+
+	    var approveTNC = function approveTNC(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        ChampionSocket.send({ tnc_approval: '1' }).then(function (response) {
+	            if (!Object.prototype.hasOwnProperty.call(response, 'error')) {
+	                ChampionSocket.send({ get_settings: 1 }, true).then(function () {
+	                    Header.displayAccountStatus();
+	                });
+	                window.location.href = default_redirect_url();
 	            } else {
-	                handleResponse(response.get_limits);
+	                $('#err_message').html(response.error.message).removeClass(hidden_class);
 	            }
 	        });
 	    };
 
-	    var handleResponse = function handleResponse(data) {
-	        // Trading limits
-	        var trading_limits_header = '<tr><th>Item</th><th>Limits</th></tr><tr>';
-	        var trading_limits_contents = '<tr><td>Maximum number of open positions</td>\n                         <td>' + data.open_positions + '</td></tr>\n                     <tr><td>Maximum account cash balance</td>\n                         <td>' + formatNumbers(data.account_balance) + '</td></tr>\n                     <tr><td>Maximum aggregate payouts on open positions</td>\n                         <td>' + formatNumbers(data.payout) + '</td></tr>\n                     <tr><td>Maximum aggregate payouts on open positions per symbol and contract type</td>\n                         <td>' + formatNumbers(data.payout_per_symbol_and_contract_type) + '</td></tr>';
-	        $trading_limits.append('<table>' + trading_limits_header + trading_limits_contents + '</table><br>');
-
-	        var market_specific = data.market_specific;
-	        var market_specific_header = '<tr><th>Maximum daily turnover</th><th>Limits</th></tr>';
-	        var market_specific_contents = '';
-	        Object.keys(market_specific).forEach(function (market) {
-	            var submarkets = market_specific[market];
-	            var market_header = '<tr><td class=\'market\' colspan=\'2\'>' + market + '</td></tr>';
-	            var market_rows = submarkets.map(function (submarket) {
-	                return '<tr><td class=\'submarket\'>' + submarket.name + '</td>\n                      <td class=\'limit\'>' + formatNumbers(submarket.turnover_limit) + '</td></tr>';
-	            }).join('');
-	            market_specific_contents += '' + market_header + market_rows;
-	        });
-
-	        var hint = '<p class="hint">Stated limits are subject to change without prior notice.</p>';
-	        $trading_limits.append('<table>' + market_specific_header + market_specific_contents + '</table>' + hint);
-
-	        // Withdrawal limits
-	        var withdrawal_msg = '';
-	        if (data.lifetime_limit === 99999999 && data.num_of_days_limit === 99999999) {
-	            withdrawal_msg = '<p>Your account is fully authenticated and your withdrawal limits have been lifted.</p>';
-	        } else {
-	            var days_limit = data.num_of_days_limit;
-	            var withdrawn = data.withdrawal_since_inception_monetary;
-	            var remainder = data.remainder;
-
-	            withdrawal_msg = '<p>Your withdrawal limit is &dollar;' + days_limit + '.</p>\n                              <p>You have already withdrawn &dollar;' + withdrawn + '.</p>\n                              <p>Therefore your current immediate maximum withdrawal \n                                 (subject to your account having sufficient funds) is &dollar;' + remainder + '.</p>';
-	        }
-	        $withdrawal_limits.append(withdrawal_msg);
-
-	        $('.barspinner').addClass(hidden_class);
-	        $('#fx-limits').removeClass(hidden_class);
-	    };
-
-	    var formatNumbers = function formatNumbers(num, decimal_points) {
-	        num = String(num || 0).replace(/,/g, '') * 1;
-	        return num.toFixed(decimal_points).toString().replace(/(^|[^\w.])(\d{4,})/g, function ($0, $1, $2) {
-	            return $1 + $2.replace(/\d(?=(?:\d\d\d)+(?!\d))/g, '$&,');
-	        });
-	    };
-
 	    var unload = function unload() {
-	        $trading_limits.empty();
-	        $withdrawal_limits.empty();
-	        $('.barspinner').removeClass(hidden_class);
+	        $(btn_accept).off('click', function (e) {
+	            approveTNC(e);
+	        });
 	    };
 
 	    return {
@@ -47614,7 +47852,7 @@
 	    };
 	}();
 
-	module.exports = Limits;
+	module.exports = TNCApproval;
 
 /***/ }
 /******/ ]);
