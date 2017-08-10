@@ -100,6 +100,26 @@
     
 </div>
 
+    <div class="form-row is-real">
+    <label>Account opening reason</label>
+    
+                <span class="text-display ">
+                                <span id="lbl_account_opening_reason" ></span>
+            </span>
+    
+</div>
+    <!-- if account_opening_reason is not set, display dropdown -->
+    <div class="form-row is-real invisible">
+    <label for="account_opening_reason">Account opening reason</label>
+    
+                <select id="account_opening_reason" > 
+        <option value="">Please select</option>
+        <option value="Speculative">Speculative</option>
+        <option value="Income Earning">Income Earning</option>
+        <option value="Hedging">Hedging</option>
+                </select>
+    
+</div>
 
     <h3 class="is-real underline-title">Tax information</h3>
     <div class="form-row is-real">
@@ -162,7 +182,7 @@
     <p id="msg_form" class="error-msg invisible"></p>
     <button id="submit" type="submit">Update</button> </div>
 
-    <p class="notice-msg is-real">*To update your personal information, please contact our <a href="/champion-static/en/contact.html">customer support</a> team.</p>
+    <p class="hint-msg is-real">To change your name, date of birth, country of residence, or email, please contact our <a href="/champion-static/en/contact.html">customer support</a> team.</p>
 
 </form>
 </div></div>
@@ -319,6 +339,34 @@
 </div>
 
         <div class="form-row ">
+    <label for="income_source">Income Source</label>
+    
+                <select id="income_source" > 
+            <option value="">Please select</option>
+            <option value="Salaried Employee">Salaried Employee</option>
+            <option value="Self-Employed">Self-Employed</option>
+            <option value="Investments &amp; Dividends">Investments &amp; Dividends</option>
+            <option value="Pension">Pension</option>
+            <option value="Other">Other</option>
+                    </select>
+    
+</div>
+
+        <div class="form-row ">
+    <label for="employment_status">Employment Status</label>
+    
+                <select id="employment_status" > 
+            <option value="">Please select</option>
+            <option value="Employed">Employed</option>
+            <option value="Pensioner">Pensioner</option>
+            <option value="Self-Employed">Self-Employed</option>
+            <option value="Student">Student</option>
+            <option value="Unemployed">Unemployed</option>
+                    </select>
+    
+</div>
+
+        <div class="form-row ">
     <label for="employment_industry">Industry of Employment</label>
     
                 <select id="employment_industry" > 
@@ -356,6 +404,23 @@
 </div>
 
         <div class="form-row ">
+    <label for="source_of_wealth">Source of Wealth</label>
+    
+                <select id="source_of_wealth" > 
+            <option value="">Please select</option>
+            <option value="Accumulation of Income/Savings">Accumulation of Income/Savings</option>
+            <option value="Cash Business">Cash Business</option>
+            <option value="Company Ownership">Company Ownership</option>
+            <option value="Divorce Settlement">Divorce Settlement</option>
+            <option value="Inheritance">Inheritance</option>
+            <option value="Investment Income">Investment Income</option>
+            <option value="Sale of Property">Sale of Property</option>
+            <option value="Other">Other</option>
+                    </select>
+    
+</div>
+
+        <div class="form-row ">
     <label for="education_level">Level of Education</label>
     
                 <select id="education_level" > 
@@ -363,20 +428,6 @@
             <option value="Primary">Primary</option>
             <option value="Secondary">Secondary</option>
             <option value="Tertiary">Tertiary</option>
-                    </select>
-    
-</div>
-
-        <div class="form-row ">
-    <label for="income_source">Income Source</label>
-    
-                <select id="income_source" > 
-            <option value="">Please select</option>
-            <option value="Salaried Employee">Salaried Employee</option>
-            <option value="Self-Employed">Self-Employed</option>
-            <option value="Investments &amp; Dividends">Investments &amp; Dividends</option>
-            <option value="Pension">Pension</option>
-            <option value="Other">Other</option>
                     </select>
     
 </div>
@@ -390,7 +441,7 @@
             <option value="&#36;25,000 - &#36;50,000">&#36;25,000 - &#36;50,000</option>
             <option value="&#36;50,001 - &#36;100,000">&#36;50,001 - &#36;100,000</option>
             <option value="&#36;100,001 - &#36;500,000">&#36;100,001 - &#36;500,000</option>
-            <option value="Over &#36;500,000">Over &#36;500,001</option>
+            <option value="Over &#36;500,000">Over &#36;500,000</option>
                     </select>
     
 </div>
@@ -409,7 +460,21 @@
     
 </div>
 
-        <p class="notice-msg">The financial trading services contained within this site are only suitable for customers who are able to bear the loss of all the money they invest and who understand and have experience of the risk involved in the acquisition of financial contracts. Transactions in financial contracts carry a high degree of risk. If purchased contracts expire worthless, you will suffer a total loss of your investment, which consists of the contract premium.</p>
+        <div class="form-row ">
+    <label for="account_turnover">Anticipated Account Turnover</label>
+    
+                <select id="account_turnover" > 
+            <option value="">Please select</option>
+            <option value="Less than $25,000">Less than $25,000</option>
+            <option value="$25,000 - $50,000">$25,000 - $50,000</option>
+            <option value="$50,001 - $100,000">$50,001 - $100,000</option>
+            <option value="$100,001 - $500,000">$100,001 - $500,000</option>
+            <option value="Over $500,000">Over $500,000</option>
+                    </select>
+    
+</div>
+
+        <p class="hint-msg">The financial trading services contained within this site are only suitable for customers who are able to bear the loss of all the money they invest and who understand and have experience of the risk involved in the acquisition of financial contracts. Transactions in financial contracts carry a high degree of risk. If purchased contracts expire worthless, you will suffer a total loss of your investment, which consists of the contract premium.</p>
 
         <div class="submit-row ">
     <p id="msg_form" class="error-msg invisible"></p>
