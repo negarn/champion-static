@@ -126,7 +126,6 @@ h1.main-title {
 .menu-container #all-accounts li.has-sub a {
   line-height: 1.4em;
   padding: 7px 0;
-  font-size: 1.6rem;
 }
 .menu-container #all-accounts li.has-sub ul {
   padding: 0;
@@ -170,7 +169,6 @@ h1.main-title {
   text-align: center;
   padding: 10px 0;
   font-weight: 600;
-  font-size: 1.6rem;
 }
 #mobile-menu.nav-menu .nav-menu-dropdown a .nav-menu-icon, #mobile-menu.nav-menu .nav-menu-dropdown span .nav-menu-icon {
   display: inline-block;
@@ -1860,7 +1858,6 @@ iframe {
   padding: 25px 15px;
   border-bottom: 4px solid transparent;
   color: #fff !important;
-  font-size: 1.6rem;
 }
 #header .top-nav-menu li a.active {
   border-bottom-color: #dedede;
@@ -2111,7 +2108,6 @@ ul.checked.small > li {
   border-radius: 0.5rem;
   padding: 2rem;
   margin: 1rem 0;
-  font-size: 1.4rem;
   text-align: left;
 }
 @media (min-width: 1024px) {
